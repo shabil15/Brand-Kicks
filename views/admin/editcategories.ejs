@@ -1,0 +1,42 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+
+<div class="col-12 grid-margin stretch-card">
+  <div class="card">
+      <div class="card-body">
+          
+          <!-- <p class="card-description"> Basic form elements </p> -->
+          <hr class="white-line">
+          <form class="forms-sample" action="/admin/editCategory?id=<%= categories[0]._id %>" method="post">
+            <h3 class="card-title pt-5">Edit New category</h3>
+              <div class="form-group  row">
+                  <div class="col-12 col-md-9 mt-2">
+                      <label for="exampleInputName1">Category Name</label>
+                      <input type="text" class="form-control  text-light mb-3 " value="<%= categories[0].category_name %>" name="category_name"
+                          id="exampleInputName1" placeholder="name" required>
+                        <label for="exampleInputName1">Category Description</label>
+                      <input type="text" class="form-control  text-light " value="<%= categories[0].category_description %>" name="category_description"
+                          id="exampleInputDescription" placeholder="Description" required style="height: 100px;">
+                      <button type="submit" class="btn btn-lg btn-inverse-primary mr-2 mt-5">Add
+                          Category</button>
+                  </div>
+
+              </div>
+
+          </form>
+
+      </div>
+  </div>
+</div>
+
+
+</div>
+<!-- content-wrapper ends -->
+<!-- partial:partials/_footer.html -->
+<footer class="footer">
+
+</footer>
+<!-- partial -->
+</div>
+<%- include('../layouts/admin/footer.ejs') %>
+

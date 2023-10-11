@@ -1,0 +1,47 @@
+<%- include('../layouts/admin/header.ejs') %>
+<div class="main-panel">
+  <div class="content-wrapper">
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">Categories</h3>
+        </p>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Category Name</th>
+                <th>Category Description</th>
+                <th>Status</th>
+                <th>Edit </th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                <% for (var i=0 ; i < categories.length ;i++){%>
+                  <tr>
+                    <td><%=categories[i].category_name%></td>
+                    <td class="category-description"><%=categories[i].category_description%></td>
+                    <td>
+                      <% if (categories[i].is_listed == true) { %>
+                        <button data-id="<%= categories[i]._id %>" onclick="userBlock('<%= categories[i]._id %>')" class="btn btn-inverse-danger">Unlist</button>
+                      <% } else { %>
+                        <button data-id="<%= categories[i]._id %>" onclick="userBlock('<%= categories[i]._id %>')" class="btn btn-inverse-success">List</button>
+                      <% } %>
+                    </td>
+                    <td>
+                      <a href="/admin/editCategory/?id=<%= categories[i]._id %>">
+                      <i class="mdi mdi-pencil-box-outline"  style="font-size: 26px; "></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <% } %>
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+<%- include('../layouts/admin/footer.ejs') %>

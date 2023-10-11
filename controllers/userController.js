@@ -286,8 +286,7 @@ module.exports = {
     verifyOTP, 
     loadHome,
     verifyLogin
-    // resendOTP
-    //sendVerificationEmail
+    
 }
 
 // my old below 
