@@ -1,0 +1,147 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+  <div class="main-panel">
+    <div class="content-wrapper">
+
+
+
+
+      <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Add New Product</h4>
+            <!-- <p class="card-description"> Basic form elements </p> -->
+            <form class="forms-sample " action="/admin/addproduct" method="post" enctype="multipart/form-data">
+
+              <div class="form-group  row">
+                <div class="col-6  text-light">
+                  <label for="exampleInputName1">Product Titile</label>
+                  <input type="text" class="form-control  text-light" name="product_name" id="exampleInputName1"
+                    placeholder="Name" required>
+                </div>
+                <div class="col-6">
+                  <label for="exampleInputName1">Price</label>
+                  <input type="number" class="form-control text-light" id="exampleInputName1" name="product_price"
+                    placeholder="price" required>
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <div class="col-sm-12">
+                      <label class="col-sm-3 col-form-label">Category</label>
+                      <select name="category" class="form-control text-light" required>
+                        <option value="" disabled selected>Select Category</option>
+                        <% for(i in categories){%>
+                          <option <% if(categories[i].block==1){ %>disabled<%}%> ><%= categories[i].category_name %></option>
+                        <%}%>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <div class="col-sm-12">
+                      <label class="col-sm-3 col-form-label">Gender</label>
+                      <select name="gender" class="form-control text-light" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option>Men's</option>
+                        <option>Women's</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <div class="col-sm-12">
+                      <label class="col-sm-3 col-form-label">Number of Stock</label>
+                      <input type="number" class="form-control text-light" id="exampleInputName1" name="stock"
+                    placeholder="Enter Stock" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mt-2">
+                <label for="exampleTextarea1">Description</label>
+                <textarea name="product_description" class="form-control text-light" id="exampleTextarea1" rows="4" required></textarea>
+              </div>
+              <div class="">
+                <!-- <label class="col-sm-3 col-form-label">Images</label> -->
+                <div class="row d-flex justify-content-center ">
+
+                  <div class="row d-flex justify-content-between ">
+
+                    <div class="col-lg-3 col-md-6 rounded-image-preview">
+                      <label for="imageInput1" class="image-label">image 1
+                        <div class="rounded-image-preview">
+                          <img id="imagePreview1"
+                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                            alt="Preview" />
+                        </div>
+                        <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput" required>
+                      </label>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 rounded-image-preview">
+                      <label for="imageInput2" class="image-label">image 2
+                        <div class="rounded-image-preview">
+                          <img id="imagePreview2"
+                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                            alt="Preview" />
+                        </div>
+                        <input name="image2" type="file" accept="image/*" id="imageInput2" class="imageInput" required>
+                      </label>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 rounded-image-preview">
+                      <label for="imageInput3" class="image-label">image 3
+                        <div class="rounded-image-preview">
+                          <img id="imagePreview3"
+                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                            alt="Preview" />
+                        </div>
+                        <input name="image3" type="file" accept="image/*" id="imageInput3" class="imageInput" required>
+                      </label>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 rounded-image-preview">
+                      <label for="imageInput4" class="image-label">image 4
+                        <div class="rounded-image-preview">
+                          <img id="imagePreview4"
+                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                            alt="Preview" />
+                        </div>
+                        <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput" required>
+                      </label>
+                    </div>
+
+                  </div>
+
+
+
+
+                </div>
+
+
+                <button type="submit" class="btn btn-lg btn-primary mr-2 mt-5">Add product</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <!-- content-wrapper ends -->
+    <!-- partial:partials/_footer.html -->
+    <footer class="footer">
+
+    </footer>
+    <!-- partial -->
+  </div>
+
+  <%- include('../layouts/admin/footer.ejs') %>

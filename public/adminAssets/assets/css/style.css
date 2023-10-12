@@ -21142,3 +21142,55 @@ div.tagsinput {
   font-size: 16px; /* Adjust the font size as needed */
   /* Add any other desired styling */
 }
+
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-label::before {
+  content: "Click to upload image";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+
+/* product show  */
+.product-img-preview{
+  width: 100px;
+  height: 100px;
+}
+
+
+.rounded-image-preview {
+  width: 200px;
+  height: 200px;
+  border-radius: 7px;
+  overflow: hidden;
+  position: relative;
+  text-align: center; /* Center-align the image */
+}
+
+
+.image-container {
+  display: flex;
+  flex-direction: column; /* Stack the label, image, and button vertically */
+  align-items: center; /* Center-align the content */
+}
+
+.image-label {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  text-align: center; /* Center-align the label text */
+}
+
+.imageInput {
+  display: none;
+}

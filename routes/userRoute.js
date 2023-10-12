@@ -14,11 +14,11 @@ user_route.set('views','./views/users')
 user_route.use(express.json())
 user_route.use(express.urlencoded({extended:true}))
 
-user_route.use(session({
-    secret:config.sessionSecret,
-    resave:false,
-    saveUninitialized:true
-}))
+// user_route.use(session({
+//     secret:config.sessionSecret,
+//     resave:false,
+//     saveUninitialized:true
+// }))
 
 
 

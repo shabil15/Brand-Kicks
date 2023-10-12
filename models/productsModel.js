@@ -1,4 +1,53 @@
+
 const mongoose= require('mongoose');
+
+
+const productSchema = mongoose.Schema({
+  product_name:{
+    type:String,
+    required:true,
+  },
+  product_price:{
+    type:Number,
+    required:true,
+  },
+  category:{
+    type:String,
+    required:true,
+  },
+  gender:{
+    type:String,
+    required:true
+  },
+  stock:{
+    type:Number,
+    required:true
+  },
+  product_description:{
+    type:String,
+    required:true
+  },
+  images:{
+    image1:{
+      type:String,
+      required:true
+    },
+    image2:{
+      type:String,
+      required:true
+    },
+    image3:{
+      type:String,
+      required:true
+    },
+    image4:{
+      type:String,
+      required:true
+    }
+
+  }
+
+})
 
 const categorySchema = mongoose.Schema({
   category_name:{
@@ -15,9 +64,12 @@ const categorySchema = mongoose.Schema({
   }
 })
 
+const product= mongoose.model('product',productSchema)
 const category =mongoose.model('category',categorySchema)
 
 
+
 module.exports= {
-  category
+  category,
+  product
 }

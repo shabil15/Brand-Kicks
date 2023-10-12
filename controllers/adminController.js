@@ -4,9 +4,6 @@ const user = require ('../models/userModel').User
 const Category=require("../models/productsModel").category
 const bcrypt= require('bcrypt')
 const session = require("express-session");
-const { reject } = require('promise');
-const { category } = require('../models/productsModel');
-
 
 const securePassword = async (password) => {
   try {
@@ -106,6 +103,8 @@ try {
 }
 
 }
+
+
 
 const categoryLoad = async (req,res)=>{
   try {

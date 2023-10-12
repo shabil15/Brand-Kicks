@@ -4,14 +4,15 @@ const mongoose = require ('mongoose');
 const express= require ('express');
 const app= express();
 const session = require("express-session");
+const config= require("./config/config");
 
-app.use(
-  session({
-    secret: "your_secret_key", 
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+app.use(session({
+  secret:config.sessionKey,
+  cookie:{maxAge:86400000},
+  resave: false,
+  saveUninitialized:true,
+}))
+
 const dotenv=require("dotenv");
 dotenv.config();
 const PORT= process.env.PORT ;
