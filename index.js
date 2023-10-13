@@ -1,6 +1,5 @@
 const mongoose = require ('mongoose');
 
-
 const express= require ('express');
 const app= express();
 const session = require("express-session");
@@ -23,11 +22,23 @@ mongoose.connect(process.env.MONGODB_URI).then(()=>{
 const path = require('path')
 app.use("/public", express.static(path.join(__dirname, "public")));
 
+const nocache= require('nocache')
+const disable = (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '1');
+  next();
+}
+
+app.use(nocache());
+
 const user_route= require ("./routes/userRoute")
-app.use('/',user_route);
+app.use('/',disable,user_route);
 
 const admin_route = require("./routes/adminRoute")
-app.use('/admin',admin_route);
+app.use('/admin',disable,admin_route);
+
+
 app.listen(PORT,()=>{
   console.log(`The Brand Kicks server Running on ${PORT}`);
 }) 

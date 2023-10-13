@@ -1,0 +1,118 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+    <div class="main-panel">
+        <div class="content-wrapper">
+
+
+
+
+            <div class="row ">
+                <div class="col-12 grid-margin">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between">
+                                <h4 class="card-title">All Products</h4>
+                                <a href="/admin/addproduct"
+                                    class="btn btn-outline-success d-flex align-items-center">&nbsp<b>+ </b> &nbsp add
+                                    product</a>
+                            </div>
+                            <hr class="white-line my-4">
+                            <div class="mb-5 ">
+                                <ul class="navbar-nav w-100">
+                                    <li class="nav-item w-100">
+                                        <!-- d-none -->
+                                        <form action="/admin/products/searchproduct" method="get"
+                                            class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
+                                            <input type="text" name="key" class="form-control mb-1 text-light"
+                                                placeholder="Search Products">
+                                            <button type="submit" class="btn-inverse-info mb-1"> search </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th> Image </th>
+                                            <th> Titile </th>
+                                            <th> Category </th>
+                                            <th> Price </th>
+                                            <th> Stock Status</th>
+                                            <th> Edit</th>
+                                            <th> Action</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(i=0;i<products.length;i++){%>
+                                            <tr>
+                                                <!-- list -->
+                                                <td>
+                                                    <img class="rounded product-img-preview"
+                                                        src="/public/products/images/<%= products[i].images.image1 %>"
+                                                        alt="image" />
+                                                </td>
+                                                <td>
+                                                    <%= products[i].product_name %>
+                                                </td>
+                                                <td>
+                                                    <%= products[i].category %>
+                                                </td>
+                                                <td>
+                                                    <%= products[i].product_price %>
+                                                </td>
+                                                <td>
+                                                    <% if( products[i].stock <=0 ) {%>
+                                                        <span class="text-danger text-center">Out Of Stock </span>
+                                                        <%}else{%>
+                                                            <span class="text-success text-center">In Stock </span>
+                                                            <%}%>
+                                                </td>
+                                                <td>
+                                                    <a href="/admin/editproduct?id=<%= products[i]._id %>"
+                                                        class="btn btn-inverse-info">Edit</a>
+                                                </td>
+                                                <td>
+                                                    <!-- <a href="/admin/products/deleteproduct?id=<%= products[i]._id %>" class="btn btn-inverse-danger">Delete Item</a> -->
+                                                    <!-- Button trigger modal -->
+                                                    <% if (products[i].is_listed === false) { %>
+                                                        <a href="/admin/unlistProduct?id=<%= products[i]._id %>">
+                                                          <button type="button" class="btn btn-inverse-success btn-fw">
+                                                            List
+                                                          </button>
+                                                        </a>
+                                                      <% } else { %>
+                                                        <a href="/admin/unlistProduct?id=<%= products[i]._id %>">
+                                                          <button type="button" class="btn btn-inverse-danger btn-fw">
+                                                            Unlist
+                                                          </button>
+                                                        </a> 
+                                                      <% } %>
+
+
+                                                </td>
+                                            </tr>
+                                            <%}%>
+
+                                                <!-- list -->
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+
+        </footer>
+        <!-- partial -->
+    </div>
+    <%- include('../layouts/admin/footer.ejs') %>

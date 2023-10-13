@@ -60,11 +60,19 @@
 
                                         
                                             <!-- Add a data-id attribute with the user's _id -->
-                                            <% if (users[i].isBlock == false) { %>
-                                              <button data-id="<%= users[i]._id %>" onclick="blockButton('<%= users[i]._id %>')" class="btn btn-inverse-danger">unBlock</button>
-                                            <% } else { %>
-                                              <button data-id="<%= users[i]._id %>" onclick="blockButton('<%= users[i]._id %>')" class="btn btn-inverse-success">block</button>
-                                            <% } %>
+                                            <% if (users[i].isBlock == true) { %>
+                                                <a href="/admin/blockUser?id=<%= users[i]._id %>">
+                                                  <button type="button" class="btn btn-inverse-success btn-fw">
+                                                    Unblock
+                                                  </button>
+                                                </a>
+                                              <% } else { %>
+                                                <a href="/admin/blockUser?id=<%= users[i]._id %>">
+                                                  <button type="button" class="btn btn-inverse-danger btn-fw">
+                                                    Block
+                                                  </button>
+                                                </a> 
+                                              <% } %>
                                       </td>
                                       
                                       

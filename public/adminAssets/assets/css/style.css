@@ -21194,3 +21194,19 @@ img {
 .imageInput {
   display: none;
 }
+
+.product-img-preview{
+  width: 100px;
+  height: 100px;
+}
+
+
+.remove-button {
+  margin-top: 10px; 
+  background-color: #ff0000; 
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}

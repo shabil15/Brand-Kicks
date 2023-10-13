@@ -24,10 +24,18 @@
                     <td><%=categories[i].category_name%></td>
                     <td class="category-description"><%=categories[i].category_description%></td>
                     <td>
-                      <% if (categories[i].is_listed == true) { %>
-                        <button data-id="<%= categories[i]._id %>" onclick="userBlock('<%= categories[i]._id %>')" class="btn btn-inverse-danger">Unlist</button>
+                      <% if (categories[i].is_listed === false) { %>
+                        <a href="/admin/unlistCategory?id=<%= categories[i]._id %>">
+                          <button type="button" class="btn btn-inverse-success btn-fw">
+                            List
+                          </button>
+                        </a>
                       <% } else { %>
-                        <button data-id="<%= categories[i]._id %>" onclick="userBlock('<%= categories[i]._id %>')" class="btn btn-inverse-success">List</button>
+                        <a href="/admin/unlistCategory?id=<%= categories[i]._id %>">
+                          <button type="button" class="btn btn-inverse-danger btn-fw">
+                            Unlist
+                          </button>
+                        </a> 
                       <% } %>
                     </td>
                     <td>

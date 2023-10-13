@@ -27,6 +27,9 @@ const productSchema = mongoose.Schema({
     type:String,
     required:true
   },
+  is_listed:{
+    type:Boolean,
+  },
   images:{
     image1:{
       type:String,
@@ -60,7 +63,6 @@ const categorySchema = mongoose.Schema({
   },
   is_listed:{
     type:Boolean,
-    required:true
   }
 })
 
