@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="/public/userAssets/assets/css/bootstrap.min.css">
     <!-- Main CSS File -->
     <link rel="stylesheet" href="/public/userAssets/assets/css/style.css">
+    
 </head>
 <body>
 <main class="main">
@@ -53,18 +54,15 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
-                            <form action="/submit-otp   " method="post">
+                            <form action="/submit-otp " method="post">
                               <p class="py-3">We have sent an OTP to your email</p>
 
                                 <div class="form-group">
                                     <label for="register-email-2">Your OTP *</label>
                                     <input type="text" class="form-control" id="otp" name="otp" required>
                                 </div><!-- End .form-group -->
-<!-- 
-                                <div class="form-group">
-                                    <label for="register-password-2">Password *</label>
-                                    <input type="password" class="form-control" id="password-" name="password" required>
-                                </div>End .form-group -->
+
+                                <div id="countdown" class="text-center"></div>
 
                                 <div class="form-footer">
                                     <button type="submit" class="btn btn-outline-primary-2">
@@ -95,4 +93,34 @@
     </div><!-- End .login-page section-bg -->
 </main><!-- End .main -->
 
+
+<script>
+    // JavaScript for countdown timer
+    document.addEventListener("DOMContentLoaded", function () {
+        const countdownElement = document.getElementById('countdown');
+        let  countdownDuration = 180; // 3 minutes in seconds
+    
+        function updateCountdown() {
+  console.log('updateCountdown() called');
+
+  let minutes = Math.floor(countdownDuration / 60);
+  let seconds = countdownDuration % 60;
+
+  // Format minutes and seconds to display as "MM:SS"
+  let  formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+  countdownElement.textContent = `Time remaining: ${formattedTime}`;
+
+  if (countdownDuration === 0) {
+    // Handle timer expiration, for example, show a message or take some action.
+  } else {
+    countdownDuration--;
+    setTimeout(updateCountdown, 1000); // Update every 1 second
+  }
+}
+    
+        // Start the countdown
+        updateCountdown();
+    });
+    </script>
 <%- include('../layouts/user/footer.ejs') -%>

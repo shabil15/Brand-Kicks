@@ -5,6 +5,7 @@ const path = require("path");
 const getProductDetails = async(id)=>{
   try {
     let product=await Product.find({_id:id})
+    
     return product[0]
   } catch (error) {
     console.log(error);
@@ -18,6 +19,7 @@ const getProductDetails = async(id)=>{
 const productsLoad = async (req, res) => {
   try {
     let products = await Product.find({});
+    products.sort((a, b) => b- a);
     res.render("products", { products: products });
   } catch (error) {
     console.log(error);
@@ -101,7 +103,7 @@ const editProduct= async(req,res)=>{
     let details=req.body;
     let imagesFiles= req.files;
     let currentData= await getProductDetails(req.query.id);
-
+  
     let img1,img2,img3,img4;
 
       img1 = imagesFiles.image1 ? imagesFiles.image1[0].filename : currentData.images.image1;

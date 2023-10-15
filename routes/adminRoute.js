@@ -14,6 +14,7 @@ admin_route.use(express.urlencoded({extended:true}));
 const adminController =require('../controllers/adminController')
 const productController = require('../controllers/productController')
 const fileUpload= require('../middlewares/fileUpload')
+const bannerController= require('../controllers/bannersController')
 
 admin_route.get('/',adminAuth.isLogout,adminController.loadAdminLogin)
 admin_route.post('/',adminAuth.isLogout,adminController.verifyLogin)
@@ -26,8 +27,8 @@ admin_route.get('/blockUser',adminAuth.isLogin,adminController.blockUser)
 
 admin_route.get('/addproduct',adminAuth.isLogin,productController.addProductLoad)
 admin_route.post('/addproduct',adminAuth.isLogin,fileUpload.productImagesUpload,productController.addProduct)
-admin_route.get('/editproduct',productController.editProductLoad)
-admin_route.post('/editproduct',productController.editProduct)
+admin_route.get('/editproduct',adminAuth.isLogin,productController.editProductLoad)
+admin_route.post('/editproduct',adminAuth.isLogin,fileUpload.productImagesUpload,productController.editProduct)
 admin_route.get('/products',adminAuth.isLogin,productController.productsLoad)
 admin_route.get('/unlistProduct',adminAuth.isLogin,productController.unlistProduct)
 
@@ -38,5 +39,8 @@ admin_route.post('/addCategory',adminAuth.isLogin,adminController.addCategory)
 admin_route.get('/unlistCategory',adminAuth.isLogin,adminController.unlistCategory)
 admin_route.get('/editCategory',adminAuth.isLogin,adminController.editCategoryLoad)
 admin_route.post('/editCategory',adminAuth.isLogin,adminController.updateCategoryData)
+
+
+admin_route.get('/banners',bannerController.bannersLoad)
 
 module.exports=admin_route

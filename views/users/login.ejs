@@ -27,6 +27,57 @@
     <link rel="stylesheet" href="/public/userAssets/assets/css/bootstrap.min.css">
     <!-- Main CSS File -->
     <link rel="stylesheet" href="/public/userAssets/assets/css/style.css">
+    <script>
+      
+  function validateForm() {
+    console.log("validateform");
+    // Get form inputs
+    var email = document.getElementById("register-email-2").value;
+    var password = document.getElementById("password-").value;
+
+    // Get error message elements
+    var emailError = document.getElementById("email-error");
+    var passwordError = document.getElementById("password-error");
+
+    // Reset error messages
+    emailError.textContent = "";
+    passwordError.textContent = "";
+
+    // Flag to check if the form is valid
+    var isValid = true;
+
+    // Check email format
+    if (email.trim() === "") {
+      emailError.textContent = "Email is required";
+      isValid = false;
+    } else if (!isValidEmail(email)) {
+      emailError.textContent = "Email must be a valid email address";
+      isValid = false;
+    }
+
+    // Check password length
+    if (password.length < 8) {
+      passwordError.textContent = "Password must be at least 8 characters";
+      isValid = false;
+    }
+
+    // Prevent form submission if not valid
+    if (!isValid) {
+      return false;
+    }
+
+    // Form is valid
+    return true;
+  }
+
+  function isValidEmail(email) {
+    // A simple email validation check (contains '@' and '.')
+    return email.includes("@") && email.includes(".");
+  }
+
+
+      </script>
+      
 </head>
 <body>
 <main class="main">
@@ -52,20 +103,25 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
-                            <form action="/login" method="post" id="form">
+                            <form action="/login" method="post" id="form" onsubmit="return validateForm()">
+                                
                                 <% if (typeof message !== 'undefined') { %>
                                     <p style="color: red; font-size: 19px; font-weight: 300;">
                                       <%= message %>
                                     </p>
+                                    
                                     <% } %>
+                                    
                                 <div class="form-group">
                                     <label for="register-email-2">Your email address *</label>
                                     <input type="email" class="form-control" id="register-email-2" name="email" required>
+                                    <p id="email-error" class="error-message"></p>
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
                                     <label for="register-password-2">Password *</label>
                                     <input type="password" class="form-control" id="password-" name="password" required>
+                                    <p id="password-error" class="error-message" style="color: red; font-size: 16px; font-weight: 300;"></p>
                                 </div><!-- End .form-group -->
 
                                 <div class="form-footer">
@@ -96,5 +152,7 @@
         </div><!-- End .container -->
     </div><!-- End .login-page section-bg -->
 </main><!-- End .main -->
+
+
 
 <%- include('../layouts/user/footer.ejs') -%>

@@ -122,7 +122,7 @@
                       </label>
                     </div>
                     <button type="button" style="display: none;" class="remove-button" id="removeButton3"
-                      onclick="removeImagePreview('imagePreview3', '/products/images/<%= product.images.image3 %>', 'removeButton3')">Remove</button>
+                      onclick="removeImagePreview('imagePreview3', '/public/products/images/<%= product.images.image3 %>', 'removeButton3')">Remove</button>
                   </div>
 
                   <div class="col-lg-3 col-md-6">
@@ -132,7 +132,7 @@
                           <img id="imagePreview4" src="/public/products/images/<%= product.images.image4 %>" alt="Preview" />
                         </div>
                         <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput"
-                          onchange="updateImagePreview(this, 'imagePreview4', '/products/images/<%= product.images.image4 %>', 'removeButton4')">
+                          onchange="updateImagePreview(this, 'imagePreview4', '/public/products/images/<%= product.images.image4 %>', 'removeButton4')">
                       </label>
                     </div>
                     <button type="button" style="display: none;" class="remove-button" id="removeButton4"
