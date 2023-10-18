@@ -232,6 +232,34 @@ const logout = async (req,res)=>{
   }
 }
 
+
+const ProductPageLoad = async (req,res)=>{
+  try {
+    let product = await Product.find({_id:req.session._id})
+    if(!product){
+      res.status(404).render("404")
+    }else{
+      
+      res.render('product',{
+      product:product,
+      user:req.session.user_id,
+    })
+  }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const aboutusLoad = async (req,res)=>{
+  try {
+    res.render('aboutus',{
+      user:req.session.user_id
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   loginLoad,
   loadRegister,
@@ -241,5 +269,7 @@ module.exports = {
   loadHome,
   verifyLogin,
   loadShop,
-  logout
+  logout,
+  ProductPageLoad,
+  aboutusLoad,
 };

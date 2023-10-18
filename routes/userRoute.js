@@ -38,6 +38,9 @@ user_route.post('/login',userController.verifyLogin)
   
 user_route.get('/shop',userController.loadShop)
 
+user_route.get('/product',userController.ProductPageLoad);
+
+user_route.get('/aboutus',userController.aboutusLoad)
 
 user_route.get('/logout',userController.logout)
 

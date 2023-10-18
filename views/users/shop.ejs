@@ -2,15 +2,15 @@
 <main class="main">
   <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
     <div class="container">
-      <h1 class="page-title">Grid 4 Columns<span>Shop</span></h1>
+      <h1 class="page-title">Shop<span> Elevating Style, One Step at a Time</span></h1>
     </div><!-- End .container -->
   </div><!-- End .page-header -->
     <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Grid 4 Columns</li>
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+                
             </ol>
         </div><!-- End .container -->
     </nav><!-- End .breadcrumb-nav -->
@@ -84,13 +84,10 @@
               </div><!-- End .toolbox -->
 
                     <div class="products mb-3">
-                        <div class="row justify-content-center">
-                            
-
-                                    
+                        <div class="row justify-content-center">        
                             <% for(i=0;i<6;i++) {%>
-                              <div class="col-6 col-md-4 col-lg-3 border m-1 mt-2 pt-3">
-                                  <div class="product product-11 mt-v3 text-center">
+                              <div class="col-6 col-md-4 col-lg-4 col-xl-3">
+                                  <div class="product product-7 text-center">
                                       <figure class="product-media">
                                           <a href="/product?id=<%= products[i]._id %>">
                                               <img src="/public/products/images/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
@@ -103,6 +100,10 @@
                                       </figure><!-- End .product-media -->
   
                                       <div class="product-body">
+                                        <div class="product-cat">
+                                          <a  rel="tag" style="font-size: 14px;"><%= products[i].gender%></a>, 
+                                        <a  rel="tag" style="font-size: 14px;"><%= products[i].category %></a>
+                                        </div>
                                           <h3 class="product-title"><a><%= products[i].product_name %></a></h3><!-- End .product-title -->
                                           <div class="product-price">
                                               ₹<%= products[i].product_price %>
