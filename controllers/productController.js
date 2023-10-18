@@ -62,7 +62,14 @@ const addProduct = async (req, res) => {
 
     const result = await product.save();
     console.log(result);
-    res.redirect("/admin/products");
+    if(result){
+      req.flash('success','The Product added Successfully');
+      res.redirect("/admin/products");
+    }else{
+      req.flash('error','Something went wrong please try again!');
+      res.redirect("/admin/products");
+    }
+    
   } catch (error) {
     console.log(error);
   }
@@ -128,8 +135,13 @@ const editProduct= async(req,res)=>{
           }
         })
         console.log(update);
-
+        if(update){
+          req.flash('success','The Prodect successfully Updated');
         res.redirect('/admin/products')
+        }else{
+          req.flash('error','Something went wrong Please Try again!')
+          res.redirect('/admin/prodcts')
+        }
   } catch (error) {
     console.log(error);
   }

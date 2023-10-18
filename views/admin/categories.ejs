@@ -12,6 +12,16 @@
                                     Category</a>
      
         </div>
+        <% if (messages.success) { %>
+          <div class="alert alert-success mt-2">
+              <%= messages.success %>
+          </div>
+      <% } %>
+      <% if (messages.error) { %>
+          <div class="alert alert-danger mt-2">
+              <%= messages.error %>
+          </div>
+      <% } %>
         <div class="table-responsive">
           <table class="table">
             <thead>

@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const otpGenerator = require("otp-generator");
 const Product = require("../models/productsModel").product;
+const Banner = require('../models/bannerModel')
 
 //=============code for securing the password=================================//
 
@@ -69,8 +70,13 @@ const loginLoad = async (req, res) => {
 const loadHome = async (req, res) => {
   try {
     const products = await Product.find({});
-    console.log(products);
-    res.render("home", { products: products });
+    const banners = await Banner.find({})
+    
+    console.log(req.session.user_id);
+  
+    res.render("home", { products: products ,
+    banners:banners,
+    user:req.session.user_id});
   } catch (error) {
     console.log(error);
   }
@@ -185,7 +191,7 @@ const verifyLogin = async (req, res, next) => {
             req.session.user_id = userData._id;
             res.render("login", { message: "please verify your mail" });
           } else {
-            req.session.userid = userData._id;
+            req.session.user_id = userData._id;
 
             res.redirect("/");
           }
@@ -203,6 +209,29 @@ const verifyLogin = async (req, res, next) => {
   }
 };
 
+
+const loadShop = async (req,res)=>{
+ try {
+  const products= await Product.find({})
+  res.render('shop',{
+    products:products,
+    user:req.session.user_id
+  })
+ } catch (error) {
+  console.log(error);
+ }
+}
+
+
+const logout = async (req,res)=>{
+  try {
+    req.session.destroy()
+    res.redirect('/')
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   loginLoad,
   loadRegister,
@@ -211,4 +240,6 @@ module.exports = {
   verifyOTP,
   loadHome,
   verifyLogin,
+  loadShop,
+  logout
 };

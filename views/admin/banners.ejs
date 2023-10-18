@@ -1,2 +1,146 @@
-<h1>banners
-</h1>
+<%- include('../layouts/admin/header.ejs') %>
+<div class="main-panel">
+  <div class="content-wrapper">
+<div class="row ">
+  <div class="col-12 grid-margin">
+      <div class="card">
+          <div class="card-body">
+
+              <div class="d-flex justify-content-between">
+                  <h3 class="card-title">Banner Management</h3>
+                  <a href="/admin/addbanner"
+                                    class="btn btn-outline-success d-flex align-items-center">&nbsp<b>+ </b> &nbsp add
+                                    Banner</a>
+              </div>
+              <hr class="white-line my-4">
+              
+              <div class="table-responsive">
+                  <% if(banners.length==0){ %>
+                      <p class="text-center ">No have BANNERS</p>
+                      <%}else{%>
+                          <table class="table text-center">
+                              <thead>
+                                  <tr>
+                                      <th> Banner Image </th>
+                                      <th> Banner Name </th>
+                                      <th> Visiblity</th>
+                                      <th> Remove</th>
+                                    
+
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <% for(i in banners){ %>
+
+                                      <tr>
+                                          <td class="">
+                                              <img class="rounded product-img-preview bg-light"
+                                                  src="/public/products/banners/<%= banners[i].banner%>"
+                                                  alt="image" />
+                                          </td>
+                                          <td>
+                                              <%= banners[i].name%>
+                                          </td>
+                                          <td>
+                                            <% if (banners[i].visibility=== false) { %>
+                                              <a href="/admin/visible?id=<%= banners[i]._id %>">
+                                                <button type="button" class="btn btn-inverse-success btn-fw">
+                                                  Show
+                                                </button>
+                                              </a>
+                                            <% } else { %>
+                                              <a href="/admin/visible?id=<%= banners[i]._id %>">
+                                                <button type="button" class="btn btn-inverse-danger btn-fw">
+                                                  Hide
+                                                </button>
+                                              </a> 
+                                            <% } %>
+                                          </td>
+                                          <td>
+                                              
+                                              <button type="button" class="btn btn-inverse-danger"
+                                                  data-bs-toggle="modal"
+                                                  data-bs-target="#mod<%= banners[i]._id %>">
+                                                  Delete Item
+                                              </button>
+
+                                              <!-- Modal -->
+                                              <div class="modal fade" id="mod<%= banners[i]._id %>"
+                                                  tabindex="-1" aria-labelledby="exampleModalLabel"
+                                                  aria-hidden="true">
+                                                  <div class="modal-dialog modal-dialog-centered">
+                                                      <div class="modal-content">
+                                                          <div class="modal-header">
+                                                              <!-- <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                                          Modal title</h1> -->
+                                                              <p class="modal-title "> <b
+                                                                      class="mdi mdi-comment-alert text-warning"></b>
+                                                                  Are you sure you want to
+                                                                  delete this Banner</p>
+                                                              <button type="button"
+                                                                  class=" btn mdi mdi-close"
+                                                                  data-bs-dismiss="modal"
+                                                                  aria-label="Close"></button>
+                                                          </div>
+                                                          <div class="modal-body">
+
+                                                              <div class="card mb-3 bg-dark"
+                                                                  style="max-width: 540px;">
+                                                                  <div class="row g-0 ">
+                                                                      <div
+                                                                          class="col-md-3 d-flex align-items-center">
+                                                                          <img style="width: 100px; height: 100px; border-radius: 7px;"
+                                                                              src="/public/products/banners/<%= banners[i].banner %>"
+                                                                              class="card-img-center bg-light"
+                                                                              alt="...">
+                                                                      </div>
+                                                                      <div class="col-md-9 ">
+                                                                          <div
+                                                                              class="card-body text-start">
+                                                                              <h4 class="card-title ">
+                                                                                  <%= banners[i].name
+                                                                                      %>
+                                                                              </h4>
+                                                                              <p class="card-text">This
+                                                                                  Banner Added on <br>
+                                                                                  <%= banners[i].createdAt
+                                                                                      %>
+                                                                              </p>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+
+                                                              <div class="modal-footer">
+                                                                  <button type="button"
+                                                                      class="btn btn-outline-light"
+                                                                      data-bs-dismiss="modal">Not
+                                                                      Now</button>
+                                                                  <a type="button"
+                                                                      href="/admin/deletebanner?id=<%= banners[i]._id %>"
+                                                                      class="btn btn-inverse-danger">Delete
+                                                                      Now</a>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </td>
+
+                                      </tr>
+                                      <%}%>
+                                          <!-- <tr>
+                          
+                      </tr> -->
+
+
+                              </tbody>
+                          </table>
+                          <%}%>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<%- include('../layouts/admin/footer.ejs') %>

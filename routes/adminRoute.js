@@ -40,7 +40,10 @@ admin_route.get('/unlistCategory',adminAuth.isLogin,adminController.unlistCatego
 admin_route.get('/editCategory',adminAuth.isLogin,adminController.editCategoryLoad)
 admin_route.post('/editCategory',adminAuth.isLogin,adminController.updateCategoryData)
 
-
 admin_route.get('/banners',bannerController.bannersLoad)
+admin_route.get('/addbanner',bannerController.addbannersLoad)
+admin_route.post('/addbanner',fileUpload.uploadBanner.single('banner'),bannerController.addBanner)
+admin_route.get('/deletebanner',bannerController.deleteBanner)
+admin_route.get('/visible',bannerController.visibilityBanner);
 
 module.exports=admin_route

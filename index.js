@@ -4,6 +4,7 @@ const express= require ('express');
 const app= express();
 const session = require("express-session");
 const config= require("./config/config");
+const flash= require('express-flash')
 
 app.use(session({
   secret:config.sessionKey,
@@ -11,6 +12,8 @@ app.use(session({
   resave: false,
   saveUninitialized:true,
 }))
+
+app.use(flash())
 
 const dotenv=require("dotenv");
 dotenv.config();

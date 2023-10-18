@@ -1,11 +1,20 @@
 const mongoose = require('mongoose')
 
 const bannerSchema= new mongoose.Schema({
-  name:String,
-  banner:String,
-  description:String,
+  name:{
+    type:String,
+    required:true
+  },
+  banner:{
+    type:String,
+    required:true
+  },
+  description:{
+    type:String,
+    required:true
+  },
   visibility: {
-    type: boolean,
+    type: Boolean,
     default:true,
   }
 },{

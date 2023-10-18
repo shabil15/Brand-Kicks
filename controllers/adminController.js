@@ -123,7 +123,13 @@ const addCategory = async (req, res) => {
 
     let result = await category.save();
     console.log(result);
+    if(result){
+      req.flash('success','New Category Added');
     res.redirect("/admin/categories");
+    }else{
+      req.flash('error','something went wrong please try again')
+      res.redirect('/admin/categories')
+    }
   } catch (error) {
     console.log(error);
   }
@@ -208,7 +214,9 @@ const   updateCategoryData = async (req, res) => {
         },
       }
     );
+
     console.log(updateCategory);
+    req.flash('success','The category Successfully Updated')
     res.redirect("/admin/categories");
   } catch (error) {
     console.log(error);

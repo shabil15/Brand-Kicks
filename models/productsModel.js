@@ -50,6 +50,8 @@ const productSchema = mongoose.Schema({
 
   }
 
+},{
+  timestamps:true
 })
 
 const categorySchema = mongoose.Schema({

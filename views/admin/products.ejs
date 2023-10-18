@@ -17,6 +17,17 @@
                                     class="btn btn-outline-success d-flex align-items-center">&nbsp<b>+ </b> &nbsp add
                                     product</a>
                             </div>
+                            <% if (messages.success) { %>
+                                <div class="alert alert-success mt-2">
+                                    <%= messages.success %>
+                                </div>
+                            <% } %>
+                            <% if (messages.error) { %>
+                                <div class="alert alert-danger mt-2">
+                                    <%= messages.error %>
+                                </div>
+                            <% } %>
+                            
                             <hr class="white-line my-4">
                             <div class="mb-5 ">
                                 <ul class="navbar-nav w-100">

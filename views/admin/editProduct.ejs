@@ -33,7 +33,7 @@
                         <!-- <option value="<%= product.frame_shape %>" selected><%= product.frame_shape %></option> -->
                         <!-- <option <% if(product.frame_shape=="Round"){%>selected<%}%> >Round</option> -->
                         <% for(i in categories){%>
-                          <option <% if(product.frame_shape==categories[i].category_name ){%>selected<%}%>
+                          <option <% if(product.category==categories[i].category_name ){%>selected<%}%>
                               <% if(categories[i].block==1) {%>
                                 disabled
                                 <%}%>
