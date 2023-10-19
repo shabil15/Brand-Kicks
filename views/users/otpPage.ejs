@@ -30,17 +30,8 @@
     
 </head>
 <body>
+    <img src="/public/userAssets/assets/images/BRAND KICKS! white.png" class="md-5" style="height: 60px; position: absolute; top: 20px; left: 20px;" alt="">
 <main class="main">
-    <!-- <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Login</li>
-            </ol>
-        </div> End .container -->
-    </nav>
-
 
     <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('/public/userAssets/assets/images/backgrounds/shoes-login.jpg')">
         <div class="container">
@@ -62,7 +53,10 @@
                                     <input type="text" class="form-control" id="otp" name="otp" required>
                                 </div><!-- End .form-group -->
 
-                                <div id="countdown" class="text-center"></div>
+                                <div class="mt-3">
+                                    <p class="text-danger mt-3">Time left: <span id="timer">60</span></p>
+                                    <button class="btn btn-dander" id="resendButton" onclick="resendOTP()"><a href="/resend-otp">Resend OTP</a></button>
+                                  </div>
 
                                 <div class="form-footer">
                                     <button type="submit" class="btn btn-outline-primary-2">
@@ -95,32 +89,38 @@
 
 
 <script>
-    // JavaScript for countdown timer
-    document.addEventListener("DOMContentLoaded", function () {
-        const countdownElement = document.getElementById('countdown');
-        let  countdownDuration = 180; // 3 minutes in seconds
-    
-        function updateCountdown() {
-  console.log('updateCountdown() called');
-
-  let minutes = Math.floor(countdownDuration / 60);
-  let seconds = countdownDuration % 60;
-
-  // Format minutes and seconds to display as "MM:SS"
-  let  formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-  countdownElement.textContent = `Time remaining: ${formattedTime}`;
-
-  if (countdownDuration === 0) {
-    // Handle timer expiration, for example, show a message or take some action.
-  } else {
-    countdownDuration--;
-    setTimeout(updateCountdown, 1000); // Update every 1 second
-  }
-}
-    
-        // Start the countdown
-        updateCountdown();
-    });
-    </script>
+    let countdown = 45; // Initial countdown value in seconds
+    let timerElement = document.getElementById('timer');
+    let resendButton = document.getElementById('resendButton');
+    let countdownInterval;
+  
+    // Function to update the countdown timer
+    function updateTimer() {
+        timerElement.textContent = countdown + ' seconds';
+        countdown--;
+        resendButton.disabled = true;
+        if (countdown < 0) {
+            clearInterval(countdownInterval);
+            timerElement.textContent = '0 seconds';
+            resendButton.disabled = false;
+        }
+    }
+  
+    // Function to resend OTP
+    function resendOTP() {
+        // Simulate OTP resend logic here
+        // For example, you can make an API call to send a new OTP
+  
+        // Reset the timer
+        countdown = 45;
+        timerElement.textContent = countdown + ' seconds';
+        resendButton.disabled = true;
+  
+        // Start the countdown again
+        countdownInterval = setInterval(updateTimer, 1000);
+    }
+  
+    // Initial countdown start
+    countdownInterval = setInterval(updateTimer, 1000);
+  </script>
 <%- include('../layouts/user/footer.ejs') -%>

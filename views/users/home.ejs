@@ -176,7 +176,7 @@
           <div class="col-sm-6 col-md-4">
               <div class="banner banner-cat">
                   <a href="#">
-                      <img src="/public/userAssets/assets/images/demos/demo-10/banners/banner-6.jpg" alt="Banner">
+                      <img src="/public/userAssets/assets/images/category/jia-ye-erHlzWCN6zQ-unsplash.jpg" alt="Banner">
                   </a>
 
                   <div class="banner-content banner-content-overlay text-center">
@@ -190,7 +190,7 @@
           <div class="col-sm-6 col-md-4">
               <div class="banner banner-cat">
                   <a href="#">
-                      <img src="/public/userAssets/assets/images/demos/demo-10/banners/banner-5.jpg" alt="Banner">
+                      <img src="/public/userAssets/assets/images/category/josh-post-HA87jd_C0Tc-unsplash.jpg" alt="Banner">
                   </a>
 
                   <div class="banner-content banner-content-overlay text-center">
@@ -289,11 +289,52 @@
                   <p class="cta-desc">Get <em class="font-weight-medium">FREE SHIPPING* & 5% rewards</em> on every order with Molla Theme rewards program</p><!-- End .cta-desc -->
               </div><!-- End .col -->
               
+              
               <div class="col-auto">
                   <a href="#" class="btn btn-white-primary btn-round"><span>Add to Cart for $50.00/yr</span><i class="icon-long-arrow-right"></i></a>
               </div><!-- End .col-auto -->
           </div><!-- End .row -->
       </div><!-- End .cta-horizontal -->
   </div><!-- End .container -->
+
+  <div class="container">
+    <div class="heading heading-center mb-6 mt-4">
+        <h2 class="title">Recent Arrivals</h2><!-- End .title -->
+        <p style="font-size: larger;" class="mb-3">Step Up Your Style</p>
+  <div class="products mb-3">
+    <div class="row justify-content-center">        
+        <% for(i=0;i<6;i++) {%>
+          <div class="col-6 col-md-4 col-lg-4 col-xl-3">
+              <div class="product product-7 text-center">
+                  <figure class="product-media">
+                      <a href="/product?id=<%= products[i]._id %>">
+                          <img src="/public/products/images/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
+                          <img src="/public/products/images/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
+                      </a>
+
+                      <div class="product-action-vertical">
+                          <a href="#" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
+                      </div><!-- End .product-action-vertical -->
+                  </figure><!-- End .product-media -->
+
+                  <div class="product-body">
+                    <div class="product-cat">
+                      <a  rel="tag" style="font-size: 14px;"><%= products[i].gender%></a>, 
+                    <a  rel="tag" style="font-size: 14px;"><%= products[i].category %></a>
+                    </div>
+                      <h3 class="product-title"><a><%= products[i].product_name %></a></h3><!-- End .product-title -->
+                      <div class="product-price">
+                          ₹<%= products[i].product_price %>
+                      </div><!-- End .product-price -->
+                  </div><!-- End .product-body -->
+                  <div class="product-action">
+                      <a   class="btn-product btn-cart" onclick="addCart('<%= products[i]._id %>','<%= user %>')"><span>add to cart</span></a>
+                  </div><!-- End .product-action -->
+              </div><!-- End .product -->
+          </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
+
+      <%}%>
+    </div>
+</div>
 </main><!-- End .main -->
 <%- include('../layouts/user/footer.ejs') -%>

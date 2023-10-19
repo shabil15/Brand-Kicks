@@ -80,6 +80,7 @@
       
 </head>
 <body>
+    <img src="/public/userAssets/assets/images/BRAND KICKS! white.png" class="md-5" style="height: 60px; position: absolute; top: 20px; left: 20px;" alt="">
 <main class="main">
     <!-- <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
         <div class="container">
@@ -103,7 +104,7 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
-                            <form action="/login" method="post" id="form" onsubmit="return validateForm()">
+                            <form action="/login" method="post" id="form" onsubmit="return validateForm()" novalidate>
                                 
                                 <% if (typeof message !== 'undefined') { %>
                                     <p style="color: red; font-size: 19px; font-weight: 300;">
@@ -114,13 +115,13 @@
                                     
                                 <div class="form-group">
                                     <label for="register-email-2">Your email address *</label>
-                                    <input type="email" class="form-control" id="register-email-2" name="email" required>
+                                    <input type="email" class="form-control" id="register-email-2" name="email" >
                                     <p id="email-error" class="error-message"></p>
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
                                     <label for="register-password-2">Password *</label>
-                                    <input type="password" class="form-control" id="password-" name="password" required>
+                                    <input type="password" class="form-control" id="password-" name="password" >
                                     <p id="password-error" class="error-message" style="color: red; font-size: 16px; font-weight: 300;"></p>
                                 </div><!-- End .form-group -->
 
@@ -140,6 +141,7 @@
                                         Signup
                                         </a>
                                     </p>
+                                    <a href="/forget">Forgot Password?</a>      
                                 </div>
                             </form>
                             

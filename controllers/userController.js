@@ -1,6 +1,7 @@
 const User = require("../models/userModel").User;
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+const randomstring= require('randomstring')
 const path = require("path");
 const otpGenerator = require("otp-generator");
 const Product = require("../models/productsModel").product;
@@ -54,6 +55,39 @@ const sendVerificationEmail = async (email, otp) => {
   }
 };
 
+
+
+const resetPasswordMail = async (firstName,secondName,email,token)=>{
+  try {
+    const transporter = nodemailer.createTransport({
+      host:'smtp.gmail.com',
+      port:587,
+      secure:false,
+      requireTLS:true,
+      auth:{
+        user: "brandreselling15@gmail.com",
+        pass: "uzpp awea tiqy iwnz",
+      }
+    })
+
+    const mailOptions = {
+      from:"brandreselling15@gmail.com",
+      to:email,
+      subject:"For Reset Password",
+      html: `<p> Hi, ${firstName} ${secondName}, please click here to <a href="http://localhost:3000/forget-password?token=${token}"> Reset </a> your password</p>`
+    }
+
+    transporter.sendMail(mailOptions,function(error,info){
+      if(error){
+        console.log(error);
+      }else{
+        console.log("Email Has been Sent:-",info,response);
+      }
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 //==================to load the Login Page==============================//
 
@@ -173,6 +207,39 @@ const verifyOTP = async (req, res) => {
 };
 
 
+const resendOTP = async (req,res)=>{
+  try {
+    const currentTime = Date.now()/1000
+    if(req.session.otp.expiry!=null){
+      if(currentTime>req.session.otp.expiry){
+        console.log(expired,req.session.otp.expiry);
+        const newDigit = otpGenerator.generate(6, { 
+          digits: true,
+          alphabets: false, 
+          specialChars: false, 
+          upperCaseAlphabets: false,
+          lowerCaseAlphabets: false 
+      });
+
+      req.session.otp.code= newDigit;
+      const newExpiry = currentTime +45;
+      req.session.otp.expiry= newExpiry
+      sendVerificationEmail(req.session.email,req.session.otp.code)
+
+      res.render('otpPage',{message:'message:OTP has send'})
+        
+      }else{
+        res.render('otpPage',{message: "You can request a new otp after old otp expires"});
+      }
+    }else{
+        res.send('please Register again')
+      }
+    }
+  catch (error) {
+    console.log(error);
+  }
+}
+
 //==========================code for verifying the login======================//
 
 
@@ -209,6 +276,70 @@ const verifyLogin = async (req, res, next) => {
   }
 };
 
+const forgetLoad = async (req,res)=>{
+  try {
+    res.render('forget')
+  } catch (error) {
+    console.log(error);    
+  }
+}
+
+const forgetVerify = async (req,res)=>{
+  try {
+    const email = req.body.email
+    const userData = await User.findOne({email:email})
+
+    if(userData){
+      if(userData.isVerified===false){
+        res.render('forget',{message:"Please verify your mail"})
+      }else{
+        const randomString = randomstring.generate()
+        const updatedData = await User.updateOne({email:email},
+          {$set:{token:randomString}})
+
+          resetPasswordMail(userData.firstName,userData.secondName,userData.email,randomString)
+          res.render('forget',{message:"Please Check Your Mail to Reset Your Password"})
+      }
+    }else{
+      res.render('forget',{message:"User email is Incorrect"})
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+const forgetPasswordLoad = async (req,res)=>{
+  try {
+    const token = req.query.token
+    
+    const tokenData = await User.findOne({token:token})
+    
+    if(tokenData){
+      res.render('forget-password',{user_id:tokenData._id})
+
+    }else{
+      res.render('404',{message:"Token is Invalid"})
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const resetPassword = async(req,res)=>{
+  try {
+    const password = req.body.password
+    const user_id = req.body.user_id
+
+    const spassword = await securePassword(password)
+
+    const updatedData= await User.findByIdAndUpdate({_id:user_id},{$set:{password:spassword,token:''}})
+
+    res.redirect('/login')
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const loadShop = async (req,res)=>{
  try {
@@ -233,22 +364,22 @@ const logout = async (req,res)=>{
 }
 
 
-const ProductPageLoad = async (req,res)=>{
-  try {
-    let product = await Product.find({_id:req.session._id})
-    if(!product){
-      res.status(404).render("404")
-    }else{
+// const ProductPageLoad = async (req,res)=>{
+//   try {
+//     let product = await Product.find({_id:req.query._id})
+//     if(!product){
+//       res.status(404).render("404")
+//     }else{
       
-      res.render('product',{
-      product:product,
-      user:req.session.user_id,
-    })
-  }
-  } catch (error) {
-    console.log(error);
-  }
-}
+//       res.render('product',{
+//       product:product,
+//       user:req.session.user_id,
+//     })
+//   }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 const aboutusLoad = async (req,res)=>{
   try {
@@ -266,10 +397,14 @@ module.exports = {
   insertUser,
   showverifyOTPPage,
   verifyOTP,
+  resendOTP,
   loadHome,
   verifyLogin,
+  forgetLoad,
+  forgetVerify,
+  forgetPasswordLoad,
+  resetPassword,
   loadShop,
   logout,
-  ProductPageLoad,
   aboutusLoad,
 };

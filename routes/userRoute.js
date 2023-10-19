@@ -1,5 +1,6 @@
 const express = require("express")
 const userController = require("../controllers/userController")
+const productController = require('../controllers/productController')
 const session = require("express-session")
 
 const config = require("../config/config")
@@ -34,11 +35,21 @@ user_route.get('/submit-otp', userController.showverifyOTPPage)
 
 user_route.post('/submit-otp', userController.verifyOTP)
 
+user_route.get('/resend-otp', userController.resendOTP) 
+
 user_route.post('/login',userController.verifyLogin)
+
+user_route.get('/forget',userController.forgetLoad)
   
+user_route.post('/forget',userController.forgetVerify)
+
+user_route.get('/forget-password',userController.forgetPasswordLoad)
+
+user_route.post('/forget-password',userController.resetPassword)
+
 user_route.get('/shop',userController.loadShop)
 
-user_route.get('/product',userController.ProductPageLoad);
+user_route.get('/product',productController.productPageLoad);
 
 user_route.get('/aboutus',userController.aboutusLoad)
 
