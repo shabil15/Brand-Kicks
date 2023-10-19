@@ -115,12 +115,19 @@ const addcategoryLoad = async (req, res) => {
 const addCategory = async (req, res) => {
   try {
     console.log(req.body);
-    let category = await new Category({
-      category_name: req.body.category_name,
-      category_description: req.body.category_description,
-      is_listed: true,
-    });
+    const id=req.body.id
+    const category_name= req.body.category_name
+    const already = await Category.findOne({category_name:{$regex:category_name}})
+    if(already){
+      req.flash('error','The Category Already Exist')
+      res.redirect('/admin/categories')
 
+    }else{
+    let category = await new Category({
+          category_name: req.body.category_name,
+          category_description: req.body.category_description,
+          is_listed: true,
+        });
     let result = await category.save();
     console.log(result);
     if(result){
@@ -129,6 +136,9 @@ const addCategory = async (req, res) => {
     }else{
       req.flash('error','something went wrong please try again')
       res.redirect('/admin/categories')
+      }
+    
+    
     }
   } catch (error) {
     console.log(error);

@@ -105,33 +105,20 @@ const editProductLoad = async(req,res)=>{
   }
 }
 
-const productPageLoad = async (req, res) => {
+
+const productPageLoad = async (req,res)=>{
   try {
-    const productId = req.query.id;
-    const product = await getProductDetails(productId);
-
-    if (!product) {
-      // Handle the case where the product is not found.
-      return res.status(404).render("404"); // Return a 404 error page.
-    }
-
-    // Fetch related products
-    const relatedProducts = await getProductDetails({
-      $and: [{ category: product.category }, { _id: { $ne: productId } }],
-    });
-
-    res.render('product', {
-      product: product,
-      user: req.session.user_id,
-      relatedProducts,
-    });
+    const product = await getProductDetails(req.query.id)
+    let relatedProducts = await getProductDetails({'$and':[{category:product.category},{_id:{"$ne":product._id}}]})
+    res.render('product',{
+      product:product,
+      user:req.session.user_id,
+      relatedProducts
+    })
   } catch (error) {
-    console.error("Error in productPageLoad:", error);
-    // Handle the error gracefully and potentially send an error response to the client.
-    res.status(500).render("error"); // Return an error page with a 500 status.
+    console.log(error);
   }
-};
-
+}
 
 const editProduct= async(req,res)=>{
   try {
