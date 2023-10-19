@@ -55,22 +55,6 @@ const deleteBanner= async(req,res)=>{
   }
 }
 
-const unlistCategory = async (req, res) => {
-  try {
-    const id = req.query.id;
-    const category = await Category.findById(id);
-
-    if (category) {
-      category.is_listed = !category.is_listed;
-      await category.save();
-    }
-
-    const categories = await Category.find({});
-    res.render("categories", { categories: categories });
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 const visibilityBanner= async(req,res) =>{
   try {

@@ -52,6 +52,7 @@ const addProduct = async (req, res) => {
       product_price: details.product_price,
       category: details.category,
       gender: details.gender,
+      brand:details.brand,
       stock: details.stock,
       product_description: details.product_description,
       "images.image1": files.image1[0].filename,
@@ -69,7 +70,6 @@ const addProduct = async (req, res) => {
       req.flash('error','Something went wrong please try again!');
       res.redirect("/admin/products");
     }
-    
   } catch (error) {
     console.log(error);
   }
@@ -141,6 +141,7 @@ const editProduct= async(req,res)=>{
             product_price:details.product_price,
             category:details.category,
             gender:details.category,
+            brand:details.brand,
             product_description:details.product_description,
             stock:details.stock,
             "images.image1": img1,
