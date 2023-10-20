@@ -67,7 +67,7 @@ const visibilityBanner= async(req,res) =>{
     }
 
     const banners = await Banner.find({});
-    res.render('banners',{banners:banners});
+    res.redirect('/admin/banners')
   } catch (error) {
     console.log(error);
   }

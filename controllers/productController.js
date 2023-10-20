@@ -88,7 +88,8 @@ const unlistProduct = async (req, res) => {
   }
 
   const products = await Product.find({});
-  res.render("products", { products: products });
+  
+  res.redirect('/admin/products')
 };
 
 //==================to load the edit product page=================//
@@ -110,6 +111,7 @@ const productPageLoad = async (req,res)=>{
   try {
     const product = await getProductDetails(req.query.id)
     let relatedProducts = await getProductDetails({'$and':[{category:product.category},{_id:{"$ne":product._id}}]})
+    console.log(relatedProducts);
     res.render('product',{
       product:product,
       user:req.session.user_id,

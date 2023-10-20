@@ -159,7 +159,7 @@ const unlistCategory = async (req, res) => {
     }
 
     const categories = await Category.find({});
-    res.render("categories", { categories: categories });
+    res.redirect('/admin/categories')
   } catch (error) {
     console.log(error);
   }
@@ -180,7 +180,7 @@ const blockUser = async (req, res) => {
     }
 
     const users = await user.find({});
-    res.render("users", { users: users });
+    res.redirect('/admin/users')
   } catch (error) {
     console.log(error);
   }

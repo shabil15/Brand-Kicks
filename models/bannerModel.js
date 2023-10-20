@@ -11,7 +11,7 @@ const bannerSchema= new mongoose.Schema({
   },
   description:{
     type:String,
-    required:true
+    
   },
   visibility: {
     type: Boolean,
