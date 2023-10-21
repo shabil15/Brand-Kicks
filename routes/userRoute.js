@@ -24,8 +24,8 @@ user_route.use(express.urlencoded({extended:true}))
 
 
 user_route.get('/signup',userController.loadRegister)
-
 user_route.post('/signup',userController.insertUser)
+
 
 user_route.get('/',userController.loadHome)
 
@@ -47,12 +47,20 @@ user_route.get('/forget-password',userController.forgetPasswordLoad)
 
 user_route.post('/forget-password',userController.resetPassword)
 
+user_route.get('/logout',userController.logout)
+
+//===================== products related==========================//
+
 user_route.get('/shop',userController.loadShop)
 
 user_route.get('/product',productController.productPageLoad);
 
 user_route.get('/aboutus',userController.aboutusLoad)
 
-user_route.get('/logout',userController.logout)
+
+//========================profile related===============================//
+
+user_route.get('/profile',userController.profilePageLoad)
+
 
 module.exports = user_route 

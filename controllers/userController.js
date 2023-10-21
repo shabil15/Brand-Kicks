@@ -5,7 +5,9 @@ const randomstring= require('randomstring')
 const path = require("path");
 const otpGenerator = require("otp-generator");
 const Product = require("../models/productsModel").product;
-const Banner = require('../models/bannerModel')
+const Banner = require('../models/bannerModel');
+const { reject } = require("promise");
+const { response } = require("../routes/userRoute");
 
 //=============code for securing the password=================================//
 
@@ -363,23 +365,38 @@ const logout = async (req,res)=>{
   }
 }
 
+const takeUserData = async (userId)=>{
+  try {
+    return new Promise((resolve,reject)=>{
+      User.findOne({ _id:userId}).then((response)=>{
+        resolve(response);
+      })
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-// const ProductPageLoad = async (req,res)=>{
-//   try {
-//     let product = await Product.find({_id:req.query._id})
-//     if(!product){
-//       res.status(404).render("404")
-//     }else{
-      
-//       res.render('product',{
-//       product:product,
-//       user:req.session.user_id,
-//     })
-//   }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+const profilePageLoad = async (req,res)=>{
+  try {
+    const userData = await takeUserData(req.session.user_id)
+    res.render('profile',
+    {users:userData,
+      user:req.session.user_id})
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const cartPageLoad = async (req,res)=>{
+  try {
+    res.render('cart')
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
 
 const aboutusLoad = async (req,res)=>{
   try {
@@ -406,5 +423,6 @@ module.exports = {
   resetPassword,
   loadShop,
   logout,
+  profilePageLoad,
   aboutusLoad,
 };

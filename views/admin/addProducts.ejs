@@ -34,7 +34,7 @@
                       <select name="category" class="form-control text-light" required>
                         <option value="" disabled selected>Select Category</option>
                         <% for(i in categories){%>
-                          <option <% if(categories[i].block==1){ %>disabled<%}%> ><%= categories[i].category_name %></option>
+                          <option <% if(categories[i].is_listed==false){ %>disabled<%}%> ><%= categories[i].category_name %></option>
                         <%}%>
                       </select>
                     </div>

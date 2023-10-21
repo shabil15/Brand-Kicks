@@ -35,6 +35,21 @@ isBlock:{
 token:{
   type:String,
   default:''
+},
+address:{
+  shippingAddress:{
+    type:String,
+  },
+  pincode:{
+    type:Number
+  },
+  state:{
+    type:String
+  }
+
+},
+avatar:{
+  type:String
 }
 },
 {

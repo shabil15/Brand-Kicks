@@ -34,7 +34,7 @@
                         <!-- <option <% if(product.frame_shape=="Round"){%>selected<%}%> >Round</option> -->
                         <% for(i in categories){%>
                           <option <% if(product.category==categories[i].category_name ){%>selected<%}%>
-                              <% if(categories[i].block==1) {%>
+                              <% if(categories[i].is_listed==false) {%>
                                 disabled
                                 <%}%>
                                   ><%= categories[i].category_name %>

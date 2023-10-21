@@ -266,9 +266,26 @@
 <script src="/public/userAssets/assets/js/main.js"></script>
 
 <script src="/public/userAssets/assets/https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     AOS.init();
 </script>
+<script>
+    function confirmSignOut() {
+        swal({
+            title: "Are you sure?",
+            text: "You are about to sign out.",
+            icon: "warning",
+            buttons: ["Cancel", "Sign Out"],
+            dangerMode: true,
+        }).then((willSignOut) => {
+            if (willSignOut) {
+                // Redirect to the sign-out URL
+                window.location.href = "/logout";
+            }
+        });
+    }
+    </script>  
 </body>
 
 
