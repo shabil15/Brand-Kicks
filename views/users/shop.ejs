@@ -1,6 +1,6 @@
 <%- include('../layouts/user/header.ejs') -%>
 <main class="main">
-  <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+  <div class="page-header text-center" style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
     <div class="container">
       <h1 class="page-title">Shop<span> Elevating Style, One Step at a Time</span></h1>
     </div><!-- End .container -->
@@ -110,7 +110,7 @@
                                           </div><!-- End .product-price -->
                                       </div><!-- End .product-body -->
                                       <div class="product-action">
-                                          <a   class="btn-product btn-cart" onclick="addCart('<%= products[i]._id %>','<%= user %>')"><span>add to cart</span></a>
+                                          <a  href="/addtocart?<%= products[i]._id %>" class="btn-product btn-cart" onclick="addCart('<%= products[i]._id %>','<%= user %>')"><span>add to cart</span></a>
                                       </div><!-- End .product-action -->
                                   </div><!-- End .product -->
                               </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->

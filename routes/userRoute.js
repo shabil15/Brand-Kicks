@@ -63,4 +63,11 @@ user_route.get('/aboutus',userController.aboutusLoad)
 user_route.get('/profile',userController.profilePageLoad)
 
 
+//===============================cart related================================//
+
+user_route.get('/cart',userController.cartPageLoad)
+
+user_route.post('/addtocart',userController.addToCart)
+
+
 module.exports = user_route 

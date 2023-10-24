@@ -6,6 +6,7 @@ const path = require("path");
 const otpGenerator = require("otp-generator");
 const Product = require("../models/productsModel").product;
 const Banner = require('../models/bannerModel');
+const Cart = require('../models/userModel').Cart;
 const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
 
@@ -365,7 +366,9 @@ const logout = async (req,res)=>{
   }
 }
 
-const takeUserData = async (userId)=>{
+
+const profilePageLoad = async (req,res)=>{
+  try {const takeUserData = async (userId)=>{
   try {
     return new Promise((resolve,reject)=>{
       User.findOne({ _id:userId}).then((response)=>{
@@ -377,8 +380,6 @@ const takeUserData = async (userId)=>{
   }
 }
 
-const profilePageLoad = async (req,res)=>{
-  try {
     const userData = await takeUserData(req.session.user_id)
     res.render('profile',
     {users:userData,
@@ -388,9 +389,49 @@ const profilePageLoad = async (req,res)=>{
   }
 }
 
+const addToCart = async (req,res)=>{
+  try {
+    const existingCart = await Cart.findOne({user:req.body.user});
+    if (!existingCart){
+      const cart = new Cart({
+        user:req.body.user,
+        products:[
+          {
+            product:req.body.id,
+            quantity:1
+          }
+        ]      
+      })
+      let result= await cart.save();
+      res.json({cart:1});
+      
+    }else{
+      const productInCart = existingCart.products.find(
+        (item)=>item.product.toString()===req.body.id.toString()
+      );
+
+      if(productInCart) {
+        res.json({cart:2})
+        
+      }else {
+        existingCart.products.push({
+          product:req.body.id,
+          quantity :1
+        })
+        res.json({cart:1})
+      }
+      const result = await existingCart.save()
+    }
+    res.redirect('/shop')
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const cartPageLoad = async (req,res)=>{
   try {
-    res.render('cart')
+    res.render('cart',
+    {user:req.session.user_id})
   } catch (error) {
     console.log(error);
   }
@@ -425,4 +466,6 @@ module.exports = {
   logout,
   profilePageLoad,
   aboutusLoad,
+  cartPageLoad,
+  addToCart
 };
