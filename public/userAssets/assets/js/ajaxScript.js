@@ -3,6 +3,7 @@ const { response } = require("../../../../routes/userRoute");
 
 function addCart(id,user) {
   function showAlertBox(){
+    console.log("added");
     $("#cartAlert").fadeIn();
 
     //Hide the Alert Box after 3 seconds
@@ -13,8 +14,9 @@ function addCart(id,user) {
   }
 
   function showAlertBoxAlready() {
+    console.log("added");
     $("#cartAlertAlready").fadeIn()
- 
+
 
   //Hide the Alert box Already after 3 seconds
 

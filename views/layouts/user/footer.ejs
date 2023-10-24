@@ -1,3 +1,34 @@
+
+<!-- cartAlert -->
+
+<div id="cartAlert" data-aos="fade-up" class="alert col-md-3 col-4 text-white fixed-bottom" style="display: none; left: 40%; bottom: 80px; border-radius: 7px; opacity: 0.9; background-color: rgb(85, 85, 85);" role="alert">
+    <div class="d-flex justify-content-center">
+        <dotlottie-player src="https://lottie.host/b0e85bf2-581b-4d27-8dd5-0c0e4b495dc2/QjXQ7zZA3T.json" background="transparent" speed="0.7" style="width: 50px; height: 50px;" direction="1" loop autoplay></dotlottie-player>
+        <p class="alert-heading d-flex align-items-center">Product Added to Your Cart</p>
+    </div>
+  </div>
+  
+  <div id="cartAlertAlready" data-aos="fade-up" class="bg-dark alert col-md-3 col-4 text-white fixed-bottom" style="display: none; left: 40%; bottom: 80px; border-radius: 7px; ; " role="alert">
+    <div class="d-flex justify-content-center">
+        <dotlottie-player src="https://lottie.host/675b522a-b663-4399-9a90-0f4800918a0f/JWak9AXJkj.json" background="transparent" speed="1" style="width: 50px; height: 50px;" direction="1" loop autoplay></dotlottie-player>
+        <p class="alert-heading d-flex align-items-center " >This product Already in Your Cart</p>
+    </div>
+  </div>
+
+  <!-- lottie Script -->
+
+  
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.5/lottie.min.js'></script>
+  <script>
+      var animation = bodymovin.loadAnimation({
+          container: document.getElementById('animContainer'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'https://lottie.host/87abf9d2-a834-4f06-b667-26985786b0ba/0vh9JAhgi8.json' // lottie file path
+      })
+  </script>
+
 <footer class="footer footer-dark">
     <div class="footer-middle">
         <div class="container">
@@ -249,6 +280,9 @@
 
 <!-- Plugins JS File -->
 
+     <!-- ajaxScript -->
+
+     <script src="/public/userAssets/assets/js/ajaxScript.js"></script>
   
   <!-- Plugins JS File -->
 <script src="/public/userAssets/assets/js/jquery.min.js"></script>
@@ -263,9 +297,9 @@
 
 <script src="/public/userAssets/assets/js/owl.carousel.min.js"></script>
 <!-- Main JS File -->
-<script src="/public/userAssets/assets/js/main.js"></script>
+<script src="/public/userAssets/assets/js/main.js"></script>    
 
-<script src="/public/userAssets/assets/https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     AOS.init();

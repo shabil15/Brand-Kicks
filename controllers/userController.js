@@ -402,7 +402,7 @@ const addToCart = async (req,res)=>{
           }
         ]      
       })
-      let result= await cart.save();
+      const result= await cart.save();
       res.json({cart:1});
       
     }else{
@@ -418,11 +418,12 @@ const addToCart = async (req,res)=>{
           product:req.body.id,
           quantity :1
         })
+        const result = await existingCart.save()
         res.json({cart:1})
       }
-      const result = await existingCart.save()
+      
     }
-    res.redirect('/shop')
+    
   } catch (error) {
     console.log(error);
   }
