@@ -38,13 +38,13 @@ const sendVerificationEmail = async (email, otp) => {
       secure: false,
       requireTLS: true,
       auth: {
-        user: "brandreselling15@gmail.com",
-        pass: "uzpp awea tiqy iwnz",
+        user: process.env.email,
+        pass: process.env.password,
       },
     });
 
     const mailOptions = {
-      from: "brandreselling15@gmail.com",
+      from: process.env.email,
       to: email,
       subject: "Verify Your Email",
       html: `<p>HI,
@@ -68,13 +68,13 @@ const resetPasswordMail = async (firstName,secondName,email,token)=>{
       secure:false,
       requireTLS:true,
       auth:{
-        user: "brandreselling15@gmail.com",
-        pass: "uzpp awea tiqy iwnz",
+        user: process.env.email,
+        pass: process.env.password,
       }
     })
 
     const mailOptions = {
-      from:"brandreselling15@gmail.com",
+      from: process.env.email,
       to:email,
       subject:"For Reset Password",
       html: `<p> Hi, ${firstName} ${secondName}, please click here to <a href="http://localhost:3000/forget-password?token=${token}"> Reset </a> your password</p>`
