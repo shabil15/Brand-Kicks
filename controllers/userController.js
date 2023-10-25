@@ -402,6 +402,100 @@ const profilePageLoad = async (req,res)=>{
 }
 
 
+const calculateTotalPrice= async (userId) =>{
+  try {
+    const cart=await Cart.findOne({user:userId}).populate(
+      "products.product"
+    );
+    if(!cart){
+      console.log("User does not have a cart");
+    }
+
+    let totalPrice = 0;
+    for(const cartProduct of cart.products) {
+      const {product,quantity }=cartProduct;
+      const productSubtotal = product.product_price *quantity;
+      totalPrice +=productSubtotal;
+    }
+
+    return totalPrice;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+const changeProductQuantity = async (userId,productId,newQuantityChange)=>{
+  try {
+    const cart = await Cart.findOne({user:userId});
+    
+    if(!cart) {
+      console.log("User does not have a cart.");
+      return;
+    }
+
+    const productInCart = cart.products.find(
+      (cartProduct) => cartProduct.product.toString()=== productId.toString()
+
+    );
+
+    if(!productInCart) {
+      console.log("Products not found in the cart");
+      return
+    }
+
+    const currentQuantity = productInCart.quantity;
+
+    const newQuantity= currentQuantity + newQuantityChange;
+
+    if(newQuantity < 1) {
+      console.log("Quantity cannot be less than 1.");
+      return;
+    }
+    if(newQuantity > 5) {
+      console.log("Quantity Cannot be greater than 5");
+      return;
+    }
+
+    if(newQuantity==1){
+      increaseStock(productId,1)
+    }else{
+      decreaseStock(productId,1)
+    }
+
+    let result = await cart.save();
+    console.log("Product quantity updated Successfully");
+    return result;
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+const productQuantityHandling = async (req,res)=>{
+  try {
+    if(!req.session.user_id) {
+      res.json({user: 0});
+    } else {
+      let {userId,productId,qty} =req.body;
+
+      qty=Number(qty);
+      console.log(qty);
+
+      let qtyChange= await changeProductQuantity(userId,productId,qty);
+      
+      const cartDetails = await Cart.findOne({user:userId});
+
+      const total = await calculateTotalPrice(userId);
+      res.json({cartItems: cartDetails,total})
+
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const cartPageLoad = async (req,res)=>{
   try {
     const userData = await takeUserData(req.session.user_id);
@@ -476,30 +570,58 @@ const addToCart = async (req,res)=>{
   }
 }
 
-const calculateTotalPrice = async (userId)=>{
+const removeCartItem = async (req,res) =>{
   try {
-    const cart = await Cart.findOne({user:userId}).populate(
-      "products.product"
+    const {user,product,qty} =req.body;
+    const cart = await Cart.findOne({user:user});
+
+    const qtyFind = cart.products.find(item=> item.product.toString()==product.toString())
+    await increaseStock(product,qtyFind.quantity)
+
+    cart.products = cart.products.filter(
+      (cartProduct)=> cartProduct.product.toString() !== product.toString()
     );
+    let remove = await cart.save();
 
-    if(!cart) {
-      console.log("User does not have a cart.");
-    }
-
-    let totalPrice = 0;
-    for(const cartProduct of cart.products) {
-      const {product,quantity}=cartProduct;
-      const productSubtotal = product.price * quantity;
-      totalPrice += productSubtotal;
-    }
-
-    return totalPrice;
+    res.json({remove:1});
+    console.log("producut removed");
   } catch (error) {
     console.log(error);
   }
 }
 
 
+const decreaseStock = async (productId,quantity) =>{
+  try {
+    const product = await Product.findById(productId);
+    if(!product) {
+      throw new Error('The product Not Found')
+    }
+    if(product.stock<quantity){
+      throw new Error('Not enough stock Available')
+    }
+    product.stock -=quantity;
+    const result = await product.save();
+    return result;
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const increaseStock = async(productId,quantity)=>{
+  try {
+    const product= await Product.findById(productId);
+    if(!product) {
+      throw new Error('Product not found');
+    }
+    product.stock += quantity;
+    const result = await product.save();
+    return result;   
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 const aboutusLoad = async (req,res)=>{
   try {
@@ -529,5 +651,7 @@ module.exports = {
   profilePageLoad,
   aboutusLoad,
   cartPageLoad,
-  addToCart
+  addToCart,
+  productQuantityHandling,
+  removeCartItem
 };

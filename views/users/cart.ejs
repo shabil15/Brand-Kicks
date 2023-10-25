@@ -21,7 +21,7 @@
           <div class="container">
             <div class="row">
               <div class="col-lg-9">
-                <table class="table table-cart table-mobile">
+                <table class="table table-cart table-mobile" id="cartContainer">
                   <% if(total!=0){%>
                     <thead>
                         <tr>
@@ -75,7 +75,6 @@
                                             onclick="changeQty('<%= user._id %>','<%= cartItems.products[i].product._id %>',1)">+
                                         </button>
                                     </div>
-
                                 </td>
                                 <!-- test1 -->
                                 <!-- <td class="quantity-col"> -->
@@ -124,18 +123,9 @@
 
             <div class="cart-bottom">
 
-                <!-- <div class="cart-discount">
-                <form action="#">
-                    <div class="input-group">
-                        <input type="text" class="form-control" required placeholder="coupon code">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
-                        </div>
-                    </div>
-                </form>
-            </div> -->
+                
 
-                <!-- <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a> -->
+                <a href="/cart" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
             </div><!-- End .cart-bottom -->
         </div><!-- End .col-lg-9 -->
         <aside class="col-lg-3">

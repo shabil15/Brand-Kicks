@@ -5,3 +5,53 @@
   background-color:rgba(68, 95, 132, 1);
   color:rgb(255, 255, 255)
 }
+
+
+
+/* cart page box styles */
+.cart-item-box {
+  border-radius: 20px;
+  border: 2px solid;
+  border-color: #F5F5F5;
+  padding: 3rem;
+  /* background: #000; */
+}
+
+.cart-product-quantity button {
+  border: none;
+  width: 40px;
+  border-radius: 2px;
+}
+
+.cart-product-quantity input {
+  border: none;
+  font-weight: 600;
+}
+
+
+
+/*  */
+.btn-cart:hover {
+  color: #fff !important;
+}
+
+
+/* Custom CSS */
+/* Custom CSS */
+/* radio in checkout  */
+.custom-label {
+  border-radius: 10px;
+  display: block;
+  cursor: pointer;
+  accent-color: #000;
+
+}
+
+/* Style for checked labels */
+.custom-label.checked {
+  background-color: #e5e5e5;
+  /* Change the background color for checked labels */
+  color: #fff;
+  accent-color: #000;
+  /* Change text color for better visibility */
+}

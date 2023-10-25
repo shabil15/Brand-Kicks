@@ -69,5 +69,7 @@ user_route.get('/cart',userController.cartPageLoad)
 
 user_route.post('/addtocart',userController.addToCart)
 
+user_route.post('/changeqty',userController.productQuantityHandling)
 
+user_route.delete('/removecartproduct',userController.removeCartItem)
 module.exports = user_route 
