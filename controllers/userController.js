@@ -359,13 +359,25 @@ const loadShop = async (req,res)=>{
 
 const logout = async (req,res)=>{
   try {
-    req.session.destroy()
+    req.session.user_id= null;
     res.redirect('/')
   } catch (error) {
     console.log(error);
   }
 }
 
+
+const takeUserData = async (userId)=>{
+  try {
+    return new Promise ((resolve,reject)=>{
+      User.findOne({_id:userId}).then((response)=>{
+        resolve(response)
+      })
+    })
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 const profilePageLoad = async (req,res)=>{
   try {const takeUserData = async (userId)=>{
@@ -388,6 +400,41 @@ const profilePageLoad = async (req,res)=>{
     console.log(error);
   }
 }
+
+
+const cartPageLoad = async (req,res)=>{
+  try {
+    const userData = await takeUserData(req.session.user_id);
+    const cartDetails = await Cart.findOne({user : req.session.user_id})
+    .populate({
+      path: "products.product",
+      select :"product_name product_price category images.image1"
+    })
+    .exec();
+
+    if(cartDetails ) {
+      let total = await calculateTotalPrice(req.session.user_id)
+
+      return res.render ('cart',{
+        user :userData ,
+        cartItems: cartDetails,
+        total,
+      })
+    }else {
+      return res.render ('cart',{
+        user:userData,
+        cartItems:0,
+        total:0,
+      })
+    }
+    res.render('cart',
+    {user:req.session.user_id})
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
 
 const addToCart = async (req,res)=>{
   try {
@@ -429,10 +476,24 @@ const addToCart = async (req,res)=>{
   }
 }
 
-const cartPageLoad = async (req,res)=>{
+const calculateTotalPrice = async (userId)=>{
   try {
-    res.render('cart',
-    {user:req.session.user_id})
+    const cart = await Cart.findOne({user:userId}).populate(
+      "products.product"
+    );
+
+    if(!cart) {
+      console.log("User does not have a cart.");
+    }
+
+    let totalPrice = 0;
+    for(const cartProduct of cart.products) {
+      const {product,quantity}=cartProduct;
+      const productSubtotal = product.price * quantity;
+      totalPrice += productSubtotal;
+    }
+
+    return totalPrice;
   } catch (error) {
     console.log(error);
   }

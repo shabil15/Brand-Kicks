@@ -110,12 +110,10 @@ const editProductLoad = async(req,res)=>{
 const productPageLoad = async (req,res)=>{
   try {
     const product = await getProductDetails(req.query.id)
-    let relatedProducts = await getProductDetails({'$and':[{category:product.category},{_id:{"$ne":product._id}}]})
-    console.log(relatedProducts);
+    // let relatedProducts = await getProductDetails({'$and':[{category:product.category},{_id:{"$ne":product._id}}]})a
     res.render('product',{
       product:product,
-      user:req.session.user_id,
-      relatedProducts
+      user:req.session.user_id, 
     })
   } catch (error) {
     console.log(error);

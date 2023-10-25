@@ -238,13 +238,8 @@ const   updateCategoryData = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.redirect("/admin");
-      }
-    });
+    req.session.admin_id=null;
+    res.redirect('/admin')
   } catch (error) {
     log(error);
   }
