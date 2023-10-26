@@ -398,7 +398,8 @@ const profilePageLoad = async (req,res)=>{
 
   const userData = await takeUserData(req.session.user_id)
     res.render('profile',
-    {users:userData,
+    { currentPage:'home',
+      users:userData,
       user:req.session.user_id})
   } catch (error) {
     console.log(error);
@@ -506,12 +507,14 @@ const cartPageLoad = async (req,res)=>{
       let total = await calculateTotalPrice(req.session.user_id)
 
       return res.render ('cart',{
+        currentPage:'shop',
         user :userData ,
         cartItems: cartDetails,
         total,
       })
     }else {
       return res.render ('cart',{
+        currentPage:'shop',
         user:userData,
         cartItems:0,
         total:0,
@@ -600,6 +603,17 @@ const aboutusLoad = async (req,res)=>{
   }
 }
 
+const contactLoad = async (req,res)=>{
+  try {
+    res.render('contact',{
+      currentPage:'contact',
+      user:req.session.user_id
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   loginLoad,
   loadRegister,
@@ -618,6 +632,7 @@ module.exports = {
   profilePageLoad,
   addAddressFromProfile,
   aboutusLoad,
+  contactLoad,
   cartPageLoad,
   addToCart,
   productQuantityHandling,
