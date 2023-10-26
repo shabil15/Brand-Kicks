@@ -1,5 +1,4 @@
-const { $where } = require("../../../../models/bannerModel");
-const { response } = require("../../../../routes/userRoute");
+
 
 function addCart(id,user) {
   function showAlertBox(){
@@ -73,7 +72,7 @@ function changeQty(userId,productId,qty){
 
         let newQuantity = response.cartItems.products.find(val=>val.product==productId)
 
-        qtyInput.value=newQuantity.newQuantity
+        qtyInput.value=newQuantity.quantity                    
         singleProductTotal.innerHTML=`₹${Number(singleProductPrice.innerHTML)*Number(newQuantity.quantity)}`
       }
     })
@@ -92,30 +91,3 @@ function removeCartItem(user,product,qty) {
     }
   })
 }
-
-// function removeCartItem(user, product, qty) {
-//   fetch('/removecartproduct', {
-//     method: 'DELETE',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({ user, product, qty }),
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data.remove === 1) {
-//         // Find the cart table by ID
-//         const cartTable = document.getElementById('cartContainer');
-//         if (cartTable) {
-//           // Find and remove the row of the removed item
-//           const rowToRemove = document.querySelector(`[data-product="${product}"]`);
-//           if (rowToRemove) {
-//             cartTable.removeChild(rowToRemove);
-//           }
-//         }
-//       }
-//     })
-//     .catch((error) => {
-//       console.error('Error:', error);
-//     });
-// }

@@ -84,12 +84,51 @@ const cartSchema = new mongoose.Schema({
 })
 
 
+const userAddressSchema = new mongoose.Schema({
+  userId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  addresses: [
+
+  {
+    country : {
+      type: String,
+      required: true,
+    },
+    fullName:{
+      type:String,
+      required:true,
+    },
+    mobileNumber:{
+      type: Number,
+      required: true,
+    },
+    pincode:{
+      type:Number,
+      required: true,
+    },
+    city:{
+      type:String,
+      required:true
+    },state: {
+      type:String,
+      required:true,
+    }
+
+  }     
+]
+})
+
 
 const User = mongoose.model('User', UserSchema);
 const Cart = mongoose.model('Cart',cartSchema)
+const UserAddress = mongoose.model('UserAddress',userAddressSchema);
 
 module.exports = {
   User,
-  Cart
+  Cart,
+  UserAddress,
 }
 

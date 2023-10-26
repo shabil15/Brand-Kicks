@@ -7,6 +7,7 @@ const otpGenerator = require("otp-generator");
 const Product = require("../models/productsModel").product;
 const Banner = require('../models/bannerModel');
 const Cart = require('../models/userModel').Cart;
+const Address= require('../models/userModel').UserAddress;
 const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
 
@@ -392,7 +393,7 @@ const profilePageLoad = async (req,res)=>{
   }
 }
 
-    const userData = await takeUserData(req.session.user_id)
+  const userData = await takeUserData(req.session.user_id)
     res.render('profile',
     {users:userData,
       user:req.session.user_id})
@@ -401,6 +402,46 @@ const profilePageLoad = async (req,res)=>{
   }
 }
 
+
+const addAddressFromProfile = async (req,res)=>{
+  try {
+    let addrData = req.body;
+    let userAddress = await Address.findOne({ userId: req.session.user_id});
+
+    if(!userAddress){
+
+    
+    userAddress = new Address({
+      userId:req.session.user_id,
+      addresses:[
+        {
+          country:addrData.country,
+          fullName: addrData.fullName,
+          mobileNumber: addrData.mobileNumber,
+          city:addrData.city,
+          state:addrData.state,
+          pincode:addrData.pincode,
+        }
+      ]
+    })
+  }else{
+    userAddress.addresses.push({
+      country:addrData.country,
+      fullName: addrData.fullName,
+      mobileNumber:addrData.mobileNumber,
+      city:addrData.city,
+      state: addrData.state,
+      pincode:addrData.pincode,
+    })
+  }
+
+  let result = await userAddress.save();
+  let total= await calculateTotalPrice(req.session.user_id)
+  res.redirect('/profile')
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const calculateTotalPrice= async (userId) =>{
   try {
@@ -452,7 +493,7 @@ const changeProductQuantity = async (userId,productId,newQuantityChange)=>{
       console.log("Quantity cannot be less than 1.");
       return;
     }
-    if(newQuantity > 5) {
+    if(newQuantity > 10) {
       console.log("Quantity Cannot be greater than 5");
       return;
     }
@@ -581,6 +622,7 @@ const removeCartItem = async (req,res) =>{
     cart.products = cart.products.filter(
       (cartProduct)=> cartProduct.product.toString() !== product.toString()
     );
+    
     let remove = await cart.save();
 
     res.json({remove:1});
@@ -649,6 +691,7 @@ module.exports = {
   loadShop,
   logout,
   profilePageLoad,
+  addAddressFromProfile,
   aboutusLoad,
   cartPageLoad,
   addToCart,

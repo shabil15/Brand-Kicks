@@ -26,17 +26,18 @@
                 <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab" href="#tab-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="true">My Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
+                <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Edit Profile</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tab-orders-link" data-toggle="tab" href="#tab-orders" role="tab" aria-controls="tab-orders" aria-selected="false">Orders</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Downloads</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Coupons</a>
+            </li>
+            
             
             <li class="nav-item">
               <a class="nav-link" href="#" onclick="confirmSignOut()">Sign Out</a>
@@ -61,86 +62,106 @@
               
             </div><!-- .End .tab-pane -->
 
-            <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
-              <p>No order has been made yet.</p>
-              <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
-            </div><!-- .End .tab-pane -->
 
-            <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
-              <p>No downloads available yet.</p>
-              <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
-            </div><!-- .End .tab-pane -->
-
-            <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
-              <p>The following addresses will be used on the checkout page by default.</p>
-
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="card card-dashboard">
-                    <div class="card-body">
-                      <h3 class="card-title">Billing Address</h3><!-- End .card-title -->
-
-                    <p>User Name<br>
-                    User Company<br>
-                    John str<br>
-                    New York, NY 10001<br>
-                    1-234-987-6543<br>
-                    yourmail@mail.com<br>
-                    <a href="#">Edit <i class="icon-edit"></i></a></p>
-                    </div><!-- End .card-body -->
-                  </div><!-- End .card-dashboard -->
-                </div><!-- End .col-lg-6 -->
-
-                <div class="col-lg-6">
-                  <div class="card card-dashboard">
-                    <div class="card-body">
-                      <h3 class="card-title">Shipping Address</h3><!-- End .card-title -->
-
-                    <p>You have not set up this type of address yet.<br>
-                    <a href="#">Edit <i class="icon-edit"></i></a></p>
-                    </div><!-- End .card-body -->
-                  </div><!-- End .card-dashboard -->
-                </div><!-- End .col-lg-6 -->
-              </div><!-- End .row -->
-            </div><!-- .End .tab-pane -->
-
-            <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-              <form action="#">
+            <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link" >
+              <h4>Account Details </h4>
+              <form action="#" novalidate>
                       <div class="row">
                         <div class="col-sm-6">
                           <label>First Name *</label>
-                          <input type="text" class="form-control" value="<%= users.firstName %>" required>
+                          <input type="text" class="form-control" value="<%= users.firstName %>" >
                         </div><!-- End .col-sm-6 -->
 
                         <div class="col-sm-6">
                           <label>Last Name *</label>
-                          <input type="text" class="form-control" required>
+                          <input type="text" class="form-control" >
                         </div><!-- End .col-sm-6 -->
                       </div><!-- End .row -->
 
-                    <label>Display Name *</label>
-                    <input type="text" class="form-control" required>
-                    <small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
+                    
 
                       <label>Email address *</label>
-                  <input type="email" class="form-control" required>
+                  <input type="email" class="form-control" >
 
-                    <label>Current password (leave blank to leave unchanged)</label>
-                    <input type="password" class="form-control">
+                  <div class="row">
+                    <div class="col-sm-6">
+                        <label>Shipping Address *</label>
+                        <input type="text" class="form-control"
+                            value=""
+                            name="shippingAddress">
+                    </div><!-- End .col-sm-6 -->
 
-                    <label>New password (leave blank to leave unchanged)</label>
-                    <input type="password" class="form-control">
-
-                    <label>Confirm new password</label>
-                    <input type="password" class="form-control mb-2">
-
+                    <div class="col-sm-6">
+                        <label>State *</label>
+                        <input type="text" class="form-control" name="state"
+                            value="">
+                    </div><!-- End .col-sm-6 -->
+                </div><!-- End .row -->
+                <div class="row">
+                  <div class="col-sm-6">
+                      <label>Pin Code *</label>
+                      <input type="number" class="form-control"
+                          value="" name="pincode">
+                  </div><!-- End .col-sm-6 -->
+              </div>
+              
                       <button type="submit" class="btn btn-outline-primary-2">
                         <span>SAVE CHANGES</span>
                       <i class="icon-long-arrow-right"></i>
                       </button>
                     </form>
+
+                    <hr>
+
+                    <h4>Change Password</h4>
+              
+                    <form action="/changepassword" method="post">
+                      <div class="form-group">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <label >Current Password</label>
+                            <input type="password" name="oldPassword" class="form-control" required>
+
+                          </div> 
+                          <div class="col-sm-6">
+                            <label >New Password</label>
+                            <input type="password" name="newPassword" class="form-control" required>
+                          </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary-2">
+                          <span>CHANGE PASSWORD</span>
+                          <i class="icon-long-arrow-right"></i>
+                      </button>
+                      </div>
+
+                    </form>
             </div><!-- .End .tab-pane -->
-        </div>
+
+            <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
+              <p>No order has been made yet.</p>
+              <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
+            </div><!-- .End .tab-pane -->
+            
+           
+
+            <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
+              <h4>Addresses</h4>
+              <div class="row p-2 col-12 d-flex justify-content-center" >
+
+                <div class="card  m-2 col-md-3 col-10 " data-bs-toggle="modal"
+                data-bs-target="#exampleModal" id="addAddressBtn"
+                    style="background: #f9f9fc; border-radius: 10px; border: 1px dashed #777777; cursor: pointer; ">
+                    <div class="card-body p-0 d-flex justify-content-around align-items-center">
+                        <div class="row d-flex flex-column pt-2">
+                            <i class="fa-solid fa-plus text-center mb-2" style="font-size: 40px;"></i>
+                            <h4 class="text-light">Add-Address</h4>
+                            <button id="addBTN" data-bs-toggle="modal" data-bs-target="#addModal" type="button" hidden>add</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div><!-- .End .tab-pane -->
+          </div>
               </div><!-- End .col-lg-9 -->
             </div><!-- End .row -->
           </div><!-- End .container -->
@@ -149,4 +170,79 @@
 </main><!-- End .main -->
 
   
+  <!-- add address Modal -->
+  <div class="modal fade" id="addModal" tabindex="-1"  aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+            <div class="modal-header">
+                <h5 class="" id="exampleModalLabel">Add New Address</h5>
+                <button type="button" class=" btn-dark " data-bs-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <form action="/profile/user_address" method="post" novalidate>
+                <div class="modal-body p-4">
+                    <div class="mb-1">
+                        <label for="exampleFormControlInput1" class="form-label m-0">Country/Region
+                        </label>
+                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
+                            name="country" required>
+                    </div>
+                    <div class="mb-1">
+                        <label for="exampleFormControlInput1" class="form-label m-0">Full name (First and Last
+                            name)
+                        </label>
+                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
+                            name="fullName" required>
+                    </div>
+                    <div class="mb-1">
+                        <label for="exampleFormControlInput1" class="form-label m-0">Mobile number
+                        </label>
+                        <input type="tel" class="form-control address-input" id="exampleFormControlInput1"
+                            name="mobileNumber" required>
+                    </div>
+                    <div class="mb-1">
+                        <label for="exampleFormControlInput1" class="form-label m-0">Area, Street, Sector,
+                            Village
+                        </label>
+                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
+                            name="city" required>
+                    </div>
+
+                    <div class=" row ">
+                        <div class=" col-6">
+                            <label for="exampleFormControlInput1" class="form-label m-0">State
+                            </label>
+                            <input type="text" class="form-control address-input" id="exampleFormControlInput1"
+                                name="state" required>
+                        </div>
+                        <div class=" col-6">
+                            <label for="exampleFormControlInput1" class="form-label m-0">Pincode
+                            </label>
+                            <input type="number" class="form-control address-input"
+                                id="exampleFormControlInput1" name="pincode" required>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-outline-primary-2" style="border-radius: 7px;"
+                        data-bs-dismiss="modal">Close</a>
+                    <button type="submit" class="btn btn-outline-primary-2"
+                        style="border-radius: 7px; background: #000; color: #fff;">Add
+                        now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- model end -->
+<script>
+  let addressBTN = document.getElementById("addAddressBtn")
+  let modelBTN = document.getElementById("addBTN")
+
+  addressBTN.addEventListener("click", function () {
+      modelBTN.click()
+  })
+</script>
+
+
 <%- include('../layouts/user/footer.ejs') -%>

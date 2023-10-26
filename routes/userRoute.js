@@ -62,6 +62,7 @@ user_route.get('/aboutus',userController.aboutusLoad)
 
 user_route.get('/profile',userController.profilePageLoad)
 
+user_route.post('/profile/user_address',userController.addAddressFromProfile)
 
 //===============================cart related================================//
 
