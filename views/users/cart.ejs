@@ -65,36 +65,20 @@
 
                                 <td class="quantity-col">
                                     <div class="cart-product-quantity">
-                                        <button class="quantity-decrease123 px-4 "
+                                        <button class="quantity-decrease123 px-4"
                                             onclick="changeQty('<%= user._id %>','<%= cartItems.products[i].product._id %>',-1)">-</button>
                                         <input type="number" class="form-control text-center mx-1"
                                             value="<%= cartItems.products[i].quantity %>" min="1"
                                             max="5" id="qty<%= cartItems.products[i].product._id %>"
-                                            step="1" data-decimals="0" required readonly >
+                                            step="1" data-decimals="0" required readonly>
                                         <button class="quantity-increase123 px-4"
                                             onclick="changeQty('<%= user._id %>','<%= cartItems.products[i].product._id %>',1)">+
                                         </button>
                                     </div>
-                                </td>
-                                <!-- test1 -->
-                                <!-- <td class="quantity-col"> -->
-                                <!-- <div class="cart-product-quantity">
-                                <button class="quantity-decrease123 px-4" data-user="<%= user._id %>" data-product="<%= cartItems.products[i].product._id %>">-</button>
-                                <input type="number" id="quantity-input-<%= cartItems.products[i].product._id %>" class="form-control text-center mx-1" value="<%= cartItems.products[i].quantity %>"
-                                    min="1" max="5" step="1" data-decimals="0" required readonly>
-                                <button class="quantity-increase123 px-4" data-user="<%= user._id %>" data-product="<%= cartItems.products[i].product._id %>">+</button>
-                            </div>
-                        </td> -->
-                                <!-- test2 -->
-                                <!-- <td class="quantity-col">
-                            <div class="cart-product-quantity">
-                                <button class="quantity-decrease123 px-4" data-user="<%= user._id %>" data-product="<%= cartItems.products[i].product._id %>">-</button>
-                                <input type="number" class="form-control text-center mx-1" value="<%= cartItems.products[i].quantity %>"
-                                    min="1" max="5" step="1" data-decimals="0" required readonly>
-                                <button class="quantity-increase123 px-4" data-user="<%= user._id %>" data-product="<%= cartItems.products[i].product._id %>">+</button>
-                            </div>
-                        </td> -->
 
+                                </td>
+                               
+                        
 
                                 <td class="total-col"
                                     id="singleProductTotal<%= cartItems.products[i].product._id %>">

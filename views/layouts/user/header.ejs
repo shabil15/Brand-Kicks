@@ -88,16 +88,16 @@
 
                         <nav class="main-nav">
                             <ul class="menu">
-                                <li class="megamenu-container active">
+                                <li class="megamenu-container <%= currentPage === 'home' ? ' active' : '' %>">
                                     <a href="/" >Home</a>                
                                 </li>
-                                <li>
+                                <li class="<%= currentPage === 'shop' ? 'active' : '' %>">
                                     <a href="/shop" >Shop</a>
-                                </li>
-                                <li>
+                                </li >
+                                <li class="<%= currentPage === 'contact' ? 'active' : '' %>">
                                     <a href="/contact" >Contact Us</a>
                                 </li>
-                                <li>
+                                <li class="<%= currentPage === 'aboutus' ? 'active' : '' %>">
                                     <a href="/aboutus" >About Us</a>
                                 </li>
                               <% if(user) {%>

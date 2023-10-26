@@ -112,7 +112,9 @@ const loadHome = async (req, res) => {
     
     console.log(req.session.user_id);
   
-    res.render("home", { products: products ,
+    res.render("home", { 
+    currentPage:'home',
+    products: products ,
     banners:banners,
     user:req.session.user_id});
   } catch (error) {
@@ -349,6 +351,7 @@ const loadShop = async (req,res)=>{
  try {
   const products= await Product.find({})
   res.render('shop',{
+    currentPage:'shop',
     products:products,
     user:req.session.user_id
   })
@@ -466,52 +469,7 @@ const calculateTotalPrice= async (userId) =>{
 }
 
 
-const changeProductQuantity = async (userId,productId,newQuantityChange)=>{
-  try {
-    const cart = await Cart.findOne({user:userId});
-    
-    if(!cart) {
-      console.log("User does not have a cart.");
-      return;
-    }
 
-    const productInCart = cart.products.find(
-      (cartProduct) => cartProduct.product.toString()=== productId.toString()
-
-    );
-
-    if(!productInCart) {
-      console.log("Products not found in the cart");
-      return
-    }
-
-    const currentQuantity = productInCart.quantity;
-
-    const newQuantity= currentQuantity + newQuantityChange;
-
-    if(newQuantity < 1) {
-      console.log("Quantity cannot be less than 1.");
-      return;
-    }
-    if(newQuantity > 10) {
-      console.log("Quantity Cannot be greater than 5");
-      return;
-    }
-
-    if(newQuantity==1){
-      increaseStock(productId,1)
-    }else{
-      decreaseStock(productId,1)
-    }
-
-    let result = await cart.save();
-    console.log("Product quantity updated Successfully");
-    return result;
-
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 
 const productQuantityHandling = async (req,res)=>{
@@ -522,15 +480,12 @@ const productQuantityHandling = async (req,res)=>{
       let {userId,productId,qty} =req.body;
 
       qty=Number(qty);
-      console.log(qty);
 
-      let qtyChange= await changeProductQuantity(userId,productId,qty);
       
       const cartDetails = await Cart.findOne({user:userId});
 
       const total = await calculateTotalPrice(userId);
       res.json({cartItems: cartDetails,total})
-
     }
   } catch (error) {
     console.log(error);
@@ -617,7 +572,7 @@ const removeCartItem = async (req,res) =>{
     const cart = await Cart.findOne({user:user});
 
     const qtyFind = cart.products.find(item=> item.product.toString()==product.toString())
-    await increaseStock(product,qtyFind.quantity)
+    
 
     cart.products = cart.products.filter(
       (cartProduct)=> cartProduct.product.toString() !== product.toString()
@@ -626,48 +581,18 @@ const removeCartItem = async (req,res) =>{
     let remove = await cart.save();
 
     res.json({remove:1});
-    console.log("producut removed");
+    console.log("product removed");
   } catch (error) {
     console.log(error);
   }
 }
 
 
-const decreaseStock = async (productId,quantity) =>{
-  try {
-    const product = await Product.findById(productId);
-    if(!product) {
-      throw new Error('The product Not Found')
-    }
-    if(product.stock<quantity){
-      throw new Error('Not enough stock Available')
-    }
-    product.stock -=quantity;
-    const result = await product.save();
-    return result;
-
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-const increaseStock = async(productId,quantity)=>{
-  try {
-    const product= await Product.findById(productId);
-    if(!product) {
-      throw new Error('Product not found');
-    }
-    product.stock += quantity;
-    const result = await product.save();
-    return result;   
-  } catch (error) {
-    console.log(error)
-  }
-}
 
 const aboutusLoad = async (req,res)=>{
   try {
     res.render('aboutus',{
+      currentPage:'aboutus',
       user:req.session.user_id
     })
   } catch (error) {
