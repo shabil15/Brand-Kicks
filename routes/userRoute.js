@@ -68,6 +68,10 @@ user_route.get('/profile',userController.profilePageLoad)
 
 user_route.post('/profile/user_address',userController.addAddressFromProfile)
 
+user_route.post('/profile/user_address/edit',userController.updateAddress)
+
+user_route.delete('/profile/user_address/delete',userController.deleteAddress)
+
 //===============================cart related================================//
 
 user_route.get('/cart',userController.cartPageLoad)
@@ -77,4 +81,9 @@ user_route.post('/addtocart',userController.addToCart)
 user_route.post('/changeqty',userController.productQuantityHandling)
 
 user_route.delete('/removecartproduct',userController.removeCartItem)
+
+
+//==========================checkout related================================//
+
+user_route.get('/checkout',userController.checkoutLoad)
 module.exports = user_route 

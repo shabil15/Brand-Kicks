@@ -148,7 +148,7 @@
               <h4>Addresses</h4>
               <div class="row p-2 col-12 d-flex justify-content-center" >
 
-                <div class="card  m-2 col-md-3 col-10 " data-bs-toggle="modal"
+                <div class="card  m-2 col-md-4 col-3 " data-bs-toggle="modal"
                 data-bs-target="#exampleModal" id="addAddressBtn"
                     style="background: #f9f9fc; border-radius: 10px; border: 1px dashed #777777; cursor: pointer; ">
                     <div class="card-body p-0 d-flex justify-content-around align-items-center">
@@ -160,6 +160,140 @@
 
                     </div>
                 </div>
+                <% if (address) { %>
+                <%for(i in address){%>
+                  <div class="card  m-2 col-md-4 col-3 p-4" style="background: #F3F3F9; border-radius: 10px;">
+                      <div class="card-body ">
+                          <h6 class="card-title" style="font-size: 15px;">
+                              <%=address[i].fullName%>
+                          </h6>
+                          <p class="card-text">
+                              <%=address[i].city%>, <%=address[i].state%>
+                          <p class="card-text"> <%=address[i].mobileNumber%>
+                          <p class="card-text"> <%=address[i].pincode%>, <%=address[i].country%>
+                          <hr class="m-0 p-0 my-3">
+                          <div class="d-flex justify-content-end ">
+                              <p class="text-dark" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="#editModal<%=address[i]._id%>">Edit </p>
+                              <p class="mx-3">|</p>
+                              <p class="text-danger" type="button"   data-bs-toggle="modal" data-bs-target="#deleteModal<%=address[i]._id%>">Remove</p>
+                              
+                          </div>
+                      </div>
+                  </div>
+                  <!-- end of card -->
+                  <!-- Edit modal  -->
+                  <div class="modal fade" id="editModal<%=address[i]._id%>" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content p-4">
+                            <div class="modal-header">
+                                <h5 class="" id="editModal">Edit Address</h5>
+                                <button type="button" class=" btn-dark " data-bs-dismiss="modal"
+                                    aria-label="Close">x</button>
+                            </div>
+                            <form action="/profile/user_address/edit" method="post">
+                                <div class="modal-body p-4">
+                                    <div class="mb-1">
+                                        <label for="exampleFormControlInput1"
+                                            class="form-label m-0">Country/Region
+                                        </label>
+                                        <input type="text" class="form-control address-input"
+                                            id="exampleFormControlInput1" name="country" value="<%=address[i].country%>" required>
+                                    </div>
+                                    <div class="mb-1">
+                                        <label for="exampleFormControlInput1" class="form-label m-0">Full name
+                                            (First and Last
+                                            name)
+                                        </label>
+                                        <input type="text" class="form-control address-input"
+                                            id="exampleFormControlInput1" value="<%=address[i].fullName%>" name="fullName" required>
+                                    </div>
+                                    <div class="mb-1">
+                                        <label for="exampleFormControlInput1" class="form-label m-0">Mobile
+                                            number
+                                        </label>
+                                        <input type="number" class="form-control address-input"
+                                            id="exampleFormControlInput1" value="<%=address[i].mobileNumber%>" name="mobileNumber" required>
+                                    </div>
+                                    <div class="mb-1">
+                                        <label for="exampleFormControlInput1" class="form-label m-0">Area,
+                                            Street, Sector,
+                                            Village
+                                        </label>
+                                        <input type="text" class="form-control address-input"
+                                            id="exampleFormControlInput1" value="<%=address[i].city%>" name="city" required>
+                                    </div>
+
+                                    <div class=" row ">
+                                        <div class=" col-6">
+                                            <label for="exampleFormControlInput1" class="form-label m-0">State
+                                            </label>
+                                            <input type="text" class="form-control address-input"
+                                                id="exampleFormControlInput1" name="state" value="<%=address[i].state%>" required>
+                                        </div>
+                                        <div class=" col-6">
+                                            <label for="exampleFormControlInput1" class="form-label m-0">Pincode
+                                            </label>
+                                            <input type="number" value="<%=address[i].pincode%>" class="form-control address-input"
+                                                id="exampleFormControlInput1" name="pincode" required>
+                                        </div>
+                                        <input value="<%=address[i]._id%>" class="form-control address-input"
+                                                id="exampleFormControlInput1" name="adressId" hidden required>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-outline-primary-2" style="border-radius: 7px;"
+                                        data-bs-dismiss="modal">Close</a>
+                                    <button type="submit" class="btn btn-outline-primary-2"
+                                        style="border-radius: 7px; background: #000; color: #fff;">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                  <!-- end of edit Modal -->
+                  <!-- delete modal -->
+                  <div class="modal fade" id="deleteModal<%=address[i]._id%>" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content p-4">
+                            <div class="modal-header">
+                                <h5 class="" id="editModal">Are you sure to delete this</h5>
+                                <button type="button" class=" btn-dark " data-bs-dismiss="modal"
+                                    aria-label="Close">x</button>
+                            </div>
+                            
+                                <div class="card  m-2 col-md-12 col-12 p-4" style="background: #F3F3F9; border-radius: 10px;">
+                                    <div class="card-body ">
+                                        <h6 class="card-title" style="font-size: 15px;">
+                                            <%=address[i].fullName%>
+                                        </h6>
+                                        <p class="card-text">
+                                            <%=address[i].city%>, <%=address[i].state%>
+                                        </p>
+                                        <p class="card-text">Contanct Number : <%=address[i].mobileNumber%>
+                                        </p>
+                                        <p class="card-text">Pincode : <%=address[i].pincode%>, <%=address[i].country%>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-outline-primary-2" style="border-radius: 7px;"
+                                        data-bs-dismiss="modal">Close</a>
+                                    <a onclick="removeAddress('<%=address[i]._id%>')" class="btn btn-outline-primary-2"
+                                        style="border-radius: 7px; background: #000; color: #fff;">Update</a>
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                  <%}%>
+                  <% } else { %>
+                    <p>No addresses available.</p>
+                  <% } %>
+                  
+
+
+
             </div><!-- .End .tab-pane -->
           </div>
               </div><!-- End .col-lg-9 -->
@@ -235,6 +369,7 @@
     </div>
 </div>
 <!-- model end -->
+
 <script>
   let addressBTN = document.getElementById("addAddressBtn")
   let modelBTN = document.getElementById("addBTN")

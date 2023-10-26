@@ -397,10 +397,21 @@ const profilePageLoad = async (req,res)=>{
 }
 
   const userData = await takeUserData(req.session.user_id)
+  const address = await Address.findOne({userId:req.session.user_id})
+  if(address){
     res.render('profile',
     { currentPage:'home',
       users:userData,
+      address:address.addresses,
       user:req.session.user_id})
+  }else{
+    res.render('profile',
+    { currentPage:'home',
+      address:0,
+      users:userData,
+      user:req.session.user_id})
+  }
+    
   } catch (error) {
     console.log(error);
   }
@@ -439,9 +450,50 @@ const addAddressFromProfile = async (req,res)=>{
     })
   }
 
-  let result = await userAddress.save();
-  let total= await calculateTotalPrice(req.session.user_id)
+  const result = await userAddress.save();
+  const total= await calculateTotalPrice(req.session.user_id)
   res.redirect('/profile')
+  } catch (error) {
+    console.log(error);
+  }
+}
+const updateAddress = async (req, res) => {
+  try {
+    // console.log(req.body);
+    let Addres = req.body;
+    let userAddress = await Address.findOne({ userId: req.session.user_id });
+    const selectedAddress = userAddress.addresses.find(
+      (address) => address.id === req.body.adressId
+    );
+
+    selectedAddress.country = Addres.country;
+    selectedAddress.fullName = Addres.fullName;
+    selectedAddress.mobileNumber = Addres.mobileNumber;
+    selectedAddress.pincode = Addres.pincode;
+    selectedAddress.city = Addres.city;
+    selectedAddress.state = Addres.state;
+    await userAddress.save();
+
+    res.redirect("/profile");
+    // console.log(selectedAddress);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+const deleteAddress = async (req,res) =>{
+  try {
+    const userAddress = await Address.findOne({userId:req.session.user_id})
+    const addressToDelete = userAddress.addresses.findIndex(
+      (address)=>address.id === req.body.id
+    );
+    if(addressToDelete===1){
+      return res.status(404).json({remove:0});
+    }
+    userAddress.addresses.splice(addressToDelete,1);
+    await userAddress.save();
+    return res.json({remove:1})
   } catch (error) {
     console.log(error);
   }
@@ -590,6 +642,16 @@ const removeCartItem = async (req,res) =>{
   }
 }
 
+const checkoutLoad = async (req,res)=>{
+  try {
+    res.render('checkout',{
+      currentPage:'shop',
+      user:req.session.user_id,
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 const aboutusLoad = async (req,res)=>{
@@ -636,5 +698,8 @@ module.exports = {
   cartPageLoad,
   addToCart,
   productQuantityHandling,
-  removeCartItem
+  removeCartItem,
+  checkoutLoad,
+  updateAddress,
+  deleteAddress,
 };

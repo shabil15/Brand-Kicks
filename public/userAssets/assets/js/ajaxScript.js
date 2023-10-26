@@ -91,3 +91,17 @@ function removeCartItem(user,product,qty) {
     }
   })
 }
+
+
+function removeAddress(id){
+  $.ajax({
+    url:'/profile/user_address/delete',
+    method:'delete',
+    data:{id},
+    success:(response)=>{
+      if(response.remove==1){
+        location.reload()
+      }
+    }
+  })
+}
