@@ -10,7 +10,6 @@
         <div class="container">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
                 <li class="breadcrumb-item active" aria-current="page">My Account</li>
             </ol>
         </div><!-- End .container -->
@@ -110,15 +109,15 @@
                           </div>
                         </div>
                         <!-- Display error message for validation -->
-                        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
-                            <div class="alert alert-danger">
-                            <ul>
-                                <% errors.forEach(error => { %>
-                                <li><%= error %></li>
-                                <% }); %>
-                            </ul>
-                            </div>
-                        <% } %>
+                    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+                        <div class="alert alert-danger">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                            <li><%= error %></li>
+                            <% }); %>
+                        </ul>
+                        </div>
+                    <% } %>
                         <button type="submit" class="btn btn-outline-primary-2">
                           <span>CHANGE PASSWORD</span>
                           <i class="icon-long-arrow-right"></i>

@@ -1,6 +1,7 @@
 const express = require("express")
 const userController = require("../controllers/userController")
 const productController = require('../controllers/productController')
+const orderController = require('../controllers/orderController')
 const session = require("express-session")
 
 const config = require("../config/config")
@@ -71,6 +72,10 @@ user_route.post('/updateuser',userController.updateUserData)
 user_route.post('/changepassword',userController.changePassword)
 
 
+//===================address related=================================//
+
+user_route.post('/addaddess',userController.addShippingAddress)
+
 user_route.post('/profile/user_address',userController.addAddressFromProfile)
 
 user_route.post('/profile/user_address/edit',userController.updateAddress)
@@ -88,7 +93,21 @@ user_route.post('/changeqty',userController.productQuantityHandling)
 user_route.delete('/removecartproduct',userController.removeCartItem)
 
 
-//==========================checkout related================================//
+//==========================order related================================//
 
-user_route.get('/checkout',userController.checkoutLoad)
+user_route.get('/checkout',orderController.checkoutLoad)
+
+user_route.post('/checkout',orderController.reciveShippingAddress)
+
+user_route.get('/checkout/paymentselection',orderController.paymentSelection)
+
+
+
+
+
+
+
+
+
+
 module.exports = user_route 

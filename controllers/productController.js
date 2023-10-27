@@ -112,6 +112,7 @@ const productPageLoad = async (req,res)=>{
     const product = await getProductDetails(req.query.id)
     // let relatedProducts = await getProductDetails({'$and':[{category:product.category},{_id:{"$ne":product._id}}]})
     res.render('product',{
+      currentPage:'shop',
       product:product,
       user:req.session.user_id, 
     })

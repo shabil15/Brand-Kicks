@@ -503,7 +503,7 @@ const addAddressFromProfile = async (req,res)=>{
 
   const result = await userAddress.save();
   const total= await calculateTotalPrice(req.session.user_id)
-  res.redirect('/profile')
+  res.redirect('/profile');
   } catch (error) {
     console.log(error);
   }
@@ -531,6 +531,46 @@ const updateAddress = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+const addShippingAddress = async(req,res)=>{
+  try {
+    const addrData = req.body;
+    const  userAddress = await Address.findOne({userId:req.session.user_id})
+    if(!userAddress){
+      userAddress= new Address({
+        userId:req.session.user_id,
+        addresses: [
+          {
+            country: addrData.country,
+            fullName: addrData.fullName,
+            mobileNumber: addrData.mobileNumber,
+            city: addrData.city,
+            state: addrData.state,
+            pincode: addrData.pincode,
+          }
+        ]
+      })
+    } else {
+      //if the user's address already exists, add a new address to array
+      userAddress.addresses.push({
+            country: addrData.country,
+            fullName: addrData.fullName,
+            mobileNumber: addrData.mobileNumber,
+            city: addrData.city,
+            state: addrData.state,
+            pincode: addrData.pincode,
+      })
+    }
+
+    let result = await userAddress.save();
+    
+
+    res.redirect('/checkout')
+    } catch (error) {
+    console.log(error);
+  }
+}
 
 
 const deleteAddress = async (req,res) =>{
@@ -693,17 +733,6 @@ const removeCartItem = async (req,res) =>{
   }
 }
 
-const checkoutLoad = async (req,res)=>{
-  try {
-    res.render('checkout',{
-      currentPage:'shop',
-      user:req.session.user_id,
-    })
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 
 const aboutusLoad = async (req,res)=>{
   try {
@@ -750,7 +779,7 @@ module.exports = {
   addToCart,
   productQuantityHandling,
   removeCartItem,
-  checkoutLoad,
+  addShippingAddress,
   updateAddress,
   deleteAddress,
   updateUserData,
