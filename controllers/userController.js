@@ -418,6 +418,57 @@ const profilePageLoad = async (req,res)=>{
 }
 
 
+
+const updateUserData = async (req,res) =>{
+  try {
+    let userData = req.body;
+    let updateUser =await User.updateOne(
+      {_id:req.session.user_id},
+      {
+        $set: {
+          firstName: userData.firstName,
+          secondName: userData.secondName,
+          mobile: userData.mobile,
+          email:userData.email,
+        }
+      }
+    )
+
+    userData = await takeUserData(req.session.user_id)
+
+    res.redirect('/profile');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const changePassword = async (req,res) =>{
+  try {
+    let userDetails = await User.findOne({_id:req.session.user_id})
+    bcrypt
+    .compare(req.body.oldPassword,userDetails.password)
+    .then(async (status)=>{
+      if(status){
+        let newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
+          let change = await User.updateOne(
+            { _id: userDetails._id },
+            { $set: { password: newSecurePassword } }
+          );
+          console.log(change);
+          res.redirect("/profile");
+          console.log("password changed...");
+        } else {
+          console.log("wrong old password");
+          res.redirect("/profile");
+        }
+      
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
 const addAddressFromProfile = async (req,res)=>{
   try {
     let addrData = req.body;
@@ -702,4 +753,6 @@ module.exports = {
   checkoutLoad,
   updateAddress,
   deleteAddress,
+  updateUserData,
+  changePassword,
 };

@@ -51,12 +51,10 @@
             <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
               <div class="mx-5 " >
                 <h1 class="text-center">My Profile</h1>
-              <p>Full Name    : <%= users.firstName %> <%= users.secondName %></p>
-              <p>email Address      : <%= users.email %></p>
-              <p>Phone Number : <%= users.mobile %> </p>
-              <p>Country: India</p>
-              <p>Address 1:</p>
-              <p>Address 2:</p>
+              <p style="color: #000; font-weight: 500;">Full Name    : <%= users.firstName %> <%= users.secondName %></p>
+              <p style="color: #000; font-weight: 500;">Email Address      : <%= users.email %></p>
+              <p style="color: #000; font-weight: 500;">Phone Number : <%= users.mobile %> </p>
+              <p style="color: #000; font-weight: 500;">Country: <%= users.country%></p>
               
               </div>
               
@@ -65,45 +63,28 @@
 
             <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link" >
               <h4>Account Details </h4>
-              <form action="#" novalidate>
+              <form action="/updateuser" method="post" novalidate>
                       <div class="row">
                         <div class="col-sm-6">
                           <label>First Name *</label>
-                          <input type="text" class="form-control" value="<%= users.firstName %>" >
+                          <input type="text" name="firstName" class="form-control" value="<%= users.firstName %>" >
                         </div><!-- End .col-sm-6 -->
 
                         <div class="col-sm-6">
                           <label>Last Name *</label>
-                          <input type="text" class="form-control" >
+                          <input type="text" name="secondName" class="form-control" value="<%= users.secondName %>" >
                         </div><!-- End .col-sm-6 -->
                       </div><!-- End .row -->
 
                     
 
                       <label>Email address *</label>
-                  <input type="email" class="form-control" >
+                  <input type="email" name="email" class="form-control" value="<%= users.email %>" >
 
-                  <div class="row">
-                    <div class="col-sm-6">
-                        <label>Shipping Address *</label>
-                        <input type="text" class="form-control"
-                            value=""
-                            name="shippingAddress">
-                    </div><!-- End .col-sm-6 -->
-
-                    <div class="col-sm-6">
-                        <label>State *</label>
-                        <input type="text" class="form-control" name="state"
-                            value="">
-                    </div><!-- End .col-sm-6 -->
-                </div><!-- End .row -->
-                <div class="row">
-                  <div class="col-sm-6">
-                      <label>Pin Code *</label>
-                      <input type="number" class="form-control"
-                          value="" name="pincode">
-                  </div><!-- End .col-sm-6 -->
-              </div>
+                  
+                    <label>Mobile No *</label>
+                  <input type="tel" name="mobile" class="form-control" value="<%= users.mobile %>">
+              
               
                       <button type="submit" class="btn btn-outline-primary-2">
                         <span>SAVE CHANGES</span>
@@ -128,6 +109,16 @@
                             <input type="password" name="newPassword" class="form-control" required>
                           </div>
                         </div>
+                        <!-- Display error message for validation -->
+                        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+                            <div class="alert alert-danger">
+                            <ul>
+                                <% errors.forEach(error => { %>
+                                <li><%= error %></li>
+                                <% }); %>
+                            </ul>
+                            </div>
+                        <% } %>
                         <button type="submit" class="btn btn-outline-primary-2">
                           <span>CHANGE PASSWORD</span>
                           <i class="icon-long-arrow-right"></i>
@@ -145,10 +136,10 @@
            
 
             <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
-              <h4>Addresses</h4>
-              <div class="row p-2 col-12 d-flex justify-content-center" >
+              <h4 class="mx-5">Addresses</h4>
+              <div class=" row p-2 mx-5 col-12 d-flex " >
 
-                <div class="card  m-2 col-md-4 col-3 " data-bs-toggle="modal"
+                <div class="card  m-2 col-md-5 col-6" data-bs-toggle="modal"
                 data-bs-target="#exampleModal" id="addAddressBtn"
                     style="background: #f9f9fc; border-radius: 10px; border: 1px dashed #777777; cursor: pointer; ">
                     <div class="card-body p-0 d-flex justify-content-around align-items-center">
@@ -162,7 +153,7 @@
                 </div>
                 <% if (address) { %>
                 <%for(i in address){%>
-                  <div class="card  m-2 col-md-4 col-3 p-4" style="background: #F3F3F9; border-radius: 10px;">
+                  <div class="card  m-2 col-md-5 col-6 p-4" style="background: #F3F3F9; border-radius: 10px;">
                       <div class="card-body ">
                           <h6 class="card-title" style="font-size: 15px;">
                               <%=address[i].fullName%>
@@ -179,7 +170,12 @@
                               
                           </div>
                       </div>
-                  </div>
+                      <% if ((i + 1) % 3 === 0) { %>
+                      </div>
+                      <div class="row">
+                 <% } %>
+                 </div>
+                  
                   <!-- end of card -->
                   <!-- Edit modal  -->
                   <div class="modal fade" id="editModal<%=address[i]._id%>" tabindex="-1" aria-hidden="true">
@@ -288,7 +284,8 @@
                 </div>
                   <%}%>
                   <% } else { %>
-                    <p>No addresses available.</p>
+                    
+                    
                   <% } %>
                   
 

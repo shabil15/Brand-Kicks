@@ -66,6 +66,11 @@ user_route.get('/product',productController.productPageLoad);
 
 user_route.get('/profile',userController.profilePageLoad)
 
+user_route.post('/updateuser',userController.updateUserData)
+
+user_route.post('/changepassword',userController.changePassword)
+
+
 user_route.post('/profile/user_address',userController.addAddressFromProfile)
 
 user_route.post('/profile/user_address/edit',userController.updateAddress)
