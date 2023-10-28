@@ -99,7 +99,7 @@ user_route.get('/checkout',orderController.checkoutLoad)
 
 user_route.post('/checkout',orderController.reciveShippingAddress)
 
-user_route.get('/checkout/paymentselection',orderController.paymentSelection)
+user_route.post('/checkout/paymentselection',orderController.paymentSelectionManage)
 
 
 

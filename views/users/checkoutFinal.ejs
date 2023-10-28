@@ -1,0 +1,389 @@
+<%- include('../layouts/user/header.ejs') -%>
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('/user/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title text-white">Checkout</h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item " aria-current="page">Shopping Cart</li>
+                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content ">
+        <div class="cart mb-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9 cart-item-box">
+
+                        <div class=" py-4   mb-2 " style="border-radius: 10px; background: #F3F3F9;">
+                            <div class="form-check d-flex align-items-start flex-column mx-4 py-3">
+                                <div>
+                                    <h6>1. Delivery Address</h6>
+
+                                </div>
+                                <div class="form-check d-flex align-items-center flex-column co mx-4">
+
+                                    <div class="">
+                                        <p class="text-dark"><b>
+                                                <%= address.fullName %>
+                                            </b> , <%= address.city %>, <%= address.state %>.
+                                                    Contanct
+                                                    Number:
+                                                    <b style="color: #043a6c;">
+                                                        <span class="material-symbols-outlined"
+                                                            style="font-size: 13px;">smartphone</span>
+                                                        <%= address.mobileNumber %>
+                                                    </b>
+                                        </p>
+                                        <p>
+                                            <%= address.pincode %>, <%= address.country %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class=" py-4    " style="border-radius: 10px; background: #F3F3F9;">
+                            <div class="form-check d-flex align-items-center mx-4 ">
+                                <h6 class="pt-2">2. <b>
+                                        <%= payment %>
+                                    </b> Payment method choosed</h6>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class=" py-4  mt-1  " style="border-radius: 10px; background: #F3F3F9;">
+                            <div class="form-check d-flex  flex-column mx-4 ">
+                                <!-- <hr> -->
+
+
+                                <div class="col-12 row d-flex justify-content-end ">
+                                    <div class="col-12">
+                                        <h5 class="mt-3">3. Items and delivery</h5>
+                                        <hr>
+                                    </div>
+                                    <% for(i=0;i<cartItems.products.length;i++){ %>
+                                        <div class="card col-9 m-1 p-2 d-flex bg-light"
+                                            style="border-radius: 7px; ">
+                                            <div class="row g-0 ">
+                                                <div class="col-4 d-flex align-items-center px-5">
+                                                    <img style="width: 15rem;  border-radius: 17px;"
+                                                        src="/products/images/<%= cartItems.products[i].product.images.image1%>"
+                                                        class="card-img-start" alt="...">
+                                                </div>
+                                                <div class="col-8">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title pt-2">
+                                                            <%= cartItems.products[i].product.product_name %>
+                                                        </h6>
+                                                        <p class="card-text fs-1">₹<%=
+                                                                cartItems.products[i].product.price %>
+                                                        </p>
+                                                        <% const
+                                                            description=cartItems.products[i].product.description.split(' ').slice(0, 10).join(' ');
+                                                             %> <p class="card-text" id="productDescription"><%= description %>...</p>
+                                                        <p class="card-text">
+                                                            Qty: <%= cartItems.products[i].quantity %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <%}%>
+                                        <div class="col-12">
+                                            <hr>
+                                            <h5 class="mt-3">Order Summary</h5>
+                                            <p class="mt-1">Delivery Expect on  <b class="text-success"><%= deliveryDate %></b></p>
+                                            <table class="table table-summary">
+                                                <tbody>
+
+                                                    <tr class="summary-subtotal">
+                                                        <td>Subtotal:</td>
+                                                        <td>₹<span id="subTotalDisplay">
+                                                                <%= total%>
+                                                            </span></td>
+                                                    </tr>
+
+                                                    <tr class="summary-shipping-row">
+                                                        <td>
+                                                            <label class=""
+                                                                for="standart-shipping">Discount:</label>
+                                                        </td>
+                                                        <td id="dicountDisplay2">0.00</td>
+                                                    </tr>
+
+                                                    <tr class="summary-total">
+                                                        <td>Total:</td>
+                                                        <td>₹<span id="totalDisplay2">
+                                                                <%=total%>
+                                                            </span></td>
+                                                    </tr><!-- End .summary-total -->
+                                                </tbody>
+                                            </table><!-- End .table table-summary -->
+                                            <hr>
+                                            <button 
+                                                                class="btn btn-outline-primary-2 mb-4 btn-block
+                                                                py-4 "
+                                                                style="background-color: #000; color: #fff;
+                                                                border-radius: 10px; font-size: 18px;"
+                                                                onMouseOver="this.style.background=' #575757'"
+                                                            onMouseOut="this.style.background='#000'"
+                                                            id="addressBtn">Place Order</button>
+
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                </div><!-- End .col-lg-9 -->
+                                <aside class="col-lg-3">
+                                    <div id="couponInvalidMess" class="summary summary-cart  couponHide" style="background: rgb(245,194,194);
+                                    background: linear-gradient(344deg, rgba(245,194,194,1) 5%, rgba(206,0,0,0.8156512605042017) 63%);" >
+                                        <h6 class="text-white m-0">This coupon cannot be Redeemed </h6>
+                                        <hr class="my-3">
+                                        <p class="text-white"><i class="fa-regular fa-face-frown"></i> <span id="CouponValidMessage">minimumSpend not meet</span></p>
+                                    </div><!-- End .summary -->
+                                    <div class="summary summary-cart">
+
+                                        <!-- <button class="btn btn-outline-primary-2  btn-block py-3 "
+                                style="background-color: #000; color: #fff; "
+                                onMouseOver="this.style.background=' #575757'"
+                                onMouseOut="this.style.background='#000'" id="addressBtn2"
+                                >Place Order</button> -->
+
+                                        <!-- <h3 class="summary-title"></h3> -->
+                                        <!-- <h6 class="pt-1 mx-3" style="font-size: 2rem;">coupon code</h6> -->
+                                        <span id="couponInDiv" class="">
+                                          <div  class=" w-100 mt-2 d-flex justify-content-around bg-white align-items-center" style="width: 100%; height: 5rem; border-radius: 7rem; border: 0.2px solid #bebebe; display: none;">
+                                          
+                                              <input id="couponInput" placeholder="coupon code" style="border: #ffffff; height: 4rem; border-radius: 7rem;" class="col-7 text-uppercase  coupon mx-auto" type="text" name="code" required>
+                                              <button onclick="couponApply()" id="applyBtn" type="button" class="col-4 btn-dark mx-auto" style=" border: none; border-radius: 5rem; height: 4rem;">Apply</button>
+                                          
+                                          </div>
+                                        </span>
+
+                                        
+                                        <span id="couponShow" class="couponHide">
+                                          <div class="w-100 mt-2 d-flex justify-content-around bg-white align-items-center" style="width: 100%; height: 5rem; border-radius: 1rem 0rem 0rem 2rem; border: 0.2px solid #bebebe;">
+                                          
+                                                <button type="button" class="text-uppercase col-5 btn-dark mx-auto" style=" border: none; border-radius: 1rem 0 0 1rem  ; height: 5rem; letter-spacing: 1px; font-size: 15px;" disabled>Redeemed</button>
+                                                <input id="couponApInput" value="FRAMES15" style="border: #ffffff; height: 4rem; border-radius: 7rem; font-size: 19px; letter-spacing: 4px;" class="col-7 text-uppercase  coupon mx-auto" type="text" name="code" disabled>
+                                              
+                                             
+                                          </div>
+                                          <div class="pt-1">
+                                            <p><b class="text-success"><i class="fa-solid fa-gift"></i> Congratulations! </b> You've saved <span id="MessDis"></span> on your order. Your vision is clearer, and your wallet is happier.</p>
+                                          </div>
+                                        </span>
+                                        <!-- <div class="w-100 d-flex justify-content-around align-items-center" style="width: 100%; height: 8rem; border-radius: 19px; border: 0.2px dotted #d3d3d3;  ">
+                                          
+                                            <p class="">Coupon applied : TEST12</p>
+                                            <h6></h6>
+                                          
+                                        </div> -->
+                                        <hr class="my-4" style="background-color: #d8d8d8; height: 0.3px;">
+                                        <table class="table table-summary">
+                                            <tbody>
+
+                                                <tr class="summary-subtotal">
+                                                    <td>Subtotal:</td>
+                                                    <td>₹<span id="subTotalDisplay">
+                                                            <%= total%>
+                                                        </span></td>
+                                                </tr><!-- End .summary-subtotal -->
+
+
+
+
+                                                <tr class="summary-shipping-row">
+                                                    <td>
+                                                        <label class=""
+                                                            for="standart-shipping">Discount:</label>
+                                                    </td>
+                                                    <td id="dicountDisplay">0.00</td>
+                                                </tr><!-- End .summary-shipping-row -->
+
+
+
+
+
+                                                <tr class="summary-total">
+                                                    <td>Total:</td>
+                                                    <td>₹<span id="totalDisplay">
+                                                            <%=total%>
+                                                        </span></td>
+                                                </tr><!-- End .summary-total -->
+                                                
+                                            </tbody>
+                                            
+                                        </table><!-- End .table table-summary -->
+                                        
+                                        <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
+                            Address</button> -->
+                                        <dotlottie-player> </dotlottie-player>
+                                    </div><!-- End .summary -->
+                                    
+                                </aside><!-- End .col-lg-3 -->
+
+                               
+                                    
+
+                            </div><!-- End .row -->
+                        </div><!-- End .container -->
+                    </div><!-- End .cart -->
+                </div><!-- End .page-content -->
+                <form id="addressForm">
+                    <input type="text" name="address" value="<%= address._id %>" id="addressInput" hidden>
+                    <input type="text" name="payment" value="<%=payment%>" hidden>
+                    <input id="couponPass" type="text" name="coupon" hidden>
+                    <button id="submitForm" type="submit" hidden></button>
+                </form>
+</main><!-- End .main -->
+
+<form id="paymentVerifyForm" action="/checkout/placeorder/verify-payment" method="post">
+    <input type="text" name="status" id="statusInput" hidden>
+    <button type="submit" hidden></button>
+</form>
+
+<script>
+    let paymentVerifyForm = document.getElementById('paymentVerifyForm')
+    let paymentstatusInput = document.getElementById('statusInput')
+
+    let addressBtn = document.getElementById('addressBtn')
+    addressBtn.addEventListener('click', () => {
+        submitForm.click()
+    })
+
+    $('#addressForm').submit((e) => {
+        e.preventDefault()
+        $.ajax({
+            url: '/checkout/placeorder',
+            method: 'post',
+            data: $("#addressForm").serialize(),
+            success: (response) => {
+                console.log(response);
+                if (response.cod) {
+                    // location.href = `/checkout/placeorder?id=${response.orderId}`
+                    orderStatus(response.status)
+                } else {
+                    payPayment(response.order,response.user,response.orderId)
+                }
+
+            }
+        })
+    })
+
+
+    function payPayment(order,user,orderId) {
+        console.log(order.amount);
+        var options = {
+            "key": "rzp_test_17MHXRPIopDJOu", // Enter the Key ID generated from the Dashboard
+            "amount":order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "Specsy E-com",
+            "description": "Test Transaction",
+            "image": "/user/images/logo.png",
+            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response) {
+                // alert(response.razorpay_payment_id);
+                // alert(response.razorpay_order_id);
+                // alert(response.razorpay_signature)
+                verifyPayment(response, order,orderId)
+            },
+            "prefill": {
+                "name": user.name,
+                "email": user.email,
+                "contact": user.mobile
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#000"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        // rzp1.on('payment.failed', function (response) {
+        //     alert(response.error.code);
+        //     alert(response.error.description);
+        //     alert(response.error.source);
+        //     alert(response.error.step);
+        //     alert(response.error.reason);
+        //     alert(response.error.metadata.order_id);
+        //     alert(response.error.metadata.payment_id);
+        // });
+        rzp1.open();
+    }
+
+    function orderStatus(status){
+        console.log("orderStatus called...");
+        paymentstatusInput.value=status
+        paymentVerifyForm.submit()
+
+        // $.ajax({
+        //     url:'/checkout/placeorder/verify-payment',
+        //     method:'post',
+        //     data: {status},
+        //     success:(response)=>{
+        //         alert("called")
+        //     }
+        // })
+    }
+
+    function verifyPayment(payment, order,orderId) {
+        console.log("verify fun called...");
+        $.ajax({
+            url: '/checkout/verify-payment',
+            method: "post",
+            data: { payment, order },
+            success: (response) => {
+                if(response){
+                    orderStatus(response.status)
+                }
+                // if(response.status=="success"){
+                //     console.log("payment succ");
+                //     location.href = `/checkout/placeorder?id=${orderId}`
+                // }else if(response.status=="fail"){
+                //     console.log("payment fail");
+                //     location.href = `/checkout/placeorder?id=${orderId}`
+                // }
+            }
+        })
+    }
+    
+
+
+</script>
+<script>
+    // Get references to the radio buttons and the submit button
+    const codRadio = document.getElementById('codRadio');
+    const onlineRadio = document.getElementById('onlineRadio');
+    const paymentBtn = document.getElementById('paymentBtn');
+
+    // Add event listeners to the radio buttons
+    codRadio.addEventListener('change', toggleButtonState);
+    onlineRadio.addEventListener('change', toggleButtonState);
+
+    // Function to toggle the button state based on the radio button selection
+    function toggleButtonState() {
+        if (codRadio.checked || onlineRadio.checked) {
+            paymentBtn.disabled = false; // Enable the button if a radio button is selected
+        } else {
+            paymentBtn.disabled = true; // Disable the button if no radio button is selected
+        }
+    }
+
+</script>
+
+
+<%- include('../layouts/user/footer.ejs') -%>

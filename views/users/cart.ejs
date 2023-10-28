@@ -63,19 +63,29 @@
                                     </span>
                                 </td>
 
-                                <td class="quantity-col">
-                                    <div class="cart-product-quantity">
-                                        <button class="quantity-decrease123 px-4"
-                                            onclick="changeQty('<%= user._id %>','<%= cartItems.products[i].product._id %>',-1)">-</button>
-                                        <input type="number" class="form-control text-center mx-1"
-                                            value="<%= cartItems.products[i].quantity %>" min="1"
-                                            max="5" id="qty<%= cartItems.products[i].product._id %>"
-                                            step="1" data-decimals="0" required readonly>
-                                        <button class="quantity-increase123 px-4"
-                                            onclick="changeQty('<%= user._id %>','<%= cartItems.products[i].product._id %>',1)">+
-                                        </button>
+                                <td style="text-align: center">
+                                    <div class="input-group mb-3" style="max-width: 170px; margin: 0 auto">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-outline-primary js-btn-minus" type="button">
+                                                &minus;
+                                            </button>
+                                        </div>
+                                        <input
+                                            type="number"
+                                            class="form-control text-center quantity-input"
+                                            value="<%= cartItems.products[i].quantity %>"
+                                            data-product-id="<%= cartItems.products[i].product._id %>"
+                                            aria-label="Quantity"
+                                            aria-describedby="button-addon1"
+                                            readonly
+                                            max="10"
+                                        />
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-primary js-btn-plus" type="button">
+                                                &plus;
+                                            </button>
+                                        </div>
                                     </div>
-
                                 </td>
                                
                         

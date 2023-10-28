@@ -110,7 +110,6 @@ const loadHome = async (req, res) => {
     const products = await Product.find({});
     const banners = await Banner.find({})
     
-    console.log(req.session.user_id);
   
     res.render("home", { 
     currentPage:'home',
@@ -177,11 +176,9 @@ const insertUser = async (req, res) => {
           sendVerificationEmail(req.session.email, req.session.otp.code);
           res.render("otpPage");
         } else {
-          res.render("signup", { message: "Password doesn't match" });
+          res.render("signup");
         }
-      } else {
-        res.render("signup", { message: "Please enter all details" });
-      }
+      } 
     }
   } catch (error) {
     console.log(error);
