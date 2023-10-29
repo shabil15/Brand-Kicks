@@ -175,9 +175,13 @@ const blockUser = async (req, res) => {
     const User = await user.findById(id);
     console.log(User);
     if (User) {
-      req.session.user_id=null;
+
       User.isBlock = !User.isBlock;
       await User.save();
+
+      if(req.session.user_id===id){
+        req.session.user_id=null;
+      }
     }
 
     const users = await user.find({});
