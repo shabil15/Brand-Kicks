@@ -27,56 +27,7 @@
     <link rel="stylesheet" href="/public/userAssets/assets/css/bootstrap.min.css">
     <!-- Main CSS File -->
     <link rel="stylesheet" href="/public/userAssets/assets/css/style.css">
-    <script>
-      
-  function validateForm() {
-    console.log("validateform");
-    // Get form inputs
-    var email = document.getElementById("register-email-2").value;
-    var password = document.getElementById("password-").value;
-
-    // Get error message elements
-    var emailError = document.getElementById("email-error");
-    var passwordError = document.getElementById("password-error");
-
-    // Reset error messages
-    emailError.textContent = "";
-    passwordError.textContent = "";
-
-    // Flag to check if the form is valid
-    var isValid = true;
-
-    // Check email format
-    if (email.trim() === "") {
-      emailError.textContent = "Email is required";
-      isValid = false;
-    } else if (!isValidEmail(email)) {
-      emailError.textContent = "Email must be a valid email address";
-      isValid = false;
-    }
-
-    // Check password length
-    if (password.length < 8) {
-      passwordError.textContent = "Password must be at least 8 characters";
-      isValid = false;
-    }
-
-    // Prevent form submission if not valid
-    if (!isValid) {
-      return false;
-    }
-
-    // Form is valid
-    return true;
-  }
-
-  function isValidEmail(email) {
-    // A simple email validation check (contains '@' and '.')
-    return email.includes("@") && email.includes(".");
-  }
-
-
-      </script>
+  
       
 </head>
 <body>
@@ -160,3 +111,30 @@
 
 
 <%- include('../layouts/user/footer.ejs') -%>
+
+<script>
+    function validateForm() {
+        const email = document.getElementById("register-email-2").value;
+        const password = document.getElementById("password-").value;
+
+        // Email validation using a regular expression
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!email.match(emailPattern)) {
+            document.getElementById("email-error").textContent = "Invalid email format.";
+            return false;
+        } else {
+            document.getElementById("email-error").textContent = "";
+        }
+
+        // Password validation (must be at least 8 characters )
+        const passwordPattern = /^\S{8,}$/;
+        if (!password.match(passwordPattern)) {
+            document.getElementById("password-error").textContent = "Password must be at least 8 characters long and cannot contain spaces.";
+            return false;
+        } else {
+            document.getElementById("password-error").textContent = "";
+        }
+
+        return true;
+    }
+</script>

@@ -25,6 +25,7 @@ admin_route.get('/users',adminAuth.isLogin,adminController.usersLoad)
 admin_route.get('/blockUser',adminAuth.isLogin,adminController.blockUser)
 
 
+
 admin_route.get('/addproduct',adminAuth.isLogin,productController.addProductLoad)
 admin_route.post('/addproduct',adminAuth.isLogin,fileUpload.productImagesUpload,productController.addProduct)
 admin_route.get('/editproduct',adminAuth.isLogin,productController.editProductLoad)
@@ -40,10 +41,10 @@ admin_route.get('/unlistCategory',adminAuth.isLogin,adminController.unlistCatego
 admin_route.get('/editCategory',adminAuth.isLogin,adminController.editCategoryLoad)
 admin_route.post('/editCategory',adminAuth.isLogin,adminController.updateCategoryData)
 
-admin_route.get('/banners',bannerController.bannersLoad)
-admin_route.get('/addbanner',bannerController.addbannersLoad)
-admin_route.post('/addbanner',fileUpload.uploadBanner.single('banner'),bannerController.addBanner)
-admin_route.get('/deletebanner',bannerController.deleteBanner)
-admin_route.get('/visible',bannerController.visibilityBanner);
+admin_route.get('/banners',adminAuth.isLogin,bannerController.bannersLoad)
+admin_route.get('/addbanner',adminAuth.isLogin,bannerController.addbannersLoad)
+admin_route.post('/addbanner',adminAuth.isLogin,fileUpload.uploadBanner.single('banner'),bannerController.addBanner)
+admin_route.get('/deletebanner',adminAuth.isLogin,bannerController.deleteBanner)
+admin_route.get('/visible',adminAuth.isLogin,bannerController.visibilityBanner);
 
 module.exports=admin_route

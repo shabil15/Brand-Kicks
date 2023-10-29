@@ -53,6 +53,12 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+                            <form action="" method="post" novalidate>
+                                <% if (typeof message !== 'undefined') { %>
+                                <p style="color: red; font-size: 19px; font-weight: 300;">
+                                    <%= message %>
+                                </p>
+                                <% } %>
                             <form action="" method="post" id="form">
                                 <div class="form-group">
                                     <label for="register-email-2"> email address *</label>

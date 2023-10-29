@@ -34,10 +34,10 @@ const verifyLogin = async (req, res, next) => {
         req.session.admin_id = adminData._id;
         res.redirect("/admin/dashboard");
       } else {
-        res.render("login", { message: "Email and  password is incorrect" });
+        res.render("adminLogin", { message: "Email and  password is incorrect" });
       }
     } else {
-      res.render("login", { message: "Email and  password is incorrect" });
+      res.render("adminLogin", { message: "Email and  password is incorrect" });
     }
   } catch (err) {
     next(err);
@@ -175,6 +175,7 @@ const blockUser = async (req, res) => {
     const User = await user.findById(id);
     console.log(User);
     if (User) {
+      req.session.user_id=null;
       User.isBlock = !User.isBlock;
       await User.save();
     }
@@ -185,6 +186,9 @@ const blockUser = async (req, res) => {
     console.log(error);
   }
 };
+
+
+
 
 //========================load the edit category Page====================//
 
@@ -212,22 +216,62 @@ const takeOneUserData = async (categoryId) => {
 
 //===================to Update the category===================================//
 
-const   updateCategoryData = async (req, res) => {
-  try {
-    let categoryData = req.body;
-    let updateCategory = await Category.updateOne(
-      { _id: req.query.id },
-      {
-        $set: {
-          category_name: categoryData.category_name,
-          category_description: categoryData.category_description,
-        },
-      }
-    );
+// const   updateCategoryData = async (req, res) => {
+//   try {
+//     let categoryData = req.body;
+//     let updateCategory = await Category.updateOne(
+//       { _id: req.query.id },
+//       {
+//         $set: {
+//           category_name: categoryData.category_name,
+//           category_description: categoryData.category_description,
+//         },
+//       }
+//     );
 
-    console.log(updateCategory);
-    req.flash('success','The category Successfully Updated')
-    res.redirect("/admin/categories");
+//     console.log(updateCategory);
+//     req.flash('success','The category Successfully Updated')
+//     res.redirect("/admin/categories");
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
+
+const updateCategoryData = async (req, res) => {
+  try {
+    const categoryData = req.body;
+    const categoryId = req.query.id;
+
+    // Check if there's an existing category with the same name
+    const existingCategory = await Category.findOne({
+      category_name: categoryData.category_name,
+      _id: { $ne: categoryId }, // Exclude the current category being updated
+    });
+
+    if (existingCategory) {
+      req.flash('error', 'A category with this name already exists');
+      res.redirect('/admin/categories');
+    } else {
+      // Update the category
+      const updateCategory = await Category.updateOne(
+        { _id: categoryId },
+        {
+          $set: {
+            category_name: categoryData.category_name,
+            category_description: categoryData.category_description,
+          },
+        }
+      );
+
+      if (updateCategory) {
+        req.flash('success', 'The category was successfully updated');
+      } else {
+        req.flash('error', 'No changes were made to the category');
+      }
+
+      res.redirect('/admin/categories');
+    }
   } catch (error) {
     console.log(error);
   }

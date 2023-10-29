@@ -153,7 +153,7 @@
                 // Email validation
                 const email = document.getElementById("register-email-2");
                 const emailError = document.getElementById("email-error");
-                const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/;
+                const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
 
     
                 if (!emailPattern.test(email.value)) {
@@ -167,7 +167,8 @@
                 // Mobile No validation
                 const mobile = document.getElementById("register-mobile");
                 const mobileError = document.getElementById("mobile-error");
-                const mobilePattern =/^(?!.*(\d)\1{2,})[^\s]{10}$/; 
+                // const mobilePattern =/^(?!.*(\d)\1{2,})[^\s]{10}$/; 
+                const mobilePattern = /^(?!.*(\d)\1{2,})^\d{10}$/;
     
                 if (!mobilePattern.test(mobile.value)) {
                     valid = false;
