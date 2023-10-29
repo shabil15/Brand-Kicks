@@ -10,6 +10,7 @@ const Cart = require('../models/userModel').Cart;
 const Address= require('../models/userModel').UserAddress;
 const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
+const Swal = require('sweetalert2'); 
 
 //=============code for securing the password=================================//
 
@@ -416,54 +417,121 @@ const profilePageLoad = async (req,res)=>{
 
 
 
-const updateUserData = async (req,res) =>{
+// const updateUserData = async (req, res) => {
+//   try {
+//     let userData = req.body;
+
+//     await User.updateOne(
+//       { _id: req.session.user_id },
+//       {
+//         $set: {
+//           firstName: userData.firstName,
+//           secondName: userData.secondName,
+//           mobile: userData.mobile,
+//           email: userData.email,
+//         },
+//       }
+//     );
+
+//     userData = await takeUserData(req.session.user_id);
+
+//     res.json({ success: true }); // Send a JSON response to indicate success
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, error: 'Failed to update profile' }); // Send an error response
+//   }
+// };
+
+const updateUserData = async (req, res) => {
   try {
     let userData = req.body;
-    let updateUser =await User.updateOne(
-      {_id:req.session.user_id},
+
+    await User.updateOne(
+      { _id: req.session.user_id },
       {
         $set: {
           firstName: userData.firstName,
           secondName: userData.secondName,
           mobile: userData.mobile,
-          email:userData.email,
-        }
+          email: userData.email,
+        },
       }
-    )
+    );
 
-    userData = await takeUserData(req.session.user_id)
+    userData = await takeUserData(req.session.user_id);
 
-    res.redirect('/profile');
+    // Send a success message using SweetAlert
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: 'User data has been successfully updated',
+    });
+
+    res.json({ success: true }); // Send a JSON response to indicate success
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Failed to update profile' }); // Send an error response
   }
-}
+};
 
-const changePassword = async (req,res) =>{
-  try {
-    let userDetails = await User.findOne({_id:req.session.user_id})
-    bcrypt
-    .compare(req.body.oldPassword,userDetails.password)
-    .then(async (status)=>{
-      if(status){
-        let newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
-          let change = await User.updateOne(
-            { _id: userDetails._id },
-            { $set: { password: newSecurePassword } }
-          );
-          console.log(change);
-          res.redirect("/profile");
-          console.log("password changed...");
-        } else {
-          console.log("wrong old password");
-          res.redirect("/profile");
-        }
+
+// const changePassword = async (req,res) =>{
+//   try {
+//     let userDetails = await User.findOne({_id:req.session.user_id})
+//     bcrypt
+//     .compare(req.body.oldPassword,userDetails.password)
+//     .then(async (status)=>{
+//       if(status){
+//         let newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
+//           let change = await User.updateOne(
+//             { _id: userDetails._id },
+//             { $set: { password: newSecurePassword } }
+//           );
+//           console.log(change);
+//           res.redirect("/profile");
+//           console.log("password changed...");
+//         } else {
+//           console.log("wrong old password");
+//           res.redirect("/profile");
+//         }
       
-    })
+//     })
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+
+const changePassword = async (req, res) => {
+  try {
+      const userDetails = await User.findOne({ _id: req.session.user_id });
+      bcrypt.compare(req.body.oldPassword, userDetails.password, async (error, status) => {
+          if (error) {
+              console.error(error);
+              res.json({ success: false });
+              return;
+          }
+
+          if (status) {
+              const newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
+              const change = await User.updateOne(
+                  { _id: userDetails._id },
+                  { $set: { password: newSecurePassword } }
+              );
+              console.log(change);
+              res.json({ success: true });
+             
+          } else {
+              
+              res.json({ success: false });
+          }
+      });
   } catch (error) {
-    console.log(error);
+      console.log(error);
+      res.json({ success: false });
   }
 }
+
 
 
 const addAddressFromProfile = async (req,res)=>{

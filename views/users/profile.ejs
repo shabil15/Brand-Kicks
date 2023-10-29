@@ -62,50 +62,55 @@
 
             <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link" >
               <h4>Account Details </h4>
-              <form action="/updateuser" method="post" novalidate>
-                      <div class="row">
-                        <div class="col-sm-6">
-                          <label>First Name *</label>
-                          <input type="text" name="firstName" class="form-control" value="<%= users.firstName %>" >
-                        </div><!-- End .col-sm-6 -->
-
-                        <div class="col-sm-6">
-                          <label>Last Name *</label>
-                          <input type="text" name="secondName" class="form-control" value="<%= users.secondName %>" >
-                        </div><!-- End .col-sm-6 -->
-                      </div><!-- End .row -->
-
-                    
-
-                      <label>Email address *</label>
-                  <input type="email" name="email" class="form-control" value="<%= users.email %>" >
-
-                  
-                    <label>Mobile No *</label>
-                  <input type="tel" name="mobile" class="form-control" value="<%= users.mobile %>">
+              <form id="editProfileForm" action="/updateuser" method="post" novalidate>
+                <div class="form-group">
+                  <label for="firstName">First Name *</label>
+                  <input type="text" name="firstName" class="form-control" value="<%= users.firstName %>" required>
+                  <div class="error-message" id="firstNameError"></div>
+                </div>
               
+                <div class="form-group">
+                  <label for="secondName">Last Name *</label>
+                  <input type="text" name="secondName" class="form-control" value="<%= users.secondName %>" required>
+                  <div class="error-message" id="secondNameError"></div>
+                </div>
               
-                      <button type="submit" class="btn btn-outline-primary-2">
-                        <span>SAVE CHANGES</span>
-                      <i class="icon-long-arrow-right"></i>
-                      </button>
-                    </form>
+                <div class="form-group">
+                  <label for="email">Email address *</label>
+                  <input type="email" name="email" class="form-control" value="<%= users.email %>" required>
+                  <div class="error-message" id="emailError"></div>
+                </div>
+              
+                <div class="form-group">
+                  <label for="mobile">Mobile No *</label>
+                  <input type="tel" name="mobile" class="form-control" value="<%= users.mobile %>" required>
+                  <div class="error-message" id="mobileError"></div>
+                </div>
+              
+                <button type="submit" class="btn btn-outline-primary-2">
+                  <span>SAVE CHANGES</span>
+                  <i class="icon-long-arrow-right"></i>
+                </button>
+              </form>
+              
 
                     <hr>
 
                     <h4>Change Password</h4>
               
-                    <form action="/changepassword" method="post">
+                    <form id="changePasswordForm" action="/changepassword" method="post" novalidate>
                       <div class="form-group">
                         <div class="row">
                           <div class="col-sm-6">
                             <label >Current Password</label>
-                            <input type="password" name="oldPassword" class="form-control" required>
+                            <input type="password" name="oldPassword" class="form-control" >
+                            <div class="error-message" id="oldPasswordError"></div>
 
                           </div> 
                           <div class="col-sm-6">
                             <label >New Password</label>
-                            <input type="password" name="newPassword" class="form-control" required>
+                            <input type="password" name="newPassword" class="form-control" >
+                            <div class="error-message" id="confirmPasswordError"></div>
                           </div>
                         </div>
                         <!-- Display error message for validation -->
@@ -374,6 +379,173 @@
       modelBTN.click()
   })
 </script>
+<!-- sweetalert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
+<!-- Add the SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
+
 
 
 <%- include('../layouts/user/footer.ejs') -%>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editProfileForm = document.getElementById('editProfileForm');
+
+        editProfileForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const firstName = editProfileForm.querySelector('input[name="firstName"]').value;
+            const lastName = editProfileForm.querySelector('input[name="secondName"]').value;
+            const email = editProfileForm.querySelector('input[name="email"]').value;
+            const mobile = editProfileForm.querySelector('input[name="mobile"]').value;
+
+            // Clear any previous error messages
+            clearErrorMessages();
+
+            // Perform validation
+            let hasErrors = false;
+
+            
+
+            if (mobile.length !== 10) {
+                showError('mobile', 'Mobile number must be exactly ten digits.');
+                hasErrors = true;
+            }
+
+            if (!validateEmail(email)) {
+                showError('email', 'Invalid email address.');
+                hasErrors = true;
+            }
+
+            if (hasErrors) {
+                return;
+            }
+
+            // If validation passes, you can use Fetch to submit the form
+            fetch('/updateuser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    secondName: lastName,
+                    email: email,
+                    mobile: mobile,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Update was successful
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'User data has been successfully updated',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Failed to update profile. Please try again.',
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+
+        
+
+        function validateEmail(email) {
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
+            return emailPattern.test(email);
+        }
+
+        function showError(fieldName, message) {
+            const errorElement = document.getElementById(`${fieldName}Error`);
+            errorElement.textContent = message;
+            errorElement.style.color = 'red';
+        }
+
+        function clearErrorMessages() {
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach((element) => {
+                element.textContent = '';
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const changePasswordForm = document.getElementById('changePasswordForm');
+
+        changePasswordForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const oldPassword = changePasswordForm.querySelector('input[name="oldPassword"]').value;
+            const newPassword = changePasswordForm.querySelector('input[name="newPassword"]').value;
+            const confirmPassword = changePasswordForm.querySelector('input[name="confirmPassword"]').value;
+
+            // Clear any previous error messages
+            clearErrorMessages();
+
+            // Perform validation
+            let hasErrors = false;
+
+            if (!validatePassword(oldPassword, 'oldPasswordError')) {
+                hasErrors = true;
+            }
+
+            if (!validatePassword(newPassword, 'newPasswordError')) {
+                hasErrors = true;
+            }
+
+            if (!confirmPasswordMatch(newPassword, confirmPassword)) {
+                showError('confirmPasswordError', 'Passwords do not match.');
+                hasErrors = true;
+            }
+
+            if (hasErrors) {
+                return;
+            }
+
+            // If validation passes, you can use Fetch to submit the form
+            fetch('/changepassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    oldPassword: oldPassword,
+                    newPassword: newPassword,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Password change was successful
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Password has been changed successfully',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Failed to change the password. Please try again.',
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+
+        // ...Other functions like validatePassword, confirmPasswordMatch, showError, and clearErrorMessages...
+    });
+</script>

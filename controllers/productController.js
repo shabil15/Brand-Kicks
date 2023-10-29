@@ -18,8 +18,30 @@ const getProductDetails = async(id)=>{
 
 const productsLoad = async (req, res) => {
   try {
-    let products = await Product.find({});
-    products.sort((a, b) => b- a);
+    const page=req.query.page || 1;
+    const pageSize =5;
+
+    const skip = (page -1)*pageSize;
+
+    
+
+    let products = await Product.find({}).populate('category').skip(skip)
+    .limit(pageSize);
+
+    const totalProducts = await Product.countDocuments();
+    const totalPages = Math.ceil(totalProducts/pageSize);
+
+    const categories = await Category.find({})
+
+    res.render('products',
+    {products:products,
+    category:categories,
+    currentPage:page,
+    totalPages:totalPages
+    }
+    )
+    
+    
     res.render("products", { products: products });
   } catch (error) {
     console.log(error);
