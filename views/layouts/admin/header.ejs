@@ -180,8 +180,10 @@
             </button>
             <ul class="navbar-nav w-100">
               <li class="nav-item w-100">
-                <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                  <input type="text" class="form-control" placeholder="Search products">
+                <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search" action="/admin/search_product" method="get">
+                  <!-- The search form sends a GET request to /admin/searchProducts -->
+                  <input type="text" class="form-control" name="keyword" placeholder="Search products">
+                  <button type="submit" class="btn btn-primary">Search</button>
                 </form>
               </li>
             </ul>

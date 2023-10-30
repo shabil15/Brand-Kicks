@@ -191,6 +191,23 @@ const blockUser = async (req, res) => {
   }
 };
 
+//=========================search Users================================//
+
+const searchUsers = async (req, res) => {
+  const query = req.query.query; // Get the search query from the request
+
+  // Perform a search query to filter users by name, email, and mobile number
+  const users = await user.find({
+      $or: [
+          { firstName: { $regex: query, $options: 'i' } }, // Case-insensitive search for first name
+          { secondName: { $regex: query, $options: 'i' } }, // Case-insensitive search for second name
+          { email: { $regex: query, $options: 'i' } }, // Case-insensitive search for email
+          { mobile: { $regex: query, $options: 'i' } } // Case-insensitive search for mobile number
+      ]
+  });
+
+  res.render('users', { users: users });
+};
 
 
 
@@ -299,6 +316,7 @@ module.exports = {
   dashboardLoad,
   usersLoad,
   blockUser,
+  searchUsers,
   categoryLoad,
   addcategoryLoad,
   addCategory,

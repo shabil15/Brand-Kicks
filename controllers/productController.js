@@ -31,7 +31,8 @@ const productsLoad = async (req, res) => {
     const totalProducts = await Product.countDocuments();
     const totalPages = Math.ceil(totalProducts/pageSize);
 
-    const categories = await Category.find({})
+    const categories = await Category.find({is_listed:true})
+    console.log(categories);
 
     res.render('products',
     {products:products,
@@ -40,9 +41,6 @@ const productsLoad = async (req, res) => {
     totalPages:totalPages
     }
     )
-    
-    
-    res.render("products", { products: products });
   } catch (error) {
     console.log(error);
   }
@@ -187,6 +185,48 @@ const editProduct= async(req,res)=>{
 }
 
 
+//================================search products///////////////////////////////////////////////////////
+
+
+const searchProducts = async(req,res)=>{
+  try {
+    const keyword =req.query.keyword;
+    const page = req.query.page || 1;
+    const pageSize =5;
+
+    const products = await Product.find({
+      $or:[
+        {product_name:{$regex:keyword,$options:'i'}},
+        {product_description:{$regex:keyword,$options:'i'}}
+      ]
+    })
+    .skip((page-1)*pageSize)
+    .limit(pageSize)
+    .populate('category');
+
+    const totalProducts = await Product.countDocuments({
+      $or:[
+        {product_name:{$regex:keyword,$options:'i'}},
+        {product_description:{$regex:keyword,$options:'i'}}
+      ]
+    })
+
+    const totalPages = Math.ceil(totalProducts/pageSize);
+
+    const categories = await Category.find();
+
+    res.render('products',{
+      products:products,
+      category:categories,
+      currentPage:page,
+      totalPages:totalPages,
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Internal Server Error')
+  }
+}
+
 module.exports = {
   addProductLoad,
   addProduct,
@@ -194,5 +234,6 @@ module.exports = {
   unlistProduct,
   editProductLoad,
   editProduct,
-  productPageLoad
+  productPageLoad,
+  searchProducts
 };

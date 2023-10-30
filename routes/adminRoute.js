@@ -23,6 +23,7 @@ admin_route.get('/logout',adminController.logout)
 admin_route.get('/dashboard',adminAuth.isLogin,adminController.dashboardLoad)
 admin_route.get('/users',adminAuth.isLogin,adminController.usersLoad)
 admin_route.get('/blockUser',adminAuth.isLogin,adminController.blockUser)
+admin_route.get('/searchUsers',adminAuth.isLogin,adminController.searchUsers)
 
 
 
@@ -32,6 +33,7 @@ admin_route.get('/editproduct',adminAuth.isLogin,productController.editProductLo
 admin_route.post('/editproduct',adminAuth.isLogin,fileUpload.productImagesUpload,productController.editProduct)
 admin_route.get('/products',adminAuth.isLogin,productController.productsLoad)
 admin_route.get('/unlistProduct',adminAuth.isLogin,productController.unlistProduct)
+admin_route.get('/search_product',adminAuth.isLogin,productController.searchProducts)
 
 
 admin_route.get('/categories',adminAuth.isLogin,adminController.categoryLoad)
