@@ -16,6 +16,8 @@ user_route.set('views','./views/users')
 user_route.use(express.json())
 user_route.use(express.urlencoded({extended:true}))
 
+const userAuth =require('../middlewares/user')
+
 // user_route.use(session({
 //     secret:config.sessionSecret,
 //     resave:false,
@@ -65,7 +67,7 @@ user_route.get('/product',productController.productPageLoad);
 
 //========================profile related===============================//
 
-user_route.get('/profile',userController.profilePageLoad)
+user_route.get('/profile',userAuth.isLogin,userController.profilePageLoad)
 
 user_route.post('/updateuser',userController.updateUserData)
 

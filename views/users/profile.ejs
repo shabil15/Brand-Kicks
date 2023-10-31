@@ -371,6 +371,8 @@
 </div>
 <!-- model end -->
 
+
+
 <script>
   let addressBTN = document.getElementById("addAddressBtn")
   let modelBTN = document.getElementById("addBTN")
@@ -387,6 +389,21 @@
 
 
 <%- include('../layouts/user/footer.ejs') -%>
+
+<%if(updatePass==1){%>
+    <div id="myAlert" data-aos="fade-down" class="alert alert-success col-3 fixed-top "
+        style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9;" role="alert">
+        <h6 class="alert-heading">Password Successfully Updated</h6>
+        <p class="fs-6 form-text text-white">Your password has been successfully updated.</p>
+    </div>
+    <%}else if(updatePassErr==1){%>
+        <div id="myAlert" data-aos="fade-down" class="alert alert-danger col-3 fixed-top "
+            style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9;" role="alert">
+            <h6 class="alert-heading">Password not match</h6>
+            <p class="fs-6 form-text text-white">Please enter your Correct password.</p>
+        </div>
+        <%}%>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -477,75 +494,20 @@
             });
         }
     });
+
+    setTimeout(function() {
+    document.getElementById('myAlert').style.display = 'none';
+}, 4000);
+
+setTimeout(function() {
+    document.getElementById('myAlert1').style.display = 'none';
+}, 500000);
+
+setTimeout(function() {
+    document.getElementById('myAlert2').style.display = 'none';
+}, 5000);
+
+
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const changePasswordForm = document.getElementById('changePasswordForm');
 
-        changePasswordForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const oldPassword = changePasswordForm.querySelector('input[name="oldPassword"]').value;
-            const newPassword = changePasswordForm.querySelector('input[name="newPassword"]').value;
-            const confirmPassword = changePasswordForm.querySelector('input[name="confirmPassword"]').value;
-
-            // Clear any previous error messages
-            clearErrorMessages();
-
-            // Perform validation
-            let hasErrors = false;
-
-            if (!validatePassword(oldPassword, 'oldPasswordError')) {
-                hasErrors = true;
-            }
-
-            if (!validatePassword(newPassword, 'newPasswordError')) {
-                hasErrors = true;
-            }
-
-            if (!confirmPasswordMatch(newPassword, confirmPassword)) {
-                showError('confirmPasswordError', 'Passwords do not match.');
-                hasErrors = true;
-            }
-
-            if (hasErrors) {
-                return;
-            }
-
-            // If validation passes, you can use Fetch to submit the form
-            fetch('/changepassword', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    oldPassword: oldPassword,
-                    newPassword: newPassword,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        // Password change was successful
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: 'Password has been changed successfully',
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'Failed to change the password. Please try again.',
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        });
-
-        // ...Other functions like validatePassword, confirmPasswordMatch, showError, and clearErrorMessages...
-    });
-</script>

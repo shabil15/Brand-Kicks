@@ -400,14 +400,45 @@ const profilePageLoad = async (req,res)=>{
     res.render('profile',
     { currentPage:'home',
       users:userData,
+      updatePassErr: req.session.updatePassErr,
+      updatePass: req.session.updatePass,
       address:address.addresses,
-      user:req.session.user_id})
+      user:req.session.user_id},
+      (err, html) => {
+        if (!err) {
+          // Reset session variables after rendering
+          req.session.updatePassErr = false;
+          req.session.updatePass = false;
+          res.send(html);
+        } else {
+          console.log(err.message);
+          // Handle rendering error here, if necessary
+          res.status(500).send("Internal Server Error");
+        }
+      }
+      
+      )
   }else{
     res.render('profile',
     { currentPage:'home',
       address:0,
+      updatePassErr: req.session.updatePassErr,
+      updatePass: req.session.updatePass,
       users:userData,
-      user:req.session.user_id})
+      user:req.session.user_id},
+      (err, html) => {
+        if (!err) {
+          // Reset session variables after rendering
+          req.session.updatePassErr = false;
+          req.session.updatePass = false;
+          res.send(html);
+        } else {
+          console.log(err.message);
+          // Handle rendering error here, if necessary
+          res.status(500).send("Internal Server Error");
+        }
+      }
+      )
   }
     
   } catch (error) {
@@ -475,62 +506,65 @@ const updateUserData = async (req, res) => {
 };
 
 
-// const changePassword = async (req,res) =>{
-//   try {
-//     let userDetails = await User.findOne({_id:req.session.user_id})
-//     bcrypt
-//     .compare(req.body.oldPassword,userDetails.password)
-//     .then(async (status)=>{
-//       if(status){
-//         let newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
-//           let change = await User.updateOne(
-//             { _id: userDetails._id },
-//             { $set: { password: newSecurePassword } }
-//           );
-//           console.log(change);
-//           res.redirect("/profile");
-//           console.log("password changed...");
-//         } else {
-//           console.log("wrong old password");
-//           res.redirect("/profile");
-//         }
-      
-//     })
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-
-const changePassword = async (req, res) => {
+const changePassword = async (req,res) =>{
   try {
-      const userDetails = await User.findOne({ _id: req.session.user_id });
-      bcrypt.compare(req.body.oldPassword, userDetails.password, async (error, status) => {
-          if (error) {
-              console.error(error);
-              res.json({ success: false });
-              return;
-          }
-
-          if (status) {
-              const newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
-              const change = await User.updateOne(
-                  { _id: userDetails._id },
-                  { $set: { password: newSecurePassword } }
-              );
-              console.log(change);
-              res.json({ success: true });
-             
-          } else {
-              
-              res.json({ success: false });
-          }
-      });
+    console.log("gettingggggg")
+    let userDetails = await User.findOne({_id:req.session.user_id})
+    bcrypt
+    .compare(req.body.oldPassword,userDetails.password)
+    .then(async (status)=>{
+      if(status){
+        let newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
+          let change = await User.updateOne(
+            { _id: userDetails._id },
+            { $set: { password: newSecurePassword } }
+          );
+          console.log(change);
+          req.session.updatePass = 1;
+          res.redirect("/profile");
+          console.log("password changed...");
+        } else {
+          console.log("wrong old password");
+          req.session.updatePassErr = 1;
+          res.redirect("/profile");
+        }
+      
+    })
   } catch (error) {
-      console.log(error);
-      res.json({ success: false });
+    console.log(error);
   }
 }
+
+
+// const changePassword = async (req, res) => {
+//   try {
+//       const userDetails = await User.findOne({ _id: req.session.user_id });
+//       bcrypt.compare(req.body.oldPassword, userDetails.password, async (error, status) => {
+//           if (error) {
+//               console.error(error);
+//               res.json({ success: false });
+//               return;
+//           }
+
+//           if (status) {
+//               const newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
+//               const change = await User.updateOne(
+//                   { _id: userDetails._id },
+//                   { $set: { password: newSecurePassword } }
+//               );
+//               console.log(change);
+//               res.json({ success: true });
+             
+//           } else {
+              
+//               res.json({ success: false });
+//           }
+//       });
+//   } catch (error) {
+//       console.log(error);
+//       res.json({ success: false });
+//   }
+// }
 
 
 
