@@ -104,13 +104,13 @@
                           <div class="col-sm-6">
                             <label >Current Password</label>
                             <input type="password" name="oldPassword" class="form-control" >
-                            <div class="error-message" id="oldPasswordError"></div>
+                            <div class="error-message alert-danger" id="oldPasswordError" ></div>
 
                           </div> 
                           <div class="col-sm-6">
                             <label >New Password</label>
-                            <input type="password" name="newPassword" class="form-control" >
-                            <div class="error-message" id="confirmPasswordError"></div>
+                            <input type="password" name="newPassword" class="form-control" id="newPassword" >
+                            <div class="error-message" id="newPasswordError"></div>
                           </div>
                         </div>
                         <!-- Display error message for validation -->
@@ -507,6 +507,21 @@ setTimeout(function() {
     document.getElementById('myAlert2').style.display = 'none';
 }, 5000);
 
+document.addEventListener('DOMContentLoaded', function () {
+  const newPasswordInput = document.getElementById('newPassword');
+  const newPasswordError = document.getElementById('newPasswordError');
+  const passwordPattern =/^\S{8,}$/;
+
+  newPasswordInput.addEventListener('input', function () {
+    const newPasswordValue = newPasswordInput.value;
+
+    if (passwordPattern.test(newPasswordValue)) {
+      newPasswordError.textContent = ''; // Clear any previous error message
+    } else {
+      newPasswordError.textContent = 'Password must be at least 8 characters long and cannot contain spaces.'; // Display an error message
+    }
+  });
+});
 
 </script>
 
