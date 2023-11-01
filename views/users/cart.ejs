@@ -72,7 +72,7 @@
                                         </div>
                                         <input
                                             type="number"
-                                            class="form-control text-center quantity-input  num-product "
+                                            class="form-control text-center quantity-input   "
                                             value="<%= cartItems.products[i].quantity %>"
                                             name="num-product1"
                                             data-product-id="<%= cartItems.products[i].product._id %>"
@@ -94,7 +94,7 @@
 
                                 <td class="total-col total-price"
                                     id="singleProductTotal <%= cartItems.products[i].product._id %>">
-                                    ₹ <%- (cartItems.products[i].product.product_price)*(cartItems.products[i].quantity)
+                                    ₹<%- (cartItems.products[i].product.product_price)*(cartItems.products[i].quantity)
                                         %>.00
                                 </td>
                                 <!-- remove item button -->
@@ -133,7 +133,7 @@
                         <tr class="summary-subtotal  ">
                             <td>Subtotal:</td>
                             <td>₹<span id="subTotalDisplay" class=" subtotal">
-                                    <%= total%>
+                                    <%= total%>.00
                                 </span></td>
                         </tr><!-- End .summary-subtotal -->
 
@@ -150,8 +150,9 @@
 
                         <tr class="summary-total">
                             <td>Total:</td>
-                            <td>₹<span id="totalDisplay" class=" subtotal">
-                                    <%= total%>
+                            <td>₹<span id="totalDisplay" class=" 
+                                subtotal">
+                                    <%= total%>.00
                                 </span></td>
                         </tr><!-- End .summary-total -->
                     </tbody>
@@ -172,109 +173,112 @@
 <%- include('../layouts/user/footer.ejs') -%>
 
 <script>
-		document.addEventListener("DOMContentLoaded", function () {
-		const quantityInputs = document.querySelectorAll(".quantity-input");
-		const totalPriceElements = document.querySelectorAll(".total-price");
-		const productPrices = Array.from(document.querySelectorAll(".product_price"))
-								  .map(price => parseFloat(price.textContent))
-								  .filter(price => !isNaN(price)); // Filter out NaN values
-								  console.log(productPrices);
-	
-		const subtotalElement = document.querySelector(".subtotal");
-	   
-	
-		quantityInputs.forEach((input, index) => {
-			const minusButton = input.parentElement.querySelector(".js-btn-minus");
-			const plusButton = input.parentElement.querySelector(".js-btn-plus");
-			const productID = input.getAttribute('data-product-id');  
-			console.log(productID);
-	
-			function updateMinusButtonStatus() {
-				const quantity = parseInt(input.value, 10);
-				if (quantity === 1) {
-					minusButton.disabled = true;
-				} else {
-					minusButton.disabled = false;
-				}
-			}
-	
-			minusButton.addEventListener("click", function () {
-				const quantity = parseInt(input.value, 10);
-	
-				if (quantity >= 1) {
-				  quantitys = quantity - 1;
-				  
-				   handleQuantityUpdate(productID, quantity, index);
-					const totalPrice = quantity * productPrices[index];
-					totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
-					updateSubtotal();
-					updateMinusButtonStatus();
-					
-				}
-			});
-	
-			plusButton.addEventListener("click", function () {
-				const quantity = parseInt(input.value, 10);
-				quantitys = quantity + 1;
-				
-				handleQuantityUpdate(productID, quantitys, index);
-	
-				const totalPrice = quantitys * productPrices[index];
-				totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
-				updateSubtotal();
-				updateMinusButtonStatus();
-				
-			});
-		});
-	
-		async function handleQuantityUpdate(productID, quantitys, index) {
-		try {
-			const response = await fetch('/updateCart', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ productID: productID, quantity: quantitys })
-			});
-		   
-			const data = await response.json();
-	
-			// Check if the response contains valid data
-			if (data && data.products && data.products.length > 0) {
-				const updatedItem = data.products[0];
-				const productPrice = parseFloat(updatedItem.productID.price);
-				const quantity = parseInt(updatedItem.quantity, 10);
-	
-				// Check if both quantity and product price are valid numbers
-				if (!isNaN(productPrice) && !isNaN(quantity)) {
-					const totalPrice = quantity * productPrice;
-	
-					// Update the total price in the UI
-					totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
-				} else {
-					console.error('Invalid quantity or product price:', updatedItem);
-				}
-			} else {
-				console.error('Invalid response data:', data);
-			}
-	
-			// Update the subtotal and other UI elements
-			updateSubtotal();
-		} catch (error) {
-			console.error('Error updating cart quantity:', error);
-		}
-	}
-	
-		function updateSubtotal() {
-			const totalPrices = Array.from(totalPriceElements)
-								 .map(total => parseFloat(total.textContent.replace("₹ ", "")))
-								 .reduce((acc, val) => acc + val, 0);
-			subtotalElement.textContent = ` ${totalPrices.toFixed(2)}`;
-		}
-	
-	   
-	
-	});
-	
-	
-	</script>	
+    document.addEventListener("DOMContentLoaded", function () {
+        const quantityInputs = document.querySelectorAll(".quantity-input");
+        const totalPriceElements = document.querySelectorAll(".total-price");
+        const productPrices = Array.from(document.querySelectorAll(".product_price"))
+            .map((price) => parseFloat(price.textContent))
+            .filter((price) => !isNaN(price)); // Filter out NaN values
+        console.log(productPrices);
+
+        const subtotalElement = document.querySelector(".subtotal");
+
+        quantityInputs.forEach((input, index) => {
+            const minusButton = input.parentElement.querySelector(".js-btn-minus");
+            const plusButton = input.parentElement.querySelector(".js-btn-plus");
+            const productID = input.getAttribute("data-product-id");
+            console.log(productID);
+
+            function updateMinusButtonStatus() {
+                const quantity = parseInt(input.value, 10);
+                if (quantity == 2) {
+                    minusButton.disabled = true;
+                } else {
+                    minusButton.disabled = false;
+                }
+            }
+
+            function updatePlusButtonStatus() {
+                const quantity = parseInt(input.value, 10);
+                if (quantity == 9 ) {
+                    plusButton.disabled = true;
+                } else {
+                    plusButton.disabled = false;
+                }
+            }
+
+            minusButton.addEventListener("click", function () {
+                const quantity = parseInt(input.value, 10);
+
+                if (quantity > 1) {
+                    quantitys = quantity - 1;
+                    handleQuantityUpdate(productID, quantitys, index);
+                    const totalPrice = quantitys * productPrices[index];
+                    totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+                    updateSubtotal();
+                    updateMinusButtonStatus();
+                    updatePlusButtonStatus();
+                }
+            });
+
+            plusButton.addEventListener("click", function () {
+                const quantity = parseInt(input.value, 10);
+                quantitys = quantity + 1;
+
+                handleQuantityUpdate(productID, quantitys, index);
+
+                const totalPrice = quantitys * productPrices[index];
+                totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+                updateSubtotal();
+                updateMinusButtonStatus();
+                updatePlusButtonStatus();
+            });
+        });
+
+        async function handleQuantityUpdate(productID, quantitys, index) {
+            try {
+                const response = await fetch("/updateCart?cache=${cacheBuster}`", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ productID: productID, quantity: quantitys }),
+                });
+
+                const data = await response.json();
+
+                // Check if the response contains valid data
+                if (data && data.items && data.items.length > 0) {
+                    const updatedItem = data.items[0];
+                    const productPrice = parseFloat(updatedItem.product.price);
+                    const quantity = parseInt(updatedItem.quantity, 10);
+
+                    // Check if both quantity and product price are valid numbers
+                    if (!isNaN(productPrice) && !isNaN(quantity)) {
+                        const totalPrice = quantity * productPrice;
+
+                        // Update the total price in the UI
+                        totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+                    } else {
+                        console.error("Invalid quantity or product price:", updatedItem);
+                    }
+                } else {
+                    console.error("Invalid response data:", data);
+                }
+
+                // Update the subtotal and other UI elements
+                updateSubtotal();
+                window.location.reload();
+            } catch (error) {
+                console.error("Error updating cart quantity:", error);
+            }
+        }
+
+        function updateSubtotal() {
+            const totalPrices = Array.from(totalPriceElements)
+                .map((total) => parseFloat(total.textContent.replace("₹ ", "")))
+                .reduce((acc, val) => acc + val, 0);
+            subtotalElement.textContent = ` ${totalPrices.toFixed(2)}`;
+        }
+    });
+</script>
