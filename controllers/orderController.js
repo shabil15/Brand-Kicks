@@ -2,6 +2,7 @@ const User = require("../models/userModel").User;
 const Cart = require('../models/userModel').Cart;
 const Address= require('../models/userModel').UserAddress;
 const Product = require("../models/productsModel").product;
+const Order = require('../models/orderModel').Order;
 const { log } = require("console");
 const path = require("path");
 
@@ -144,8 +145,7 @@ const daliveryDateCalculate = async () => {
 };
 
 
-
-const paymentSelectionManage = async (req, res) => {
+const paymenetPageLoad = async (req, res) => {
   try {
     console.log(req.body);
     let addressId = req.body.address;
@@ -184,11 +184,139 @@ const paymentSelectionManage = async (req, res) => {
   }
 };
 
+
+
+const paymentSelectionManage = async (req, res) => {
+  try {
+    console.log(req.body);
+    let addressId = req.body.address;
+    let payment =
+      req.body.paymentMethod === "COD"
+        ? "Cash on Delivery"
+        : req.body.paymentMethod;
+    console.log(addressId);
+    let userAddrs = await Address.findOne({ userId: req.session.user_id });
+    const selectedAddress = userAddrs.addresses.find((address) => {
+      return address._id.toString() === addressId.toString();
+    });
+    const cartDetails = await Cart.findOne({ user: req.session.user_id })
+      .populate({
+        path: "products.product",
+        select: "product_name price description category images.image1",
+      })
+      .exec();
+    console.log(cartDetails);
+    if (cartDetails) {
+      let total = await calculateTotalPrice(req.session.user_id);
+      let deliveryDate = await daliveryDateCalculate();
+      console.log('date:', deliveryDate);
+      res.render("finalcheckout", {
+        total,
+        currentPage:'shop',
+        address: selectedAddress,
+        user: req.session.user_id,
+        payment,
+        cartItems: cartDetails,
+        deliveryDate:deliveryDate,
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 const orderStatusPageLoad = async(req,res)=>{
   try {
+    console.log('stttttttt');
     res.render('orderStatus',{
       currentPage:'shop',
+      success:1,
       user:req.session.user_id,
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const placeOrderManage = async (req, res) => {
+  try {
+    
+   
+    let addressId = req.body.address;
+
+    let paymentType = req.body.payment;
+
+    const cartDetails = await Cart.findOne({ user: req.session.user_id });
+
+    let userAddrs = await Address.findOne({ userId: req.session.user_id });
+    const shipAddress = userAddrs.addresses.find((address) => {
+      return address._id.toString() === addressId.toString();
+    });
+
+    
+    console.log("collected:", shipAddress);
+
+
+
+    if (!shipAddress) {
+      return res.status(400).json({ error: "Address not found" });
+    }
+    // console.log("collected :" + shipAddress);
+    const { country, fullName, mobileNumber, pincode, city, state } =
+      shipAddress;
+    // console.log(state);
+
+    const cartProducts = cartDetails.products.map((productItem) => ({
+      productId: productItem.product,
+      quantity: productItem.quantity,
+      OrderStatus: "pending",
+      StatusLevel: 1,
+    }));
+    let total = await calculateTotalPrice(req.session.user_id);
+
+    // console.log(cartProducts);
+    const order = new Order({
+      userId: req.session.user_id,
+      "shippingAddress.country": country,
+      "shippingAddress.fullName": fullName,
+      "shippingAddress.mobileNumber": mobileNumber,
+      "shippingAddress.pincode": pincode,
+      "shippingAddress.city": city,
+      "shippingAddress.state": state,
+      products: cartProducts,
+      totalAmount: total,
+      paymentMethod: paymentType,
+      paymentStatus: "pending",
+    });
+
+    const placeorder = await order.save();
+    console.log(placeorder._id);
+
+
+    if (paymentType !== "Online") {
+      console.log(placeorder._id);
+      let changeOrderStatus = await Order.updateOne(
+        { _id: placeorder._id },
+        { $set: { OrderStatus: "success" } }
+      );
+
+      await Cart.deleteOne({ user: req.session.user_id });
+
+
+      return res.json({ cod: true,orderId:placeorder._id });
+    } 
+
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const allOrdersPageLoad = async (req,res)=>{
+  try {
+    res.render('orders',{
+      user:req.session.user_id,
+      currentPage:'profile',
+      
     })
   } catch (error) {
     console.log(error);
@@ -198,7 +326,9 @@ const orderStatusPageLoad = async(req,res)=>{
 module.exports={
   checkoutLoad,
   reciveShippingAddress,
+  paymenetPageLoad,
   paymentSelectionManage,
   orderStatusPageLoad,
+  placeOrderManage,
   
 }

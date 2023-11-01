@@ -64,6 +64,9 @@
                                 <h5 class="mt-3">3. Items and delivery</h5><br>
                                 <!-- <hr> -->
 
+                                <p>The product Will be delivered on <%=deliveryDate%></p>
+                                <br>
+
 
                                 <div class="col-12 row d-flex justify-content-center">
                                     <% for(i=0;i<cartItems.products.length;i++){ %>
@@ -85,7 +88,7 @@
                                                     
                                                     <p class="card-text">
                                                        qty: <%= cartItems.products[i].quantity %>
-                                                        </p>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -106,8 +109,10 @@
                             <button class="btn btn-outline-primary-2  btn-block py-3"
                                 style="background-color: #000; color: #fff; "
                                 onMouseOver="this.style.background='#575757'"
-                                onMouseOut="this.style.background='#000'" id="paymentBtn" disabled>Proceed to
-                                Checkout</button>
+                                onMouseOut="this.style.background='#000'" id="addressBtn" >Place
+                                order</button>
+
+                                
 
                             <h3 class="summary-title"></h3>
 
@@ -152,31 +157,42 @@
             </div><!-- End .container -->
         </div><!-- End .cart -->
     </div><!-- End .page-content -->
+    <form id="addressForm">
+        <input type="text" name="address" value="<%= address._id %>" id="addressInput" hidden>
+        <input type="text" name="payment" value="<%=payment%>" hidden>
+        <input id="couponPass" type="text" name="coupon" hidden>
+        <button id="submitForm" type="submit" hidden></button>
+    </form>
 </main><!-- End .main -->
 
-
 <script>
-    // form submit handil
-    document.getElementById("paymentBtn").addEventListener("click", function () {
-        document.getElementById("paymentForm").submit();
+    let addressBtn = document.getElementById('addressBtn')
+    addressBtn.addEventListener('click', () => {
+        submitForm.click()
     })
+
+    $('#addressForm').submit((e) => {
+        e.preventDefault()
+        $.ajax({
+            url: '/checkout/placeorder',
+            method: 'post',
+            data: $("#addressForm").serialize(),
+            success: (response) => {
+                console.log(response);
+                if (response.cod) {
+                    location.href = `/checkout/placeorder?id=${response.orderId}`
+                } else {
+                    payPayment(response.order,response.user)
+                }
+
+            }
+        })
+    })
+
 </script>
-<script>
-    // Get references to the radio buttons and the submit button
-    const codRadio = document.getElementById('codRadio');
-    const onlineRadio = document.getElementById('onlineRadio');
-    const paymentBtn = document.getElementById('paymentBtn');
-    // Add event listeners to the radio buttons
-    codRadio.addEventListener('change', toggleButtonState);
-    onlineRadio.addEventListener('change', toggleButtonState);
-    // Function to toggle the button state based on the radio button selection
-    function toggleButtonState() {
-        if (codRadio.checked || onlineRadio.checked) {
-            paymentBtn.disabled = false; // Enable the button if a radio button is selected
-        } else {
-            paymentBtn.disabled = true; // Disable the button if no radio button is selected
-        }
-    }
-</script>
+
+
+
 
 <%- include('../layouts/user/footer.ejs') -%>
+

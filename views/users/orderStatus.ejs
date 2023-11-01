@@ -1,5 +1,44 @@
 <%- include('../layouts/user/header.ejs') -%>
 
-<h1>ORDER STATUS</h1>
+
+        <div class="row d-flex justify-content-center align-items-center d-flex otp-box">
+            <div class="col-12  col-md- col-lg-4 ">
+                <div class="card bg-white mb-5 mt-5 border-0 my-5" >
+                    <div data-aos="fade-up"
+                    data-aos-anchor-placement="center-bottom" class="  p-5 d-flex flex-column justify-content-center  text-center " style="border-radius: 15px; border: 0.01px solid #d8d8d8; background: #ffffff;" >
+
+
+                    <% if(success==1){%>
+                        <div class=" d-flex justify-content-center" id="lottie-container">
+
+                            <dotlottie-player src="/public/userAssets/assets/icon-lot/animation_lnkftaaa.lottie" background="transparent"
+                                speed="1" style="width: 250px; height: 250px;" direction="1"
+                                autoplay></dotlottie-player>
+                        </div>
+                        <div class="d-flex flex-column pb-5" >
+                            <h5 class="text-success" style="font-weight: 300;">Thank you for your order</h5>
+                        <p class="text-center">Thank you for your purchase!  Now we're preparing <br> for the shipment</p>
+                        <a href="/profile/orders"  class="btn btn-outline-dark mt-3 col-7 d-flex mx-auto" onmouseover="this.style.color='#fff'" onmouseleave="this.style.color='#000'" >View Orders</a>
+                        </div>
+
+                    <%}else{%>    
+                        <div class=" d-flex justify-content-center" id="lottie-container">
+
+                            <dotlottie-player src="/public/userAssets/assets/icon-lot/animation_lnkd6z71.lottie" background="transparent"
+                                speed="1" style="width: 250px; height: 250px;" direction="1"
+                                autoplay></dotlottie-player>
+                        </div>
+                        <div class="d-flex flex-column pb-5" >
+                            <h5 class="text-success" style="font-weight: 300;">Order failed</h5>
+                        <p class="text-center">Please try again</p>
+                        <a  class="btn btn-outline-dark mt-3 col-7 d-flex mx-auto" onmouseover="this.style.color='#fff'" onmouseleave="this.style.color='#000'" >View Orders</a>
+                        </div>
+                    <%}%>    
+                    </div>
+                </div>
+            </div>
+        </div>
 
 <%- include('../layouts/user/footer.ejs') -%>
+ 
+

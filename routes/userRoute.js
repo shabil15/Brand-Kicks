@@ -101,11 +101,15 @@ user_route.get('/checkout',orderController.checkoutLoad)
 
 user_route.post('/checkout',orderController.reciveShippingAddress)
 
+user_route.get('/checkout/paymentselection',orderController.paymenetPageLoad)
+
 user_route.post('/checkout/paymentselection',orderController.paymentSelectionManage)
 
 user_route.get('/checkout/placeorder',orderController.orderStatusPageLoad)
 
+user_route.post('/checkout/placeorder',orderController.placeOrderManage)
 
+user_route.get('/profile/orders',orderController.allOrdersPageLoad)
 
 
 
