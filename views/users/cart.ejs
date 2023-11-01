@@ -56,32 +56,34 @@
                                         </h3><!-- End .product-title -->
                                     </div><!-- End .product -->
                                 </td>
-                                <td class="price-col">
+                                <td class="price-col product_price" >
                                     ₹ <span
-                                        id="singleProductPrice<%= cartItems.products[i].product._id %>">
+                                        id="singleProductPrice<%= cartItems.products[i].product._id %>" class="product_price">
                                         <%= cartItems.products[i].product.product_price %>
                                     </span>
                                 </td>
 
                                 <td style="text-align: center">
-                                    <div class="input-group mb-3" style="max-width: 170px; margin: 0 auto">
+                                    <div class="input-group mb-3 " style="max-width: 170px; margin: 0 auto">
                                         <div class="input-group-prepend">
-                                            <button class="btn btn-outline-primary js-btn-minus" type="button">
+                                            <button class="btn btn-num-product-down btn-outline-primary js-btn-minus" type="button">
                                                 &minus;
                                             </button>
                                         </div>
                                         <input
                                             type="number"
-                                            class="form-control text-center quantity-input"
+                                            class="form-control text-center quantity-input  num-product "
                                             value="<%= cartItems.products[i].quantity %>"
+                                            name="num-product1"
                                             data-product-id="<%= cartItems.products[i].product._id %>"
                                             aria-label="Quantity"
                                             aria-describedby="button-addon1"
                                             readonly
+                                            min="1"
                                             max="10"
                                         />
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-primary js-btn-plus" type="button">
+                                            <button class="btn btn-num-product-up btn-outline-primary js-btn-plus" type="button">
                                                 &plus;
                                             </button>
                                         </div>
@@ -90,10 +92,10 @@
                                
                         
 
-                                <td class="total-col"
-                                    id="singleProductTotal<%= cartItems.products[i].product._id %>">
-                                    ₹<%- (cartItems.products[i].product.product_price)*(cartItems.products[i].quantity)
-                                        %>
+                                <td class="total-col total-price"
+                                    id="singleProductTotal <%= cartItems.products[i].product._id %>">
+                                    ₹ <%- (cartItems.products[i].product.product_price)*(cartItems.products[i].quantity)
+                                        %>.00
                                 </td>
                                 <!-- remove item button -->
                                 <td class="remove-col">
@@ -128,9 +130,9 @@
 
                 <table class="table table-summary">
                     <tbody>
-                        <tr class="summary-subtotal">
+                        <tr class="summary-subtotal  ">
                             <td>Subtotal:</td>
-                            <td>₹<span id="subTotalDisplay">
+                            <td>₹<span id="subTotalDisplay" class=" subtotal">
                                     <%= total%>
                                 </span></td>
                         </tr><!-- End .summary-subtotal -->
@@ -148,7 +150,7 @@
 
                         <tr class="summary-total">
                             <td>Total:</td>
-                            <td>₹<span id="totalDisplay">
+                            <td>₹<span id="totalDisplay" class=" subtotal">
                                     <%= total%>
                                 </span></td>
                         </tr><!-- End .summary-total -->
@@ -168,3 +170,111 @@
 </main><!-- End .main -->
 
 <%- include('../layouts/user/footer.ejs') -%>
+
+<script>
+		document.addEventListener("DOMContentLoaded", function () {
+		const quantityInputs = document.querySelectorAll(".quantity-input");
+		const totalPriceElements = document.querySelectorAll(".total-price");
+		const productPrices = Array.from(document.querySelectorAll(".product_price"))
+								  .map(price => parseFloat(price.textContent))
+								  .filter(price => !isNaN(price)); // Filter out NaN values
+								  console.log(productPrices);
+	
+		const subtotalElement = document.querySelector(".subtotal");
+	   
+	
+		quantityInputs.forEach((input, index) => {
+			const minusButton = input.parentElement.querySelector(".js-btn-minus");
+			const plusButton = input.parentElement.querySelector(".js-btn-plus");
+			const productID = input.getAttribute('data-product-id');  
+			console.log(productID);
+	
+			function updateMinusButtonStatus() {
+				const quantity = parseInt(input.value, 10);
+				if (quantity === 1) {
+					minusButton.disabled = true;
+				} else {
+					minusButton.disabled = false;
+				}
+			}
+	
+			minusButton.addEventListener("click", function () {
+				const quantity = parseInt(input.value, 10);
+	
+				if (quantity >= 1) {
+				  quantitys = quantity - 1;
+				  
+				   handleQuantityUpdate(productID, quantity, index);
+					const totalPrice = quantity * productPrices[index];
+					totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+					updateSubtotal();
+					updateMinusButtonStatus();
+					
+				}
+			});
+	
+			plusButton.addEventListener("click", function () {
+				const quantity = parseInt(input.value, 10);
+				quantitys = quantity + 1;
+				
+				handleQuantityUpdate(productID, quantitys, index);
+	
+				const totalPrice = quantitys * productPrices[index];
+				totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
+				updateSubtotal();
+				updateMinusButtonStatus();
+				
+			});
+		});
+	
+		async function handleQuantityUpdate(productID, quantitys, index) {
+		try {
+			const response = await fetch('/updateCart', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ productID: productID, quantity: quantitys })
+			});
+		   
+			const data = await response.json();
+	
+			// Check if the response contains valid data
+			if (data && data.products && data.products.length > 0) {
+				const updatedItem = data.products[0];
+				const productPrice = parseFloat(updatedItem.productID.price);
+				const quantity = parseInt(updatedItem.quantity, 10);
+	
+				// Check if both quantity and product price are valid numbers
+				if (!isNaN(productPrice) && !isNaN(quantity)) {
+					const totalPrice = quantity * productPrice;
+	
+					// Update the total price in the UI
+					totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+				} else {
+					console.error('Invalid quantity or product price:', updatedItem);
+				}
+			} else {
+				console.error('Invalid response data:', data);
+			}
+	
+			// Update the subtotal and other UI elements
+			updateSubtotal();
+		} catch (error) {
+			console.error('Error updating cart quantity:', error);
+		}
+	}
+	
+		function updateSubtotal() {
+			const totalPrices = Array.from(totalPriceElements)
+								 .map(total => parseFloat(total.textContent.replace("₹ ", "")))
+								 .reduce((acc, val) => acc + val, 0);
+			subtotalElement.textContent = ` ${totalPrices.toFixed(2)}`;
+		}
+	
+	   
+	
+	});
+	
+	
+	</script>	

@@ -11,6 +11,7 @@ const Address= require('../models/userModel').UserAddress;
 const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
 const Swal = require('sweetalert2'); 
+const { log } = require("console");
 
 //=============code for securing the password=================================//
 
@@ -711,29 +712,32 @@ const calculateTotalPrice= async (userId) =>{
   }
 }
 
-
-
-
-
-const productQuantityHandling = async (req,res)=>{
+const updateCart = async (req,res) =>{
   try {
-    if(!req.session.user_id) {
-      res.json({user: 0});
-    } else {
-      let {userId,productId,qty} =req.body;
+    console.log('updateCart')
+    const user = req.session.user_id;
+    const productID = req.body.productID;
+    const quantity = req.body.quantity;
 
-      qty=Number(qty);
 
-      
-      const cartDetails = await Cart.findOne({user:userId});
+    const updatedCartItem = await Cart.findOneAndUpdate(
+      {'products.product':productID,user:user},
+      {$set:{'products.$.quantity':quantity}},
+      {new :true}
+    )
 
-      const total = await calculateTotalPrice(userId);
-      res.json({cartItems: cartDetails,total})
-    }
+    console.log(updatedCartItem)
+
+    res.json(updatedCartItem);
   } catch (error) {
     console.log(error);
   }
 }
+
+
+
+
+
 
 const cartPageLoad = async (req,res)=>{
   try {
@@ -876,7 +880,7 @@ module.exports = {
   contactLoad,
   cartPageLoad,
   addToCart,
-  productQuantityHandling,
+  updateCart,
   removeCartItem,
   addShippingAddress,
   updateAddress,
