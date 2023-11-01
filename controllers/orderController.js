@@ -23,12 +23,17 @@ const checkoutLoad = async (req,res)=>{
       );
 
       if(userAddress){
-        return res.render('checkout',{
+        if(total!=0){
+          return res.render('checkout',{
           user:req.session.user_id,
           currentPage:'shop',
           total,
           address:userAddress.addresses,
         })
+        }else{
+          res.redirect('/cart');
+        }
+        
       }else{
         res.render('checkout',{
           user:req.session.user_id,
@@ -102,48 +107,12 @@ const reciveShippingAddress =async(req,res)=>{
 }
 
 
-const paymentSelectionManage= async(req,res)=>{
-  try {
-    
-    let addressId= req.body.address;
-    let payment = 
-    req.body.paymentMethod === "COD"?
-    "Cash on Delivery"
-    :req.body.paymentMethod;
 
-    let userAddress = await Address.findOne({userId: req.session.user_id});
-    
-    const selectedAddress = userAddress.addresses.find((address)=>{
-      return address._id.toString() === addressId.toString();
-    })
-    
-    const cartDetails = await Cart.findOne({userId:req.session.user_id})
-    .populate({
-      path:'products.product',
-      select:'product_name product_price product_description category images.image1'
-    })
-    .exec();
-
-    if(cartDetails) {
-      const total = await calculateTotalPrice(req.session.user_id)
-      
-      const deliveryDate = await deliveryDateCalculate();
-      
-      
-      
-    }
-
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-
-const deliveryDateCalculate = async () => {
+const daliveryDateCalculate = async () => {
   try {
     // Get the current date
     const currentDate = new Date();
-
+    console.log("Date",currentDate);
     // Add two days to the current date
     const twoDaysLater = new Date(currentDate);
     twoDaysLater.setDate(currentDate.getDate() + 2);
@@ -176,10 +145,50 @@ const deliveryDateCalculate = async () => {
 
 
 
+const paymentSelectionManage = async (req, res) => {
+  try {
+    console.log(req.body);
+    let addressId = req.body.address;
+    let payment =
+      req.body.paymentMethod === "COD"
+        ? "Cash on Delivery"
+        : req.body.paymentMethod;
+    console.log(addressId);
+    let userAddrs = await Address.findOne({ userId: req.session.user_id });
+    const selectedAddress = userAddrs.addresses.find((address) => {
+      return address._id.toString() === addressId.toString();
+    });
+    const cartDetails = await Cart.findOne({ user: req.session.user_id })
+      .populate({
+        path: "products.product",
+        select: "product_name price description category images.image1",
+      })
+      .exec();
+    console.log(cartDetails);
+    if (cartDetails) {
+      let total = await calculateTotalPrice(req.session.user_id);
+      let deliveryDate = await daliveryDateCalculate();
+      console.log(deliveryDate);
+      res.render("finalcheckout", {
+        total,
+        currentPage:'shop',
+        address: selectedAddress,
+        user: req.session.user_id,
+        payment,
+        cartItems: cartDetails,
+        deliveryDate,
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
 module.exports={
   checkoutLoad,
   reciveShippingAddress,
   paymentSelectionManage,
-
   
 }

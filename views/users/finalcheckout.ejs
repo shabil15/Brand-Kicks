@@ -1,6 +1,7 @@
 <%- include('../layouts/user/header.ejs') -%>
+
 <main class="main">
-    <div class="page-header text-center" style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
+    <div class="page-header text-center " style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
         <div class="container">
             <h1 class="page-title text-dark">Checkout</h1>
         </div><!-- End .container -->
@@ -9,8 +10,9 @@
         <div class="container">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item " aria-current="page">Shopping Cart</li>
-                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+                <li class="breadcrumb-item"><a href="/cart">Shopping Cart</a></li>
+                <li class="breadcrumb-item active" ><a href="/">Checkout</a></li>
 
             </ol>
         </div><!-- End .container -->
@@ -22,10 +24,10 @@
                 <div class="row">
                     <div class="col-lg-9 cart-item-box">
 
-                        <div class=" py-4  mb-4  " style="border-radius: 10px; background: #F3F3F9;">
+                        <div class=" py-4   mb-2 " style="border-radius: 10px; background: #F3F3F9;">
                             <div class="form-check d-flex align-items-start flex-column mx-4 py-3">
                                 <div>
-                                    <h5>1. Delivery Address</h5>
+                                    <h6>1. Delivery Address</h6>
 
                                 </div>
                                 <div class="form-check d-flex align-items-center flex-column co mx-4">
@@ -49,48 +51,51 @@
                                 </div>
                             </div>
                         </div>
-                        <hr>
-
-                        <h5 class="text-dark mb-3">2. &nbsp; Payment method</h5>
-
-                        <form action="/checkout/paymentselection" id="paymentForm" method="post">
-
-                            <div class="col-12 row">
-                                <div class="col-md-5">
-                                    <label class="p-3 border rounded-4 m-2 custom-label">
-                                        <div class="form-check d-flex align-items-center mx-4">
-                                            <input class="form-check-input" type="radio" name="paymentMethod" value="COD" id="codRadio">
-                                            <div class="mx-5 p-3">
-                                                <b>Cash on Delivery</b>
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div class="col-md-7">
-                                    <label class="p-3 border rounded-4 m-2 custom-label">
-                                        <div class="form-check d-flex align-items-center mx-4">
-                                            <input class="form-check-input" type="radio" name="paymentMethod" value="Online" id="onlineRadio" >
-                                            <div class="mx-4 p-3 row d-flex justify-content-between">
-                                                <span> <b>Online Payment</b></span>
-                                                <img width="130px" class="d-flex align-items-end mx-3" src="/user/images/payment-icons.jpg" alt="">
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-                            <input type="text" name="address" value="<%= address._id %>" hidden>
-
-                        </form>
 
 
-
-
-
-                        <hr>
-
-                        <div class=" py-4  mt-1  " style="border-radius: 10px; background: #F3F3F9;">
+                        <div class=" py-4    " style="border-radius: 10px; background: #F3F3F9;">
                             <div class="form-check d-flex align-items-center mx-4 ">
-                                <h5>3. Items and delivery</h5>
+                                <h6 class="pt-2">2. <b><%= payment %></b> Payment method choosed</h6>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class=" py-4  mt-1  " style="border-radius: 10px; background: #F3F3F9;">
+                            <div class="form-check d-flex  flex-column mx-4 ">
+                                <h5 class="mt-3">3. Items and delivery</h5><br>
+                                <!-- <hr> -->
+
+
+                                <div class="col-12 row d-flex justify-content-center">
+                                    <% for(i=0;i<cartItems.products.length;i++){ %>
+                                    <div class="card   col-4 m-1 p-2 d-flex flex-column" style="border-radius: 7px; ">
+                                        <div class="row g-0 ">
+                                            <div class="col-12 d-flex align-items-center">
+                                                <img style="width: 150px; height: 150px; border-radius: 17px;"
+                                                    src="/public/products/images/<%= cartItems.products[i].product.images.image1%>"
+                                                    class="card-img-start" alt="...">
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">
+                                                        <%= cartItems.products[i].product.product_name %>
+                                                    </h6>
+                                                    <p class="card-title"><%= cartItems.products[i].product.product_description %></p>
+                                                    <p class="card-text text-dark"><%= cartItems.products[i].product.product_price %>
+                                                    </p>
+                                                    
+                                                    <p class="card-text">
+                                                       qty: <%= cartItems.products[i].quantity %>
+                                                        </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <%}%>
+
+
+                                </div>
+
+
                             </div>
                         </div>
 
@@ -112,7 +117,7 @@
                                     <tr class="summary-subtotal">
                                         <td>Subtotal:</td>
                                         <td>₹<span id="subTotalDisplay">
-                                                <%=total%>
+                                                <%= total%>
                                             </span></td>
                                     </tr><!-- End .summary-subtotal -->
 
@@ -156,17 +161,14 @@
         document.getElementById("paymentForm").submit();
     })
 </script>
-
 <script>
     // Get references to the radio buttons and the submit button
     const codRadio = document.getElementById('codRadio');
     const onlineRadio = document.getElementById('onlineRadio');
     const paymentBtn = document.getElementById('paymentBtn');
-
     // Add event listeners to the radio buttons
     codRadio.addEventListener('change', toggleButtonState);
     onlineRadio.addEventListener('change', toggleButtonState);
-
     // Function to toggle the button state based on the radio button selection
     function toggleButtonState() {
         if (codRadio.checked || onlineRadio.checked) {
@@ -175,6 +177,6 @@
             paymentBtn.disabled = true; // Disable the button if no radio button is selected
         }
     }
-
 </script>
+
 <%- include('../layouts/user/footer.ejs') -%>

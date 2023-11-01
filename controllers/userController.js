@@ -12,6 +12,7 @@ const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
 const Swal = require('sweetalert2'); 
 const { log } = require("console");
+const flash = require('flash');
 
 //=============code for securing the password=================================//
 
@@ -719,6 +720,10 @@ const updateCart = async (req,res) =>{
     const productID = req.body.productID;
     const quantity = req.body.quantity;
 
+    if (quantity > 10) {
+      req.flash('error', 'Quantity limit reached');
+      return res.redirect('/cart'); // Redirect to the cart page
+    }
 
     const updatedCartItem = await Cart.findOneAndUpdate(
       {'products.product':productID,user:user},

@@ -82,7 +82,7 @@ user_route.post('/profile/user_address',userController.addAddressFromProfile)
 
 user_route.post('/profile/user_address/edit',userController.updateAddress)
 
-user_route.delete('/updateCart',userController.updateCart);
+user_route.delete('/profile/user_address/delete',userController.deleteAddress);
 
 //===============================cart related================================//
 
