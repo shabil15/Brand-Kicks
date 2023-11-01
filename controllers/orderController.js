@@ -184,11 +184,21 @@ const paymentSelectionManage = async (req, res) => {
   }
 };
 
-
+const orderStatusPageLoad = async(req,res)=>{
+  try {
+    res.render('orderStatus',{
+      currentPage:'shop',
+      user:req.session.user_id,
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports={
   checkoutLoad,
   reciveShippingAddress,
   paymentSelectionManage,
+  orderStatusPageLoad,
   
 }

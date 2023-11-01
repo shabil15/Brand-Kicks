@@ -103,6 +103,8 @@ user_route.post('/checkout',orderController.reciveShippingAddress)
 
 user_route.post('/checkout/paymentselection',orderController.paymentSelectionManage)
 
+user_route.get('/checkout/placeorder',orderController.orderStatusPageLoad)
+
 
 
 
