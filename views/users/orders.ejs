@@ -1,0 +1,236 @@
+<%- include('../layouts/user/header.ejs') -%>
+
+<main class="main">
+  <div class="page-header text-center " style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
+      <div class="container">
+          <h1 class="page-title text-dark">My Account</h1>
+      </div><!-- End .container -->
+  </div><!-- End .page-header -->
+  <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+      <div class="container">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/profile">Your Account</a></li>
+              <li class="breadcrumb-item active" aria-current="page">all Orders</li>
+
+          </ol>
+      </div><!-- End .container -->
+  </nav><!-- End .breadcrumb-nav -->
+
+  <%if(products){%>
+      <div class="container-fluid d-flex flex-column justify-content-center py-5">
+          <%for(i=products.length-1;i>=0;i--){%>
+
+              <div>
+                  <!-- model start  -->
+                  <div class="modal fade"
+                      id="modCancel<%=products[i].orderId%><%=products[i].productDetails._id%>" tabindex="-1"
+                      aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <!-- <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                      Modal title</h1> -->
+                                  <p class="modal-title text-danger mx-auto"> <b
+                                          class="mdi mdi-comment-alert text-warning"></b>
+                                      Are you sure to
+                                      Cancel this order</p>
+                                  <!-- <button type="button" class=" btn mdi mdi-close" data-bs-dismiss="modal"
+                                      aria-label="Close">x</button> -->
+                              </div>
+                              <div class=""
+                                  style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;">
+
+                                  <div class="card mx-auto mb-3 py-5"
+                                      style="max-width: 540px; border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;">
+                                      <div class="row g-0 ">
+                                          <div class="col-md-5  d-flex align-items-center">
+                                              <img style="width: 170px; height: 170px; border-radius: 7px;"
+                                                  src="/public/products/images/<%=products[i].productDetails.images.image1%>"
+                                                  class="card-img-start mx-2" alt="...">
+                                          </div>
+                                          <div class="col-md-7">
+                                              <div class="card-body d-flexmy-auto">
+                                                  <h5 class="card-title">
+                                                      <%= products[i].productDetails.product_name %>
+                                                  </h5>
+
+                                                  </p>
+                                                  <p class="card-text"><small class="text-body-secondary">
+                                                          Quantity :
+                                                          <b>
+                                                              <%=products[i].quantity %>
+                                                          </b>
+                                                      </small></p>
+
+                                                  <h6 class=" mb-2">Delivery Expect on : <br> <b>
+                                                          <%= products[i].deliveryDate %>
+                                                      </b></h6>
+                                                  <h5 class="card-title mb-2">₹ <%=
+                                                          products[i].productDetails.product_price %> ONLY
+                                                  </h5>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-outline-dark"
+                                          data-bs-dismiss="modal">Not Now</button>
+                                      <button type="button" class="btn btn-dark"
+                                          onclick="cancelOrder('<%=products[i].orderId%>','<%=products[i].productDetails._id%>')">Cancel
+                                          Now</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- model end -->
+                  </div>
+
+
+
+                  <div class="card  col-md-6 col-10 my-3 mx-auto p-3"
+                      style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;">
+                      <div class="card-header d-flex justify-content-between w-100">
+                          <dir class="d-flex flex-column w-100">
+                              <%if(products[i].OrderStatus!="canceled"){%>
+                                  <p>ORDER PLACED</p>
+                                  <p>
+                                      <%= products[i].placeOrderDate%>
+                                  </p>
+                                  <%}%>
+
+                          </dir>
+
+
+                      </div>
+                      <hr class="m-0 mb-1">
+                      <div>
+                          <%if(products[i].OrderStatus!="canceled"){%>
+                              <h6 class="mx-5 mb-2">Delivery Expect on : <b>
+                                      <%= products[i].deliveryDate %>
+                                  </b></h6>
+                              <%}%>
+                      </div>
+                      <div class="card-body row col-12 d-flex ">
+                          <div class="col-4 ">
+                              <img src="/public/products/images/<%= products[i].productDetails.images.image1 %>"
+                                  style="width: 150px;" alt="">
+                              <p class="card-text">
+                              </p>
+                              <!-- <a href="#" class="btn btn-dark">Go somewhere</a> -->
+                          </div>
+                          <div class="col-7">
+                              <h5 class="card-title">
+                                  <%= products[i].productDetails.product_name %>
+                              </h5>
+                              <p class="card-text">
+                              <p>Quantity : <b>
+                                      <%=products[i].quantity %>
+                                  </b></p><i class="fa-solid fa-file-invoice-dollar"></i>
+                                <%=products[i].paymentMethod %>
+                                  </p>
+                                  <h5 class="card-title mb-2">₹ <%= products[i].productDetails.product_price %>
+                                  </h5>
+
+                                  <%if(products[i].OrderStatus!="canceled"){%>
+
+                                      <div class="col-12 row d-flex justify-content-start">
+                                          <!-- <a href="#" class="btn btn-dark col-2 mb-1">Track your Order</a> -->
+                                          <button data-bs-toggle="modal"
+                                              data-bs-target="#modCancel<%=products[i].orderId%><%=products[i].productDetails._id%>"
+                                              class="btn btn-dark col-2 mb-1">Cancel Order </button>
+
+                                      </div>
+                                      <%}else{%>
+                                          <h6 class="text-danger text-center mr-5">Canceled Order</h6>
+                                          <div class="progress-track  col-12">
+                                              <ul id="progressbar">
+                                                  <li class="step0 active " style="width: 50%; font-size: 1rem;" id="step1">Order placed</li>
+                                                  <li class="step0 active text-right text-danger" style="width: 50%; font-size: 1rem;" id="step4">Canceled</li>
+                                              </ul>
+                                          </div>
+
+                                          <%}%>
+
+
+
+
+                          </div>
+
+                      </div>
+                      <!-- OrderStatus -->
+
+                      <%if(products[i].OrderStatus!="canceled"){%>
+                
+
+                      <div class="card-footer" style="background: #F3F3F9;">
+                          <h6 class="text-center">Order status:</h6>
+                          <div class="progress-track">
+                              <ul id="progressbar">
+                                  <li style="font-size: 12px;" class="step0 active " id="step1">Order placed
+                                  </li>
+                                  <li style="font-size: 12px;"
+                                      class="step0 text-center <%= products[i].StatusLevel >= 2 ? 'active' : '' %>"
+                                      id="step2">Shipped</li>
+                                  <li style="font-size: 12px;"
+                                      class="step0  text-right <%= products[i].StatusLevel >= 3 ? 'active' : '' %>"
+                                      id="step3">Out for Delivery</li>
+                                  <li style="font-size: 12px;"
+                                      class="step0 text-right <%= products[i].StatusLevel >= 4 ? 'active' : '' %>"
+                                      id="step4">Delivered</li>
+
+                              </ul>
+                          </div>
+                      </div>
+                      <%}%>
+
+
+                  </div>
+
+                  <%}%>
+
+              </div>
+              <%}else{%>
+                  <div class="container-fluid d-flex flex-column justify-content-center py-5">
+
+                      <div class="card  col-md-6 col-10 my-3 mx-auto p-3"
+                          style="border: 1px solid #d5d1d1; border-radius: 7px; background: #F3F3F9;">
+
+                          <div class="card-body row col-12 d-flex justify-content-center py-5">
+                              <h4 class="text-center text-dark">You have No orders</h4>
+                        </div>
+                        <div>
+                            <a href="/shop" class="btn btn-outline-dark btn-block mr-3 mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                        </div>
+                               
+                          
+                         
+                      </div>
+
+
+                  </div>
+                  <%}%>
+
+
+</main>
+<script>
+  function cancelOrder(orderId, productId) {
+      $.ajax({
+          url: '/profile/orders/cancel',
+          method: "post",
+          data: { orderId, productId },
+          success: function (response) {
+              console.log(response);
+              if (response.cancel == 1) {
+                  location.reload()
+              }
+          },
+          error: function (error) {
+              console.error("Error:", error);
+          }
+      });
+  }
+</script>
+
+<%- include('../layouts/user/footer.ejs') -%>

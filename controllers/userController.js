@@ -400,7 +400,7 @@ const profilePageLoad = async (req,res)=>{
   const address = await Address.findOne({userId:req.session.user_id})
   if(address){
     res.render('profile',
-    { currentPage:'home',
+    { currentPage:'profile',
       users:userData,
       updatePassErr: req.session.updatePassErr,
       updatePass: req.session.updatePass,

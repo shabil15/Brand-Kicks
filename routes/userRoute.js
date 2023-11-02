@@ -111,6 +111,7 @@ user_route.post('/checkout/placeorder',orderController.placeOrderManage)
 
 user_route.get('/profile/orders',orderController.allOrdersPageLoad)
 
+user_route.post('/profile/orders/cancel',orderController.cancelOrder)
 
 
 

@@ -248,6 +248,8 @@ const placeOrderManage = async (req, res) => {
 
     const cartDetails = await Cart.findOne({ user: req.session.user_id });
 
+    const products = cartDetails.products;
+
     let userAddrs = await Address.findOne({ userId: req.session.user_id });
     const shipAddress = userAddrs.addresses.find((address) => {
       return address._id.toString() === addressId.toString();
@@ -295,6 +297,7 @@ const placeOrderManage = async (req, res) => {
 
     if (paymentType !== "Online") {
       console.log(placeorder._id);
+
       let changeOrderStatus = await Order.updateOne(
         { _id: placeorder._id },
         { $set: { OrderStatus: "success" } }
@@ -302,26 +305,159 @@ const placeOrderManage = async (req, res) => {
 
       await Cart.deleteOne({ user: req.session.user_id });
 
+      for (const productItem of cartDetails.products) {
+        const productId = productItem.product;
+        const purchasedQuantity = productItem.quantity;
+  
+
+        const product = await Product.findById(productId);
+  
+        if (product) {
+         
+          if (product.stock >= purchasedQuantity) {
+            
+            product.stock -= purchasedQuantity;
+  
+            await product.save();
+
+          }else{
+            return res.status(400).json({ error: `Insufficient stock for product: ${product.product_name}` });
+          }
+        }
+      }
 
       return res.json({ cod: true,orderId:placeorder._id });
-    } 
+      }
 
   } catch (error) {
     console.log(error.message);
   }
 };
 
+function formatDate(date) {
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
+}
+
+
+
 const allOrdersPageLoad = async (req,res)=>{
   try {
+
+    const userId = req.session.user_id;
+
+    const userOrders = await Order.find({userId:userId});
+
+    if(userOrders.length ===0){
+      console.log("No orders found for the users.");
+      return res.render('orders',{
+        user:userId,
+        products:false,
+        currentPage:"profile"
+      })
+    }
+
+    const productWiseOrders = []
+
+    for(const order of userOrders){
+      for(const product of order.products) {
+        const productId = product.productId;
+        const quantity = product.quantity;
+        const placeDate = formatDate(order.orderDate);
+        const OrderStatus = product.OrderStatus;
+        const StatusLevel = product.StatusLevel;
+
+
+        const productDetails = await Product.findById(productId,{
+          images:1,
+          product_name:1,
+          category:1,
+          product_price:1,
+        })
+
+        let deliveryDate = await daliveryDateCalculate(order.orderDate);
+
+        const productWiseOrder = {
+          orderId:order._id,
+          placeOrderDate:placeDate,
+          paymentMethod:order.paymentMethod,
+          productDetails,
+          quantity,
+          address:order.shippingAddress,
+          deliveryDate:deliveryDate,
+          OrderStatus,
+          StatusLevel
+        }
+
+        productWiseOrders.push(productWiseOrder)
+
+      }
+    }
+
+
     res.render('orders',{
       user:req.session.user_id,
+      products:productWiseOrders,
       currentPage:'profile',
-      
     })
+
+  
   } catch (error) {
     console.log(error);
   }
 }
+
+
+const cancelOrder = async (req, res) => {
+  try {
+    const { orderId, productId } = req.body;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+
+    if (!productInfo) {
+      return res.status(404).json({ message: "Product not found in the order" });
+    }
+
+    // Set the OrderStatus to "canceled"
+    productInfo.OrderStatus = "canceled";
+
+    // Retrieve the quantity from the order
+    const quantityToIncrease = productInfo.quantity;
+
+    // Find the product in your database using its productId
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found in the database" });
+    }
+
+    // Increase the stock of the product
+    product.stock += quantityToIncrease;
+
+    // Save the updated product in the database
+    await product.save();
+
+    // Save the updated order
+    await order.save();
+
+    res.json({ cancel: 1 });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports={
   checkoutLoad,
@@ -330,5 +466,7 @@ module.exports={
   paymentSelectionManage,
   orderStatusPageLoad,
   placeOrderManage,
+  allOrdersPageLoad,
+  cancelOrder,
   
 }

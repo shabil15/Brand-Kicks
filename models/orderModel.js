@@ -43,7 +43,14 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required:true,
       },
-
+      OrderStatus:{
+        type:String,
+        required:true
+      },
+      StatusLevel:{
+        type: Number,
+        required: true
+      }
     }
   ],
   orderDate: {

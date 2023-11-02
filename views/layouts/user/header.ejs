@@ -99,14 +99,16 @@
                                 </li>
                                 <li class="<%= currentPage === 'aboutus' ? 'active' : '' %>">
                                     <a href="/aboutus" >About Us</a>
-                                </li>
+                                </li  >
                               <% if(user) {%>
                                         <!-- <a href="/account"><p><i class="icon-heart-o"> </i> <i class="icon-user"></i>account</p></a> -->
-                                        <li>
+                                        <li class="<%= currentPage === 'profile' ? 'active' : '' %>">
                                             <a href="#" class="sf-with-ul"><i class="icon-user" style="font-size: 17px;"></i>my Account</a>
                                             <ul>
                                                 <li><a href="/profile">My Profile</a></li>
+                                                <li><a href="/profile/orders">My Orders</a></li>
                                                 <li><a href="#" onclick="confirmSignOut()">logout</a></li>
+
                                             </ul>
                                         </li>
                                     <% }else{ %>
