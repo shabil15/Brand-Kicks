@@ -431,26 +431,21 @@ const cancelOrder = async (req, res) => {
       return res.status(404).json({ message: "Product not found in the order" });
     }
 
-    // Set the OrderStatus to "canceled"
+    
     productInfo.OrderStatus = "canceled";
-
-    // Retrieve the quantity from the order
     const quantityToIncrease = productInfo.quantity;
 
-    // Find the product in your database using its productId
     const product = await Product.findById(productId);
 
     if (!product) {
       return res.status(404).json({ message: "Product not found in the database" });
     }
 
-    // Increase the stock of the product
+   
     product.stock += quantityToIncrease;
 
-    // Save the updated product in the database
     await product.save();
 
-    // Save the updated order
     await order.save();
 
     res.json({ cancel: 1 });
