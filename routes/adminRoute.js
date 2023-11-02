@@ -15,6 +15,7 @@ const adminController =require('../controllers/adminController')
 const productController = require('../controllers/productController')
 const fileUpload= require('../middlewares/fileUpload')
 const bannerController= require('../controllers/bannersController')
+const orderController =require('../controllers/orderController')
 
 admin_route.get('/',adminAuth.isLogout,adminController.loadAdminLogin)
 admin_route.post('/',adminAuth.isLogout,adminController.verifyLogin)
@@ -48,5 +49,9 @@ admin_route.get('/addbanner',adminAuth.isLogin,bannerController.addbannersLoad)
 admin_route.post('/addbanner',adminAuth.isLogin,fileUpload.uploadBanner.single('banner'),bannerController.addBanner)
 admin_route.get('/deletebanner',adminAuth.isLogin,bannerController.deleteBanner)
 admin_route.get('/visible',adminAuth.isLogin,bannerController.visibilityBanner);
+
+
+admin_route.get('/orders',adminAuth.isLogin,orderController.ordersListPageLoad)
+admin_route.get('/orders/manage',adminAuth.isLogin,orderController.orderManagePageLoad);
 
 module.exports=admin_route

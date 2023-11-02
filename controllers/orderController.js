@@ -259,7 +259,7 @@ const placeOrderManage = async (req, res) => {
     console.log("collected:", shipAddress);
 
 
-
+    if (paymentType !== "Online") {
     if (!shipAddress) {
       return res.status(400).json({ error: "Address not found" });
     }
@@ -288,14 +288,14 @@ const placeOrderManage = async (req, res) => {
       products: cartProducts,
       totalAmount: total,
       paymentMethod: paymentType,
-      paymentStatus: "pending",
+      paymentStatus: "success",
     });
 
     const placeorder = await order.save();
     console.log(placeorder._id);
 
 
-    if (paymentType !== "Online") {
+   
       console.log(placeorder._id);
 
       let changeOrderStatus = await Order.updateOne(
@@ -454,6 +454,121 @@ const cancelOrder = async (req, res) => {
   }
 };
 
+//=================orders list page load in admin side==========================//
+
+
+const ordersListPageLoad = async (req,res)=>{
+  try {
+    
+    const orders = await Order.find({})
+
+    const productWiseOrdersArray = [];
+
+    for(const order of orders){
+      for(productInfo of order.products) {
+        const productId = productInfo.productId;
+
+        const product = await Product.findById(productId).select(
+          "product_name product_price images"
+        )
+        const userDetails = await User.findById(order.userId).select(
+          "firstName secondName"
+        );
+
+        if(product) {
+          orderDate = await formatDate(order.orderDate);
+          productWiseOrdersArray.push({
+            user:userDetails,
+            product:product,
+            orderDetails: {
+              _id: order._id,
+              userId: order.userId,
+              shippingAddress:order.shippingAddress,
+              orderDate:orderDate,
+              totalAmount: productInfo.quantity * product.product_price,
+              OrderStatus:productInfo.OrderStatus,
+              StatusLevel:productInfo.StatusLevel,
+              paymentMethod:order.paymentMethod,
+              paymentStatus:order.paymentStatus,
+              quantity:productInfo.quantity,
+            }
+          })
+        }
+      } 
+    }
+
+    console.log(productWiseOrdersArray);
+
+    res.render('orders',{
+      orders:productWiseOrdersArray
+    })
+
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//==============order management page Load  in admin side=========================//
+
+const orderManagePageLoad = async (req, res) => {
+  try {
+    const { orderId, productId } = req.query;
+
+    console.log('orderId:', orderId);
+    console.log('productId:', productId);
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      console.log('Order not found:', orderId);
+      return res.status(404).sendFile(path.dirname(__dirname, 'views', '404.html'));
+    }
+
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+
+    console.log('productInfo:', productInfo);
+
+    const product = await Product.findById(productId).select('product_name images ');
+
+    console.log('product:', product);
+
+    let orderDate = formatDate(order.orderDate);
+    console.log('orderDate:', orderDate);
+
+    const productOrder = {
+      orderId: order._id,
+      product: product,
+      orderDetails: {
+        _id: order._id,
+        userId: order.userId,
+        shippingAddress: order.shippingAddress,
+        orderDate,
+        totalAmount: order.totalAmount,
+        orderStatus: productInfo.OrderStatus,
+        StatusLevel: productInfo.StatusLevel,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.paymentStatus,
+        quantity: productInfo.quantity,
+      },
+    };
+
+    console.log('productOrder:', productOrder);
+
+    res.render('orderManagement', {
+      product: productOrder,
+      orderId,
+      productId,
+    });
+  } catch (error) {
+    console.log('Error:', error);
+  }
+}
+
+
+
 module.exports={
   checkoutLoad,
   reciveShippingAddress,
@@ -463,5 +578,7 @@ module.exports={
   placeOrderManage,
   allOrdersPageLoad,
   cancelOrder,
+  ordersListPageLoad,
+  orderManagePageLoad,
   
 }
