@@ -21325,3 +21325,6 @@ img {
     font-size: 1rem
   }
 }
+.table-responsive {
+  overflow-x: hidden;
+}

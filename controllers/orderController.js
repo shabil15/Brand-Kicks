@@ -497,7 +497,6 @@ const ordersListPageLoad = async (req,res)=>{
       } 
     }
 
-    console.log(productWiseOrdersArray);
 
     res.render('orders',{
       orders:productWiseOrdersArray
@@ -515,8 +514,7 @@ const orderManagePageLoad = async (req, res) => {
   try {
     const { orderId, productId } = req.query;
 
-    console.log('orderId:', orderId);
-    console.log('productId:', productId);
+   
 
     const order = await Order.findById(orderId);
 
@@ -529,14 +527,11 @@ const orderManagePageLoad = async (req, res) => {
       (product) => product.productId.toString() === productId
     );
 
-    console.log('productInfo:', productInfo);
+  
 
     const product = await Product.findById(productId).select('product_name images ');
 
-    console.log('product:', product);
-
     let orderDate = formatDate(order.orderDate);
-    console.log('orderDate:', orderDate);
 
     const productOrder = {
       orderId: order._id,
@@ -555,8 +550,6 @@ const orderManagePageLoad = async (req, res) => {
       },
     };
 
-    console.log('productOrder:', productOrder);
-
     res.render('orderManagement', {
       product: productOrder,
       orderId,
@@ -567,7 +560,42 @@ const orderManagePageLoad = async (req, res) => {
   }
 }
 
+const changeOrderStatus = async (req, res)=>{
+  try {
+    const { status,orderId,productId} =req.body;
+    const order = await Order.findById(orderId)
 
+    const statusMap = {
+      Shipped:2,
+      OutforDelivery:3,
+      Delivered:4,
+    }
+
+    const selectedStatus = status;
+    const StatusLevel= statusMap[selectedStatus];
+
+
+    if(!order) {
+      return res.status(404).json({message: "Order not found."})
+    }
+
+    
+    const productInfo = order.products.find(
+    (product) => product.productId.toString()===productId
+    );
+
+    productInfo.OrderStatus = status;
+    productInfo.StatusLevel = StatusLevel;
+
+    const result = await order.save();
+
+    res.redirect(
+      `/admin/orders/manage?orderId=${orderId}&productId=${productId}`
+    )
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports={
   checkoutLoad,
@@ -580,5 +608,6 @@ module.exports={
   cancelOrder,
   ordersListPageLoad,
   orderManagePageLoad,
+  changeOrderStatus,
   
 }

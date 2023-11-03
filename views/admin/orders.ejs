@@ -1,8 +1,8 @@
 <%- include('../layouts/admin/header.ejs') %>
 <div class="main-panel">
-  <div class="content-wrapper">
+  
 
-      <div class="row ">
+      
 
           <div class="col-12 grid-margin">
               <div class="card">
@@ -18,19 +18,18 @@
                               </li>
                           </ul>
                       </div>
-                      <h4 class="card-title">All Orders</h4>
-                      <div >
-                          <table class="table" id="user-table">
+                      <h1 class="card-title ml-3">All Orders</h1>
+                      <div class="mx-auto">
+                          <table class="table " id="user-table" >
                               <thead>
                                   <tr>
 
                                       <th> Product </th>
                                       <th> User </th>
-                                      <th> Order Date</th>
-                                      <th> Quantity</th>
-                                      <th> Price</th>
-                                      <th> Pyament Status</th>
-                                      <th> Order Status</th>
+                                      <th > Order Date</th>
+                                      <th > Quantity</th>
+                                      <th> Payment </th>
+                                      <th> Status</th>
                                       <th> Action</th>
                                   </tr>
                               </thead>
@@ -48,18 +47,16 @@
                                               <%= orders[i].orderDetails.shippingAddress.fullName %>
                                           </td>
                                           <td>
-                                              <span style="font-weight: 100;" class="pl-2 ">
+                                              <span style="font-weight: 60;">
                                                   <%= orders[i].orderDetails.orderDate %>
                                               </span>
 
                                           </td>
 
-                                          <td>
+                                          <td class="text-center">
                                               <%= orders[i].orderDetails.quantity %>
                                           </td>
-                                          <td>
-                                              ₹<%= orders[i].orderDetails.totalAmount %>
-                                          </td>
+                                          
 
                                           <td>
                                               <button 
@@ -70,13 +67,13 @@
                                               <%}else if(orders[i].orderDetails.paymentStatus == "failed"){%>
                                                   class="btn-inverse-danger" 
                                               <%}%>        
-                                              ><%= orders[i].orderDetails.paymentStatus %></button>
+                                              >₹<%= orders[i].orderDetails.totalAmount %></button>
                                           </td>
 
                                           <td>
                                               <button 
                                               <%if( orders[i].orderDetails.OrderStatus == "Delivered"){%>
-                                              class="btn-inverse-warning" 
+                                              class="btn-inverse-success" 
                                               <%}else if(orders[i].orderDetails.OrderStatus == "pending"){%>
                                                   class="btn-inverse-warning" 
                                               <%}else if(orders[i].orderDetails.OrderStatus == "placed"){%>
@@ -88,14 +85,14 @@
                                               <%}else if(orders[i].orderDetails.OrderStatus == "canceled"){%>
                                                   class="btn-inverse-danger" 
                                               <%}else if(orders[i].orderDetails.OrderStatus == "OutforDelivery"){%>
-                                                  class="btn-warning btn-sm" 
+                                                  class="btn-light " 
                                               <%}%> 
 
                                               ><%= orders[i].orderDetails.OrderStatus %>
                                           </button>
                                           </td>
 
-                                          <td>
+                                          <td >
                                               <a href="/admin/orders/manage?orderId=<%=orders[i].orderDetails._id%>&productId=<%=orders[i].product._id%>" class="btn btn-inverse-info">Manage</a>
                                           </td>
                                       </tr>
@@ -115,7 +112,7 @@
       </div>
 
 
-  </div>
+  
   <!-- content-wrapper ends -->
   <!-- partial:partials/_footer.html -->
   <footer class="footer">

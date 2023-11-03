@@ -134,6 +134,7 @@
                                   </h5>
 
                                   <%if(products[i].OrderStatus!="canceled"){%>
+                                    <%if(products[i].OrderStatus!="Delivered"){%>
 
                                       <div class="col-12 row d-flex justify-content-start">
                                           <!-- <a href="#" class="btn btn-dark col-2 mb-1">Track your Order</a> -->
@@ -142,6 +143,7 @@
                                               class="btn btn-dark col-2 mb-1">Cancel Order </button>
 
                                       </div>
+                                      <%}%>
                                       <%}else{%>
                                           <h6 class="text-danger text-center mr-5">Canceled Order</h6>
                                           <div class="progress-track  col-12">

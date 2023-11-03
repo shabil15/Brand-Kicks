@@ -24,13 +24,13 @@
                               <div class="card  col-12 my-3 mx-auto p-2"
                                   style="border: 0.2px solid #494949; border-radius: 10px; ">
                                   <div class="card-header d-flex justify-content-between w-100">
-                                      <dir class="d-flex flex-column ">
+                                      <div class="d-flex flex-column ">
                                           <p>ORDER PLACED</p>
                                           <h6>
                                               <%= product.orderDetails.orderDate %>
                                           </h6>
 
-                                      </dir>
+                                      </div>
 
 
                                   </div>
@@ -79,8 +79,11 @@
                                               </p>
                                               <hr class="m-0 p-0 my-3">
                                               <%if(product.orderDetails.OrderStatus!="canceled"){%>
+                                              <%if(product.orderDetails.OrderStatus!="Delivered"){%>
+                                               
                                                   <button data-bs-toggle="modal" data-bs-target="#modCancel"
                                                       class="btn btn-inverse-danger p-3">Cancel Order</button>
+                                                  <%}%>
                                                   <%}%>
 
                                                       <div class="col-12">
@@ -226,9 +229,8 @@
 
                   <div class="modal-footer">
                       <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Not Now</button>
-                      <a type="button" class="btn btn-inverse-danger"
-                          onclick="cancelOrder('<%= orderId %>','<%= productId %>')">Cancel
-                          Now</a>
+                      <a type="button" class="btn btn-inverse-danger" onclick="cancelOrder('<%= orderId %>', '<%= productId %>')">Cancel Now</a>
+
                   </div>
               </div>
           </div>
@@ -245,7 +247,7 @@
           $.ajax({
               url: '/admin/orders/manage/cancel',
               method: "post",
-              data: { oderId, productId },
+              data: { orderId, productId },
               success: function (response) {
                   console.log(response);
                   if (response.cancel == 1) {
@@ -265,3 +267,4 @@
       // })
   </script>
 <%- include('../layouts/admin/footer.ejs') %>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
