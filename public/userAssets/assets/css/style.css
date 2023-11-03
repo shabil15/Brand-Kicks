@@ -127,3 +127,45 @@
     font-size: 1rem
   }
 }
+/* Styles for the smaller cart badge */
+.icon-header-item {
+  position: relative; /* To allow positioning of the badge */
+  background-color: #FF5733; /* Background color for the badge */
+  color: #fff; /* Text color for the badge */
+  border-radius: 50%; /* Make it a circle */
+  font-size: 12px; /* Reduce the font size */
+  width: 18px; /* Reduce the width of the badge */
+  height: 18px; /* Reduce the height of the badge */
+  line-height: 18px; /* Center the text vertically */
+  text-align: center; /* Center the text horizontally */
+  display: inline-block; /* Display as inline-block to fit content */
+  margin-right: 10px; /* Add spacing between the badge and the icon */
+
+  /* Apply the continuous bounce animation with a slower duration of 1.5 seconds */
+  animation: bounce 1.5s infinite;
+  animation-fill-mode: both; /* Keep the final state of the animation */
+}
+
+/* Hover style for the badge */
+.icon-header-item:hover {
+  background-color: #FF4500; /* Change background color on hover */
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+
+/* Additional transition for a smooth hover effect */
+.icon-header-item.trans-04 {
+  transition: background-color 0.4s; /* Add a smooth background color transition */
+}
+
+/* Define the keyframes animation for the continuous bounce effect */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+  }
+  40% {
+      transform: translateY(-6px); /* Adjust the distance for the desired bounce effect */
+  }
+  60% {
+      transform: translateY(-3px); /* Adjust the distance for the desired bounce effect */
+  }
+}

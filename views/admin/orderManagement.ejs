@@ -75,17 +75,12 @@
                                               </p>
                                               <p class="card-text">Pincode :
                                                   <%=product.orderDetails.shippingAddress.pincode%>,
-                                                      <%=product.orderDetails.shippingAddress.country%>
+                                                      
                                               </p>
                                               <hr class="m-0 p-0 my-3">
-                                              <%if(product.orderDetails.OrderStatus!="canceled"){%>
-                                              <%if(product.orderDetails.OrderStatus!="Delivered"){%>
-                                               
-                                                  <button data-bs-toggle="modal" data-bs-target="#modCancel"
-                                                      class="btn btn-inverse-danger p-3">Cancel Order</button>
-                                                  <%}%>
-                                                  <%}%>
-
+                                              <%if(product.orderDetails.orderStatus!="canceled"){%>
+                                                <button class="btn btn-inverse-danger p-3" onclick="confirmCancelOrder('<%= orderId %>', '<%= productId %>')">Cancel Order</button>
+                                                    <%}%>
                                                       <div class="col-12">
                                                           <div class="col-12 text-light">
 
@@ -103,8 +98,10 @@
 
 
                           </div>
+                          
 
-                          <%if(product.orderDetails.OrderStatus!="canceled"){%>
+                          <%if(product.orderDetails.orderStatus!='canceled'){%>
+                           
                               <div class="container-fluid d-flex flex-column justify-content-center ">
 
                                   <div class="card row col-12 my-3 mx-auto p-2"
@@ -120,6 +117,7 @@
                                                   <li class="step0 text-center <%= product.orderDetails.StatusLevel >= 2 ? 'active' : '' %>" id="step2">Shipped</li>
                                                   <li class="step0  text-right <%= product.orderDetails.StatusLevel >= 3 ? 'active' : '' %>" id="step3">Out for Delivery</li>
                                                   <li class="step0 text-right <%= product.orderDetails.StatusLevel >= 4 ? 'active' : '' %>" id="step4">Delivered</li>
+
                                                   
                                               </ul>
                                           </div>
@@ -151,6 +149,7 @@
                                       </div>
                                   </div>
                               </div>
+                                 
                               <%}else{%>
                                   <div class="container-fluid d-flex flex-column justify-content-center ">
 
@@ -185,86 +184,48 @@
               </div>
           </div>
       </div>
+    </div>
+</div>
 
 
-  </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="modCancel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <!-- <h1 class="modal-title fs-5" id="exampleModalLabel">
-                      Modal title</h1> -->
-                  <p class="modal-title "> <b class="mdi mdi-comment-alert text-warning"></b>
-                      Are you sure you want to
-                      Cancel this order</p>
-                  <button type="button" class=" btn mdi mdi-close" data-bs-dismiss="modal"
-                      aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-
-                  <div class="card mb-3 bg-dark" style="max-width: 540px;">
-                      <div class="row g-0 ">
-                          <div class="col-md-3 d-flex align-items-center">
-                              <img style="width: 100px; height: 100px; border-radius: 7px;"
-                                  src="/public/products/images/<%= product.product.images.image1 %>"
-                                  class="card-img-start" alt="...">
-                          </div>
-                          <div class="col-md-9">
-                              <div class="card-body">
-                                  <h5 class="card-title">
-                                      <%= product.product.product_name %>
-                                  </h5>
-
-                                  </p>
-                                  <p class="card-text"><small class="text-body-secondary"> Quantity :
-                                          <%= product.orderDetails.quantity %>
-                                      </small></p>
-
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Not Now</button>
-                      <a type="button" class="btn btn-inverse-danger" onclick="cancelOrder('<%= orderId %>', '<%= productId %>')">Cancel Now</a>
-
-                  </div>
-              </div>
-          </div>
-      </div>
-      <!-- content-wrapper ends -->
-      <!-- partial:partials/_footer.html -->
-      <footer class="footer">
-
-      </footer>
-      <!-- partial -->
-  </div>
-  <script>
-      function cancelOrder(oderId, productId) {
-          $.ajax({
-              url: '/admin/orders/manage/cancel',
-              method: "post",
-              data: { orderId, productId },
-              success: function (response) {
-                  console.log(response);
-                  if (response.cancel == 1) {
-                      location.reload()
-                  }
-              },
-              error: function (error) {
-                  console.error("Error:", error);
-              }
-          });
-      }
-
-
-      // let statusForm = document.getElementById('orderStatusForm')
-      // statusForm.addEventListener("submit",(event)=>{
-      //     console.log(event);
-      // })
-  </script>
+  
 <%- include('../layouts/admin/footer.ejs') %>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmCancelOrder(orderId, productId) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, cancel it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          cancelOrder(orderId, productId);
+        }
+      });
+    }
+  
+    function cancelOrder(orderId, productId) {
+      // Correct the URL for your AJAX request
+      $.ajax({
+        url: '/admin/orders/manage/cancel', // Update this URL if necessary
+        method: 'post',
+        data: { orderId, productId },
+        success: function (response) {
+          console.log(response);
+          if (response.cancel === 1) {
+            location.reload();
+          }
+        },
+        error: function (error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+  </script>

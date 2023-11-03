@@ -416,43 +416,61 @@ const allOrdersPageLoad = async (req,res)=>{
 const cancelOrder = async (req, res) => {
   try {
     const { orderId, productId } = req.body;
+    console.log('Cancel Order Request Received');
+    console.log('Order ID:', orderId);
+    console.log('Product ID:', productId);
 
     const order = await Order.findById(orderId);
 
     if (!order) {
+      console.log('Order not found');
       return res.status(404).json({ message: "Order not found" });
     }
+
+    console.log('Order found:', order);
 
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
 
     if (!productInfo) {
+      console.log('Product not found in the order');
       return res.status(404).json({ message: "Product not found in the order" });
     }
 
-    
+    console.log('Product found in the order:', productInfo);
+
     productInfo.OrderStatus = "canceled";
+    console.log('Order Status set to "canceled"');
+    console.log('Quantity to Increase:', productInfo.quantity);
+
     const quantityToIncrease = productInfo.quantity;
 
     const product = await Product.findById(productId);
 
     if (!product) {
+      console.log('Product not found in the database');
       return res.status(404).json({ message: "Product not found in the database" });
     }
 
-   
+    console.log('Product found in the database:', product);
+
     product.stock += quantityToIncrease;
+    console.log('Updated product stock:', product.stock);
 
     await product.save();
+    console.log('Product saved with updated stock');
 
     await order.save();
+    console.log('Order saved with updated status');
 
     res.json({ cancel: 1 });
+    console.log('Order cancellation successful');
   } catch (error) {
-    console.log(error);
+    console.log('Error:', error);
   }
 };
+
 
 //=================orders list page load in admin side==========================//
 

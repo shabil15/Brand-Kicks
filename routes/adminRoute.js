@@ -53,7 +53,7 @@ admin_route.get('/visible',adminAuth.isLogin,bannerController.visibilityBanner);
 
 admin_route.get('/orders',adminAuth.isLogin,orderController.ordersListPageLoad)
 admin_route.get('/orders/manage',adminAuth.isLogin,orderController.orderManagePageLoad);
-admin_route.post('orders/manage/cancel',adminAuth.isLogin,orderController.cancelOrder)
 admin_route.post('/orders/manage/changestatus',adminAuth.isLogin,orderController.changeOrderStatus)
+admin_route.post('/orders/manage/cancel',orderController.cancelOrder);
 
 module.exports=admin_route
