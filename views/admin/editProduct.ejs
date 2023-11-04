@@ -9,19 +9,21 @@
             <h4 class="card-title">Edit Product</h4>
             <!-- <p class="card-description"> Basic form elements </p> -->
             <form class="forms-sample " action="/admin/editproduct?id=<%= product._id %>" method="post"
-              enctype="multipart/form-data">
+              enctype="multipart/form-data" onsubmit="return validateForm()" novalidate>
 
               <div class="form-group  row">
                 <div class="col-6  text-light">
                   <label for="exampleInputName1">Product Titile</label>
                   <input type="text" class="form-control  text-light" name="product_name"
-                    value="<%= product.product_name %>" id="exampleInputName1" placeholder="Name" required>
+                    value="<%= product.product_name %>" id="exampleInputName1" placeholder="Name" >
+                  <span id="productNameError" class="text-danger"></span>
                 </div>
                 <div class="col-6">
                   <label for="exampleInputName1">Price</label>
-                  <input type="number" class="form-control text-light" id="exampleInputName1"
-                    value="<%= product.product_price %>" name="product_price" placeholder="price" required>
-                </div>
+                  <input type="number" class="form-control text-light" id="inlineFormInputName1"
+                    value="<%= product.product_price %>" name="product_price" placeholder="price" >
+                <div id="priceError" class="text-danger"></div>
+                  </div>
 
               </div>
               <div class="row">
@@ -29,7 +31,7 @@
                   <div class="form-group row">
                     <div class="col-sm-12">
                       <label class="col-sm-3 col-form-label">Categories</label>
-                      <select name="frame_shape" class="form-control text-light" required>
+                      <select name="frame_shape" class="form-control text-light" id="category">
                         <!-- <option value="<%= product.frame_shape %>" selected><%= product.frame_shape %></option> -->
                         <!-- <option <% if(product.frame_shape=="Round"){%>selected<%}%> >Round</option> -->
                         <% for(i in categories){%>
@@ -41,6 +43,7 @@
                           </option>
                           <%}%>
                       </select>
+                    <div id="categoryError" class="text-danger"></div>
                     </div>
                   </div>
                 </div>
@@ -48,10 +51,11 @@
                   <div class="form-group row">
                     <div class="col-sm-12">
                       <label class="col-sm-3 col-form-label">Gender</label>
-                      <select name="gender" class="form-control text-light" required>
+                      <select name="gender" class="form-control text-light" id="gender">
                         <option <% if(product.gender=="male" ){%>selected<%}%> >Male</option>
                         <option <% if(product.gender=="Women" ){%>selected<%}%> >Women</option>
                       </select>
+                      <div id="genderError" class="text-danger"></div>
                     </div>
                   </div>
                 </div>
@@ -63,7 +67,8 @@
                     <div class="col-sm-12">
                       <label class="col-sm-3 col-form-label">Brand</label>
                       <input type="text" value="<%= product.brand%>" class="form-control text-light"
-                        id="exampleInputName1" name="brand" placeholder="Enter Brand" required>
+                        id="brand" name="brand" placeholder="Enter Brand">
+                      <span id="brandError" class="text-danger"></span>
                     </div>
                   </div>
                 </div>
@@ -72,7 +77,7 @@
                     <div class="col-sm-12">
                       <label class="col-sm-3 col-form-label">Stock</label>
                       <input type="number" value="<%= product.stock %>" class="form-control text-light"
-                        id="exampleInputName1" name="stock" placeholder="Enter Stock" required>
+                        id="quantity" name="stock" placeholder="Enter Stock" >
                     </div>
                   </div>
                 </div>
@@ -81,7 +86,8 @@
               <div class="form-group mt-2">
                 <label for="exampleTextarea1">Description</label>
                 <textarea name="product_description" value="<%= product.description %>" class="form-control text-light"
-                  id="exampleTextarea1" rows="6" required><%= product.product_description %></textarea>
+                  id="exampleTextarea1" rows="6" ><%= product.product_description %></textarea>
+                <span id="descriptionError" class="text-danger"></span>
               </div>
               <div class="">
                 <!-- <label class="col-sm-3 col-form-label">Images</label> -->
@@ -150,43 +156,6 @@
 
 
 
-                  <!-- <div class="col-lg-3 col-md-6 rounded-image-preview">
-                      <label for="imageInput1" class="image-label">Image 1
-                        <div class="rounded-image-preview">
-                          <img id="imagePreview1"
-                            src="/products/images/<%= product.images.image1 %>"
-                            alt="Preview" />
-                        </div>
-                        <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput" >
-                      </label>
-                    </div> -->
-
-                  <!-- <div class="col-lg-3 col-md-6 rounded-image-preview ">
-                    <label for="imageInput2" class="image-label ">Image 2
-                      <div class="rounded-image-preview">
-                        <img id="imagePreview2" src="/products/images/<%= product.images.image2 %>" alt="Preview" />
-                      </div>
-                      <input name="image2" type="file" accept="image/*" id="imageInput2" class="imageInput">
-                    </label>
-                  </div>
-
-                  <div class="col-lg-3 col-md-6 rounded-image-preview">
-                    <label for="imageInput3" class="image-label">Image 3
-                      <div class="rounded-image-preview">
-                        <img id="imagePreview3" src="/products/images/<%= product.images.image3 %>" alt="Preview" />
-                      </div>
-                      <input name="image3" type="file" accept="image/*" id="imageInput3" class="imageInput">
-                    </label>
-                  </div>
-
-                  <div class="col-lg-3 col-md-6 rounded-image-preview">
-                    <label for="imageInput4" class="image-label">Image 4
-                      <div class="rounded-image-preview">
-                        <img id="imagePreview4" src="/products/images/<%= product.images.image4 %>" alt="Preview" />
-                      </div>
-                      <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput">
-                    </label>
-                  </div> -->
 
                 </div>
 
@@ -212,4 +181,75 @@
     <!-- partial -->
   </div>
 
-  <%- include('../layouts/admin/footer.ejs') %>
+  <script>
+
+
+    function validateForm() {
+      const productName = document.getElementById("exampleInputName1").value;
+      const brand = document.getElementById("brand").value;
+      const category = document.getElementById("category").value;
+      const gender = document.getElementById("gender").value;
+      const price = parseFloat(document.getElementById("inlineFormInputName1").value);
+      const quantity = parseInt(document.getElementById("quantity").value);
+      const description = document.getElementById("exampleTextarea1").value;
+    
+      
+    
+      if (productName === "") {
+        document.getElementById("productNameError").textContent = "Product Name is required.";
+        
+      } else {
+        document.getElementById("productNameError").textContent = "";
+      }
+    
+      if (price === "" || price <= 0 || isNaN(price)) {
+        document.getElementById("priceError").textContent = "Price must be a valid number greater than 0.";
+        
+      } else {
+        document.getElementById("priceError").textContent = "";
+      }
+    
+      if (category === "") {
+        document.getElementById("categoryError").textContent = "Category is required.";
+      } else {
+        document.getElementById("categoryError").textContent = "";
+      }
+    
+      if (gender === "") {
+        document.getElementById("genderError").textContent = "Gender is required.";
+      } else {
+        document.getElementById("genderError").textContent = "";
+      }
+    
+      if (brand === "") {
+        document.getElementById("brandError").textContent = "Brand is required.";
+        
+      } else {
+        document.getElementById("brandError").textContent = "";
+      }
+    
+    
+    
+    
+      if (quantity === "" || quantity < 0 || isNaN(quantity)) {
+        document.getElementById("quantityError").textContent = "Quantity must be a valid number of at least 0.";
+        
+      } else {
+        document.getElementById("quantityError").textContent = "";
+      }
+    
+      if (description === "") {
+        document.getElementById("descriptionError").textContent = "Description is required.";
+       
+      } else {
+        document.getElementById("descriptionError").textContent = "";
+      }
+    
+    
+    
+      return true;
+    }
+    
+    </script>
+    <%- include('../layouts/admin/footer.ejs') %>
+    

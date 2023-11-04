@@ -1,156 +1,222 @@
 <%- include('../layouts/admin/header.ejs') %>
 
-  <div class="main-panel">
-    <div class="content-wrapper">
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Add New Product</h4>
+          <!-- <p class="card-description"> Basic form elements </p>
+          -->
+          <form class="forms-sample" action="/admin/addproduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()" novalidate>
 
-
-
-
-      <div class="col-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Add New Product</h4>
-            <!-- <p class="card-description"> Basic form elements </p> -->
-            <form class="forms-sample " action="/admin/addproduct" method="post" enctype="multipart/form-data">
-
-              <div class="form-group  row">
-                <div class="col-6  text-light">
-                  <label for="exampleInputName1">Product Titile</label>
-                  <input type="text" class="form-control  text-light" name="product_name" id="exampleInputName1"
-                    placeholder="Name" required>
-                </div>
-                <div class="col-6">
-                  <label for="exampleInputName1">Price</label>
-                  <input type="number" class="form-control text-light" id="exampleInputName1" name="product_price"
-                    placeholder="price" required>
-                </div>
-
+            <div class="form-group row">
+              <div class="col-6 text-light">
+                <label for="product_name">Product Title</label>
+                <input type="text" class="form-control text-light" name="product_name" id="exampleInputName1"
+                  placeholder="Name" oninput="validateProductName()" >
+                  <span id="productNameError" class="text-danger"></span>
               </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <div class="col-sm-12">
-                      <label class="col-sm-3 col-form-label">Category</label>
-                      <select name="category" class="form-control text-light" required>
-                        <option value="" disabled selected>Select Category</option>
-                        <% for(i in categories){%>
-                          <option <% if(categories[i].is_listed==false){ %>disabled<%}%> ><%= categories[i].category_name %></option>
-                        <%}%>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <div class="col-sm-12">
-                      <label class="col-sm-3 col-form-label">Gender</label>
-                      <select name="gender" class="form-control text-light" required>
-                        <option value="" disabled selected>Select Gender</option>
-                        <option>Men's</option>
-                        <option>Women's</option>
-                      </select>
-                    </div>
+              <div class="col-6">
+                <label for="product_price">Price</label>
+                <input type="number" class="form-control text-light" id="inlineFormInputName1" name="product_price"
+                  placeholder="Price" oninput="validatePrice()">
+                <div id="priceError" class="text-danger"></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label for="category">Category</label>
+                    <select name="category" class="form-control text-light" id="category" oninput="validateCategory()">
+                      <option value="" disabled selected>Select Category</option>
+                      <% for (let i in categories) { %>
+                        <option <% if (categories[i].is_listed == false) { %>disabled<% } %>> <%= categories[i].category_name %></option>
+                      <% } %>
+                    </select>
+                    <div id="categoryError" class="text-danger"></div>
                   </div>
                 </div>
               </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <div class="col-sm-12">
-                      <label class="col-sm-3 col-form-label">Brand</label>
-                      <input type="text" class="form-control text-light" id="exampleInputName1" name="brand"
-                    placeholder="Brand Name" required>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <div class="col-sm-12">
-                      <label class="col-sm-3 col-form-label">Stock</label>
-                      <input type="number" class="form-control text-light" id="exampleInputName1" name="stock"
-                    placeholder="Enter Stock" required>
-                    </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label for="gender">Gender</label>
+                    <select name="gender" class="form-control text-light" id="gender" oninput="validateGender()">
+                      <option value="" disabled selected>Select Gender</option>
+                      <option>Men's</option>
+                      <option>Women's</option>
+                    </select>
+                    <div id="genderError" class="text-danger"></div>
                   </div>
                 </div>
               </div>
-
-              <div class="form-group mt-2">
-                <label for="exampleTextarea1">Description</label>
-                <textarea name="product_description" class="form-control text-light" id="exampleTextarea1" rows="4" required></textarea>
-              </div>
-              <div class="">
-                <!-- <label class="col-sm-3 col-form-label">Images</label> -->
-                <div class="row d-flex justify-content-center ">
-
-                  <div class="row d-flex justify-content-between ">
-
-                    <div class="col-lg-3 col-md-6 rounded-image-preview">
-                      <label for="imageInput1" class="image-label">image 1
-                        <div class="rounded-image-preview">
-                          <img id="imagePreview1"
-                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                            alt="Preview" />
-                        </div>
-                        <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput" required>
-                      </label>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 rounded-image-preview">
-                      <label for="imageInput2" class="image-label">image 2
-                        <div class="rounded-image-preview">
-                          <img id="imagePreview2"
-                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                            alt="Preview" />
-                        </div>
-                        <input name="image2" type="file" accept="image/*" id="imageInput2" class="imageInput" required>
-                      </label>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 rounded-image-preview">
-                      <label for="imageInput3" class="image-label">image 3
-                        <div class="rounded-image-preview">
-                          <img id="imagePreview3"
-                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                            alt="Preview" />
-                        </div>
-                        <input name="image3" type="file" accept="image/*" id="imageInput3" class="imageInput" required>
-                      </label>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 rounded-image-preview">
-                      <label for="imageInput4" class="image-label">image 4
-                        <div class="rounded-image-preview">
-                          <img id="imagePreview4"
-                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                            alt="Preview" />
-                        </div>
-                        <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput" required>
-                      </label>
-                    </div>
-
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label for="brand">Brand</label>
+                    <input type="text" class="form-control text-light" id="brand" name="brand"
+                      placeholder="Brand Name" oninput="validateBrand()">
+                      <span id="brandError" class="text-danger"></span>
                   </div>
-
-
-
-
                 </div>
-
-
-                <button type="submit" class="btn btn-lg btn-primary mr-2 mt-5">Add product</button>
-            </form>
-          </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label for="stock">Stock</label>
+                    <input type="number" class="form-control text-light" id="quantity" name="stock"
+                      placeholder="Enter Stock" oninput="validateStock()">
+                      <span id="quantityError" class="text-danger"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mt-2">
+              <label for="description">Description</label>
+              <textarea name="product_description" class="form-control text-light" id="exampleTextarea1" rows="4"
+                oninput="validateDescription()"></textarea>
+                <span id="descriptionError" class="text-danger"></span>
+            </div>
+            <div>
+              <!-- <label class="col-sm-3 col-form-label">Images</label>
+              -->
+              <div class="row d-flex justify-content-center">
+                <div class="row d-flex justify-content-between">
+                  <div class="col-lg-3 col-md-6 rounded-image-preview">
+                    <label for="imageInput1" class="image-label">image 1
+                      <div class="rounded-image-preview">
+                        <img id="imagePreview1"
+                          src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                          alt="Preview" />
+                      </div>
+                      <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput"
+                        oninput="validateImage(1)">
+                    </label>
+                    <span id="imageError" class="text-danger"></span>
+                  </div>
+                  <div class="col-lg-3 col-md-6 rounded-image-preview">
+                    <label for="imageInput2" class="image-label">image 2
+                      <div class="rounded-image-preview">
+                        <img id="imagePreview2"
+                          src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                          alt="Preview" />
+                      </div>
+                      <input name="image2" type="file" accept="image/*" id="imageInput2" class="imageInput"
+                        oninput="validateImage(2)">
+                    </label>
+                    <span id="imageError" class="text-danger"></span>
+                  </div>
+                  <div class="col-lg-3 col-md-6 rounded-image-preview">
+                    <label for="imageInput3" class="image-label">image 3
+                      <div class="rounded-image-preview">
+                        <img id="imagePreview3"
+                          src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                          alt="Preview" />
+                      </div>
+                      <input name="image3" type="file" accept="image/*" id="imageInput3" class="imageInput"
+                        oninput="validateImage(3)">
+                    </label>
+                    <span id="imageError" class="text-danger"></span>
+                  </div>
+                  <div class="col-lg-3 col-md-6 rounded-image-preview">
+                    <label for="imageInput4" class="image-label">image 4
+                      <div class="rounded-image-preview">
+                        <img id="imagePreview4"
+                          src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                          alt="Preview" />
+                      </div>
+                      <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput"
+                        oninput="validateImage(4)">
+                    </label>
+                  </div>
+                </div>
+                <span id="imageError" class="text-danger"></span>
+              </div>
+              <button type="submit" class="btn btn-lg btn-primary mr-2 mt-5">Add product</button>
+            </div>
+          </form>
         </div>
       </div>
-
-
     </div>
-    <!-- content-wrapper ends -->
-    <!-- partial:partials/_footer.html -->
-    <footer class="footer">
-
-    </footer>
-    <!-- partial -->
   </div>
+  <!-- content-wrapper ends -->
+  <!-- partial:partials/_footer.html -->
+  <footer class="footer">
+  </footer>
+  <!-- partial -->
+</div>
+<script>
 
-  <%- include('../layouts/admin/footer.ejs') %>
+
+function validateForm() {
+  const productName = document.getElementById("exampleInputName1").value;
+  const brand = document.getElementById("brand").value;
+  const category = document.getElementById("category").value;
+  const gender = document.getElementById("gender").value;
+  const price = parseFloat(document.getElementById("inlineFormInputName1").value);
+  const quantity = parseInt(document.getElementById("quantity").value);
+  const description = document.getElementById("exampleTextarea1").value;
+
+  
+
+  if (productName === "") {
+    document.getElementById("productNameError").textContent = "Product Name is required.";
+    
+  } else {
+    document.getElementById("productNameError").textContent = "";
+  }
+
+  if (price === "" || price <= 0 || isNaN(price)) {
+    document.getElementById("priceError").textContent = "Price must be a valid number greater than 0.";
+    
+  } else {
+    document.getElementById("priceError").textContent = "";
+  }
+
+  if (category === "") {
+    document.getElementById("categoryError").textContent = "Category is required.";
+  } else {
+    document.getElementById("categoryError").textContent = "";
+  }
+
+  if (gender === "") {
+    document.getElementById("genderError").textContent = "Gender is required.";
+  } else {
+    document.getElementById("genderError").textContent = "";
+  }
+
+  if (brand === "") {
+    document.getElementById("brandError").textContent = "Brand is required.";
+    
+  } else {
+    document.getElementById("brandError").textContent = "";
+  }
+
+
+
+
+  if (quantity === "" || quantity < 0 || isNaN(quantity)) {
+    document.getElementById("quantityError").textContent = "Quantity must be a valid number of at least 0.";
+    
+  } else {
+    document.getElementById("quantityError").textContent = "";
+  }
+
+  if (description === "") {
+    document.getElementById("descriptionError").textContent = "Description is required.";
+   
+  } else {
+    document.getElementById("descriptionError").textContent = "";
+  }
+
+
+
+  return true;
+}
+
+</script>
+<%- include('../layouts/admin/footer.ejs') %>
