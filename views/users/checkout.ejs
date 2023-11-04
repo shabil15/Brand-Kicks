@@ -157,57 +157,53 @@
                         <h5 class="" id="exampleModalLabel">Add New Address</h5>
                         <button type="button" class=" btn-dark " data-bs-dismiss="modal" aria-label="Close">x</button>
                     </div>
-                    <form action="/addaddess" method="post">
+                    <form action="/profile/user_address" method="post" novalidate onsubmit="return validateAddressForm()">
                         <div class="modal-body p-4">
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Country/Region
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="country" required>
+                                <label for="country" class="form-label m-0">Country/Region</label>
+                                <input type="text" class="form-control address-input" id="country" name="country" required>
+                                <div id="countryError" class="error-message"></div>
                             </div>
+        
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Full name (First and Last
-                                    name)
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="fullName" required>
+                                <label for="fullName" class="form-label m-0">Full name (First and Last name)</label>
+                                <input type="text" class="form-control address-input" id="fullName" name="fullName" required>
+                                <div id="fullNameError" class="error-message"></div>
                             </div>
+        
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Mobile number
-                                </label>
-                                <input type="number" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="mobileNumber" required>
+                                <label for="mobileNumber" class="form-label m-0">Mobile number</label>
+                                <input type="tel" class="form-control address-input" id="mobileNumber" name="mobileNumber" required>
+                                <div id="mobileNumberError" class="error-message"></div>
                             </div>
+        
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Area, Street, Sector,
-                                    Village
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="city" required>
+                                <label for="city" class="form-label m-0">Area, Street, Sector, Village</label>
+                                <input type="text" class="form-control address-input" id="city" name="city" required>
+                                <div id="cityError" class="error-message"></div>
                             </div>
-
-                            <div class=" row ">
-                                <div class=" col-6">
-                                    <label for="exampleFormControlInput1" class="form-label m-0">State
-                                    </label>
-                                    <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                        name="state" required>
+        
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="mb-1">
+                                        <label for="state" class="form-label m-0">State</label>
+                                        <input type="text" class="form-control address-input" id="state" name="state" required>
+                                        <div id="stateError" class="error-message"></div>
+                                    </div>
                                 </div>
-                                <div class=" col-6">
-                                    <label for="exampleFormControlInput1" class="form-label m-0">Pincode
-                                    </label>
-                                    <input type="number" class="form-control address-input"
-                                        id="exampleFormControlInput1" name="pincode" required>
+                                <div class="col-6">
+                                    <div class="mb-1">
+                                        <label for="pincode" class="form-label m-0">Pincode</label>
+                                        <input type="number" class="form-control address-input" id="pincode" name="pincode" required>
+                                        <div id="pincodeError" class="error-message"></div>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                         <div class="modal-footer">
-                            <a class="btn btn-outline-primary-2" style="border-radius: 7px;"
-                                data-bs-dismiss="modal">Close</a>
+                            <a class="btn btn-outline-primary-2" style="border-radius: 7px;" data-bs-dismiss="modal">Close</a>
                             <button type="submit" class="btn btn-outline-primary-2"
-                                style="border-radius: 7px; background: #000; color: #fff;">Add
-                                now</button>
+                                style="border-radius: 7px; background: #000; color: #fff;">Add now</button>
                         </div>
                     </form>
                 </div>
@@ -233,3 +229,73 @@
             })
         </script>
 <%- include('../layouts/user/footer.ejs') -%>
+
+
+<script>
+    function validateAddressForm() {
+        var country = document.getElementById("country").value;
+        var fullName = document.getElementById("fullName").value;
+        var mobileNumber = document.getElementById("mobileNumber").value;
+        var city = document.getElementById("city").value;
+        var state = document.getElementById("state").value;
+        var pincode = document.getElementById("pincode").value;
+
+        // Function to display an error message
+        function showError(inputElement, errorMessage, errorId) {
+            var errorElement = document.getElementById(errorId);
+            errorElement.textContent = errorMessage;
+            errorElement.style.color = 'red';
+        }
+
+        // Function to clear error messages
+        function clearErrorMessages() {
+            var errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(function (element) {
+                element.textContent = '';
+            });
+        }
+
+        // Validation for Country (non-empty)
+        if (country.trim() === '') {
+            showError(document.getElementById("country"), 'Country must not be empty', 'countryError');
+            return false;
+        }
+
+        // Validation for Full Name (non-empty)
+        if (fullName.trim() === '') {
+            showError(document.getElementById("fullName"), 'Full Name must not be empty', 'fullNameError');
+            return false;
+        }
+
+        // Validation for Mobile Number (non-empty, 10 digits)
+        var mobilePattern = /^\d{10}$/;
+        if (mobileNumber.trim() === '' || !mobilePattern.test(mobileNumber)) {
+            showError(document.getElementById("mobileNumber"), 'Mobile Number must be 10 digits', 'mobileNumberError');
+            return false;
+        }
+
+        // Validation for City (non-empty)
+        if (city.trim() === '') {
+            showError(document.getElementById("city"), 'City must not be empty', 'cityError');
+            return false;
+        }
+
+        // Validation for State (non-empty)
+        if (state.trim() === '') {
+            showError(document.getElementById("state"), 'State must not be empty', 'stateError');
+            return false;
+        }
+
+        // Validation for Pincode (non-empty, only numbers)
+        var pincodePattern = /^\d{6}$/;
+        if (pincode.trim() === '' || !pincodePattern.test(pincode)|| /^(\d)\1+$/.test(pincode)) {
+            showError(document.getElementById("pincode"), 'Enter a valid Pincode', 'pincodeError');
+            return false;
+        }
+
+        // Clear any previous error messages
+        clearErrorMessages();
+
+        return true;
+    }
+</script>
