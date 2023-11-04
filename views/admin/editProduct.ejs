@@ -197,33 +197,35 @@
     
       if (productName === "") {
         document.getElementById("productNameError").textContent = "Product Name is required.";
-        
+        return false;
       } else {
         document.getElementById("productNameError").textContent = "";
       }
     
       if (price === "" || price <= 0 || isNaN(price)) {
         document.getElementById("priceError").textContent = "Price must be a valid number greater than 0.";
-        
+        return false;
       } else {
         document.getElementById("priceError").textContent = "";
       }
     
       if (category === "") {
         document.getElementById("categoryError").textContent = "Category is required.";
+        return false;
       } else {
         document.getElementById("categoryError").textContent = "";
       }
     
       if (gender === "") {
         document.getElementById("genderError").textContent = "Gender is required.";
+        return false;
       } else {
         document.getElementById("genderError").textContent = "";
       }
     
       if (brand === "") {
         document.getElementById("brandError").textContent = "Brand is required.";
-        
+        return false; 
       } else {
         document.getElementById("brandError").textContent = "";
       }
@@ -233,20 +235,18 @@
     
       if (quantity === "" || quantity < 0 || isNaN(quantity)) {
         document.getElementById("quantityError").textContent = "Quantity must be a valid number of at least 0.";
-        
+        return false;
       } else {
         document.getElementById("quantityError").textContent = "";
       }
     
       if (description === "") {
         document.getElementById("descriptionError").textContent = "Description is required.";
-       
+        return false;
       } else {
         document.getElementById("descriptionError").textContent = "";
       }
-    
-    
-    
+     
       return true;
     }
     
