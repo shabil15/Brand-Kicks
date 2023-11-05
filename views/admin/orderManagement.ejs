@@ -78,7 +78,7 @@
                                                       
                                               </p>
                                               <hr class="m-0 p-0 my-3">
-                                              <%if(product.orderDetails.orderStatus!="canceled"){%>
+                                              <%if(product.orderDetails.orderStatus!="canceled" && product.orderDetails.orderStatus!="Delivered" ){%>
                                                 <button class="btn btn-inverse-danger p-3" onclick="confirmCancelOrder('<%= orderId %>', '<%= productId %>')">Cancel Order</button>
                                                     <%}%>
                                                       <div class="col-12">
@@ -100,8 +100,8 @@
                           </div>
                           
 
-                          <%if(product.orderDetails.orderStatus!='canceled'){%>
-                           
+                          <%if(product.orderDetails.orderStatus!='canceled' && product.orderDetails.orderStatus!="Delivered"){%>
+                            
                               <div class="container-fluid d-flex flex-column justify-content-center ">
 
                                   <div class="card row col-12 my-3 mx-auto p-2"
@@ -151,20 +151,21 @@
                               </div>
                                  
                               <%}else{%>
+                                <%if(product.orderDetails.orderStatus==='canceled'){%>
                                   <div class="container-fluid d-flex flex-column justify-content-center ">
 
                                       <div class="card row col-12 my-3 mx-auto p-2"
                                           style="border: 0.2px solid #494949; border-radius: 10px; ">
                                           <div class="col-md-9 mx-auto">
 
-                                              <h3 class="text-center py-4">Order canceled</h3>
+                                              <h3 class="text-center text-danger py-4">Order canceled</h3>
 
 
-                                              <div class="progress-track  col-12">
-                                                  <ul id="progressbar">
+                                              <div class="progress-track col-12">
+                                                  <ul id="progressbar" >
                                                       <li class="step0 active " style="width: 50%;" id="step1">
                                                           Order placed</li>
-                                                      <li class="step0 active text-right" style="width: 50%; "
+                                                      <li class="step0 active active  text-right" style="width: 50%; "
                                                           id="step4">canceled</li>
                                                   </ul>
                                               </div>
@@ -174,6 +175,31 @@
 
                                       </div>
                                   </div>
+                                  <%}else{%>
+                                    <div class="container-fluid d-flex flex-column justify-content-center ">
+
+                                        <div class="card row col-12 my-3 mx-auto p-2"
+                                            style="border: 0.2px solid #494949; border-radius: 10px; ">
+                                            <div class="col-md-9 mx-auto">
+  
+                                                <h3 class="text-center py-4">Order Delivered</h3>
+  
+  
+                                                <div class="progress-track  col-12">
+                                                    <ul id="progressbar">
+                                                        <li class="step0 active " style="width: 50%;" id="step1">
+                                                            Order placed</li>
+                                                        <li class="step0 active text-right" style="width: 50%; "
+                                                            id="step4">Delivered</li>
+                                                    </ul>
+                                                </div>
+  
+  
+                                            </div>
+  
+                                        </div>
+                                    </div>
+                                    <%}%>
                                   <%}%>
 
 
