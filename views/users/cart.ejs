@@ -25,11 +25,11 @@
                   <% if(total!=0){%>
                     <thead>
                         <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Qty</th>
-                            <th>Total</th>
-                            <th>remove</th>
+                            <th class="col-5">Product</th>
+                            <th class="col-1 ">Price</th>
+                            <th class="text-center col-4">Qty</th>
+                            <th class="col-2 text-start">Total</th>
+                            <th class="col-1">remove</th>
                         </tr>
                     </thead>
 
@@ -66,13 +66,13 @@
                                 <td style="text-align: center">
                                     <div class="input-group mb-3  " style="max-width: 170px; margin: 0 auto">
                                         <div class="input-group-prepend">
-                                            <button class="btn btn-num-product-down btn-outline-primary js-btn-minus" type="button">
+                                            <button class="  js-btn-minus px-4 btn-with-border mt-3" type="button">
                                                 &minus;
                                             </button>
                                         </div>
                                         <input
                                             type="number"
-                                            class="form-control text-center quantity-input   "
+                                            class="form-control text-center quantity-input text-dark mt-3 "
                                             value="<%= cartItems.products[i].quantity %>"
                                             name="num-product1"
                                             data-product-id="<%= cartItems.products[i].product._id %>"
@@ -82,8 +82,8 @@
                                             min="1"
                                             max="10"
                                         />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-num-product-up btn-outline-primary js-btn-plus" type="button">
+                                        <div class="input-group-append ">
+                                            <button class=" js-btn-plus btn-with-border px-4 mt-3" type="button">
                                                 &plus;
                                             </button>
                                         </div>
@@ -94,11 +94,11 @@
 
                                 <td class="total-col total-price "
                                     id="singleProductTotal <%= cartItems.products[i].product._id %>">
-                                    <%- (cartItems.products[i].product.product_price)*(cartItems.products[i].quantity)
+                                    ₹ <%- (cartItems.products[i].product.product_price)*(cartItems.products[i].quantity)
                                         %>.00
                                 </td>
                                 <!-- remove item button -->
-                                <td class="remove-col">
+                                <td class="remove-col text-center">
                                     <button
                                         onclick="removeCartItem('<%= user._id %>','<%= cartItems.products[i].product._id %>','<%= cartItems.products[i].quantity %>')"
                                         class="btn-remove">
@@ -212,7 +212,7 @@
                         quantitys = quantity - 1;
                         handleQuantityUpdate(productID, quantitys, index);
                         const totalPrice = quantitys * productPrices[index];
-                        totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
+                        totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
                         updateSubtotal();
                         updateMinusButtonStatus();
                         updatePlusButtonStatus();
@@ -226,7 +226,7 @@
                     handleQuantityUpdate(productID, quantitys, index);
 
                     const totalPrice = quantitys * productPrices[index];
-                    totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
+                    totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
                     updateSubtotal();
                     updateMinusButtonStatus();
                     updatePlusButtonStatus();

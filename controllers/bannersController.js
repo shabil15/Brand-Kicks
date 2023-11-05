@@ -1,5 +1,8 @@
 const Banner = require('../models/bannerModel')
 
+
+//============================== to Load the banners Load ===================================================================//
+
 const bannersLoad = async (req,res)=>{
   try {
     let banners = await Banner.find({})
@@ -9,7 +12,7 @@ const bannersLoad = async (req,res)=>{
   }
 }
 
-
+//================================= to load the add banners page =============================================================//
 
 const addbannersLoad= async(req,res) => {
   try {
@@ -19,7 +22,7 @@ const addbannersLoad= async(req,res) => {
   }
 }
 
-
+//=================================== to add the banner from the admin side=======================================================//
 
 const addBanner=  async(req,res)=>{
   try {
@@ -43,6 +46,7 @@ const addBanner=  async(req,res)=>{
   }
 }
 
+//=================================== to delete the banner ======================================================//
 
 const deleteBanner= async(req,res)=>{
   try {
@@ -55,6 +59,7 @@ const deleteBanner= async(req,res)=>{
   }
 }
 
+//=================================== to change the visibility of the Banner ==========================================//
 
 const visibilityBanner= async(req,res) =>{
   try {
@@ -72,6 +77,8 @@ const visibilityBanner= async(req,res) =>{
     console.log(error);
   }
 }
+
+//=========================================== exporting the modules ============================================//
 
 module.exports={
 

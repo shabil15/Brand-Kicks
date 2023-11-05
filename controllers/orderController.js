@@ -7,6 +7,8 @@ const { log } = require("console");
 const path = require("path");
 
 
+//========================= to Load the Checkout Page ======================================================//
+
 const checkoutLoad = async (req,res)=>{
   try {
     const cartDetails = await Cart.findOne({ user:req.session.user_id})
@@ -51,6 +53,8 @@ const checkoutLoad = async (req,res)=>{
   }
 }
 
+//===================================== to Calculate the Total Price in cart  ===========================================//
+
 const calculateTotalPrice= async (userId) =>{
   try {
     const cart=await Cart.findOne({user:userId}).populate(
@@ -73,6 +77,8 @@ const calculateTotalPrice= async (userId) =>{
   }
 }
 
+
+//======================================= to recieve address from the Checkout Page =========================================//
 
 
 const reciveShippingAddress =async(req,res)=>{
@@ -107,7 +113,7 @@ const reciveShippingAddress =async(req,res)=>{
   }
 }
 
-
+//============================== to calculate the delivery date of the order =======================================//
 
 const daliveryDateCalculate = async () => {
   try {
@@ -144,6 +150,8 @@ const daliveryDateCalculate = async () => {
   }
 };
 
+
+//===================================== to  Load the Payment Page in the Checkout ===================================//
 
 const paymenetPageLoad = async (req, res) => {
   try {
@@ -184,7 +192,7 @@ const paymenetPageLoad = async (req, res) => {
   }
 };
 
-
+//============================================= to select the Payment Methode ==========================================//
 
 const paymentSelectionManage = async (req, res) => {
   try {
@@ -225,6 +233,9 @@ const paymentSelectionManage = async (req, res) => {
   }
 };
 
+//===================================== to Load the Order Status Page ==============================================//
+
+
 const orderStatusPageLoad = async(req,res)=>{
   try {
     console.log('stttttttt');
@@ -237,6 +248,9 @@ const orderStatusPageLoad = async(req,res)=>{
     console.log(error);
   }
 }
+
+
+//====================================== function to Place the Order ======================================================//
 
 const placeOrderManage = async (req, res) => {
   try {
@@ -344,7 +358,7 @@ function formatDate(date) {
   return date.toLocaleDateString("en-US", options);
 }
 
-
+//============================== to Load the All Orders Page Load on the user Side ====================================//
 
 const allOrdersPageLoad = async (req,res)=>{
   try {
@@ -412,6 +426,8 @@ const allOrdersPageLoad = async (req,res)=>{
   }
 }
 
+
+//=============================== to cancel the order from the admin and user ===================================//
 
 const cancelOrder = async (req, res) => {
   try {
@@ -577,6 +593,9 @@ const orderManagePageLoad = async (req, res) => {
     console.log('Error:', error);
   }
 }
+
+//================================================= to change the Order Status from Admin ================================================//
+
 
 const changeOrderStatus = async (req, res)=>{
   try {

@@ -2,6 +2,9 @@ const Category = require("../models/productsModel").category;
 const Product = require("../models/productsModel").product;
 const path = require("path");
 
+
+//========================== to get the product Details with its id ===========================================//
+
 const getProductDetails = async(id)=>{
   try {
     let product=await Product.find({_id:id})
@@ -14,7 +17,7 @@ const getProductDetails = async(id)=>{
 
 
 
-//===================load the Product Page==============================//
+//===================load the Product Page=========================================================================//
 
 const productsLoad = async (req, res) => {
   try {
@@ -47,7 +50,7 @@ const productsLoad = async (req, res) => {
 };
 
 
-//==========================to load the add to product Page=======================//
+//==========================to load the add to product Page=======================================================//
 
 const addProductLoad = async (req, res) => {
   try {
@@ -59,7 +62,7 @@ const addProductLoad = async (req, res) => {
 };
 
 
-//===================to add the Product================================//
+//===================to add the Product==============================================================================//
 
 const addProduct = async (req, res) => {
   try {
@@ -96,7 +99,7 @@ const addProduct = async (req, res) => {
 };
 
 
-//===================to unlist the Product===========================//
+//===================to unlist the Product===========================================================================//
 
 const unlistProduct = async (req, res) => {
   let id = req.query.id;
@@ -112,7 +115,7 @@ const unlistProduct = async (req, res) => {
   res.redirect('/admin/products')
 };
 
-//==================to load the edit product page=================//
+//==================to load the edit product page===================================================================//
 
 const editProductLoad = async(req,res)=>{
   try {
@@ -127,6 +130,8 @@ const editProductLoad = async(req,res)=>{
 }
 
 
+//======================================== to Load the product Details Page =======================================//
+
 const productPageLoad = async (req,res)=>{
   try {
     const product = await getProductDetails(req.query.id)
@@ -140,6 +145,8 @@ const productPageLoad = async (req,res)=>{
     console.log(error);
   }
 }
+
+//============================================= to edit the Product Details from the Admin Side ===================================//
 
 const editProduct= async(req,res)=>{
   try {
@@ -185,7 +192,7 @@ const editProduct= async(req,res)=>{
 }
 
 
-//================================search products///////////////////////////////////////////////////////
+//================================search products=============================================//
 
 
 const searchProducts = async(req,res)=>{

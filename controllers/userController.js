@@ -1,3 +1,8 @@
+
+
+//=========================  dependecies=====================================//
+
+
 const User = require("../models/userModel").User;
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
@@ -14,7 +19,7 @@ const Swal = require('sweetalert2');
 const { log } = require("console");
 const flash = require('flash');
 
-//=============code for securing the password=================================//
+//=============code for securing the password============================================================//
 
 const securePassword = async (password) => {
   try {
@@ -25,7 +30,7 @@ const securePassword = async (password) => {
   }
 };
 
-//===================code for generating the otp Random Number============================//
+//===================code for generating the otp Random Number==========================================//
 
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -33,7 +38,7 @@ const generateOTP = () => {
 
 
 
-//===================code for sending the verification Email==============================//
+//===================code for sending the verification Email===========================================//
 const sendVerificationEmail = async (email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -62,7 +67,7 @@ const sendVerificationEmail = async (email, otp) => {
   }
 };
 
-
+//========================= to send the reset Password Mail=================================================//
 
 const resetPasswordMail = async (firstName,secondName,email,token)=>{
   try {
@@ -96,7 +101,7 @@ const resetPasswordMail = async (firstName,secondName,email,token)=>{
   }
 }
 
-//==================to load the Login Page==============================//
+//==================to load the Login Page=================================================================//
 
 const loginLoad = async (req, res) => {
   try {
@@ -107,7 +112,7 @@ const loginLoad = async (req, res) => {
 };
 
 
-//=========================to load the Home Page================================//
+//=========================to load the Home Page============================================================//
 const loadHome = async (req, res) => {
   try {
     const products = await Product.find({});
@@ -124,7 +129,7 @@ const loadHome = async (req, res) => {
   }
 };
 
-//===================to load the signup page===============================//
+//===================to load the signup page================================================================//
 
 const loadRegister = async (req, res) => {
   try {
@@ -134,7 +139,7 @@ const loadRegister = async (req, res) => {
   }
 };
 
-//=================to load the verify Otp Page==========================//
+//=================to load the verify Otp Page===================================================================//
 
 const showverifyOTPPage = async (req, res) => {
   try {
@@ -145,7 +150,7 @@ const showverifyOTPPage = async (req, res) => {
 };
 
 
-//==================code for inserting the User Data==============>
+//==================code for inserting the User Data==================================================================>
 
 const insertUser = async (req, res) => {
   try {
@@ -188,7 +193,7 @@ const insertUser = async (req, res) => {
   }
 };
 
-//==================code for verifying the otp============================//
+//==================code for verifying the otp=========================================================================//
 
 const verifyOTP = async (req, res) => {
   try {
@@ -211,6 +216,10 @@ const verifyOTP = async (req, res) => {
     console.log(error);
   }
 };
+
+
+
+//============================ to resend the OTP ======================================================================//
 
 
 const resendOTP = async (req,res)=>{
@@ -246,7 +255,7 @@ const resendOTP = async (req,res)=>{
   }
 }
 
-//==========================code for verifying the login======================//
+//==========================code for verifying the login===============================================================//
 
 
 const verifyLogin = async (req, res, next) => {
@@ -282,6 +291,10 @@ const verifyLogin = async (req, res, next) => {
   }
 };
 
+
+//====================== to Load the Forget Page Load ===================================================================//
+
+
 const forgetLoad = async (req,res)=>{
   try {
     res.render('forget')
@@ -289,6 +302,9 @@ const forgetLoad = async (req,res)=>{
     console.log(error);    
   }
 }
+
+//========================= to verify the forget mail=====================================================================//
+
 
 const forgetVerify = async (req,res)=>{
   try {
@@ -314,6 +330,8 @@ const forgetVerify = async (req,res)=>{
   }
 }
 
+//============================to Load the forget password Load ====================================================//
+
 
 const forgetPasswordLoad = async (req,res)=>{
   try {
@@ -332,6 +350,9 @@ const forgetPasswordLoad = async (req,res)=>{
   }
 }
 
+//=============================== to reset the password ===============================================//
+
+
 const resetPassword = async(req,res)=>{
   try {
     const password = req.body.password
@@ -347,6 +368,9 @@ const resetPassword = async(req,res)=>{
   }
 }
 
+
+//==================================== to load the shop page =================================================//
+
 const loadShop = async (req,res)=>{
  try {
   const products= await Product.find({})
@@ -361,6 +385,9 @@ const loadShop = async (req,res)=>{
 }
 
 
+//======================================= to logout for user =====================================================//
+
+
 const logout = async (req,res)=>{
   try {
     req.session.user_id= null;
@@ -370,6 +397,8 @@ const logout = async (req,res)=>{
   }
 }
 
+
+//======================================== to take userData  =================================================//
 
 const takeUserData = async (userId)=>{
   try {
@@ -382,6 +411,9 @@ const takeUserData = async (userId)=>{
     console.log(error.message);
   }
 }
+
+//===================================  to load the profile Page ===================================================//
+
 
 const profilePageLoad = async (req,res)=>{
   try {const takeUserData = async (userId)=>{
@@ -450,30 +482,12 @@ const profilePageLoad = async (req,res)=>{
 
 
 
-// const updateUserData = async (req, res) => {
-//   try {
-//     let userData = req.body;
 
-//     await User.updateOne(
-//       { _id: req.session.user_id },
-//       {
-//         $set: {
-//           firstName: userData.firstName,
-//           secondName: userData.secondName,
-//           mobile: userData.mobile,
-//           email: userData.email,
-//         },
-//       }
-//     );
 
-//     userData = await takeUserData(req.session.user_id);
 
-//     res.json({ success: true }); // Send a JSON response to indicate success
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, error: 'Failed to update profile' }); // Send an error response
-//   }
-// };
+//======================================== to update the User Data =======================================//
+
+
 
 const updateUserData = async (req, res) => {
   try {
@@ -508,6 +522,9 @@ const updateUserData = async (req, res) => {
 };
 
 
+//=================================== function to change the user Password===================================//
+
+
 const changePassword = async (req,res) =>{
   try {
     console.log("gettingggggg")
@@ -538,37 +555,7 @@ const changePassword = async (req,res) =>{
 }
 
 
-// const changePassword = async (req, res) => {
-//   try {
-//       const userDetails = await User.findOne({ _id: req.session.user_id });
-//       bcrypt.compare(req.body.oldPassword, userDetails.password, async (error, status) => {
-//           if (error) {
-//               console.error(error);
-//               res.json({ success: false });
-//               return;
-//           }
-
-//           if (status) {
-//               const newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
-//               const change = await User.updateOne(
-//                   { _id: userDetails._id },
-//                   { $set: { password: newSecurePassword } }
-//               );
-//               console.log(change);
-//               res.json({ success: true });
-             
-//           } else {
-              
-//               res.json({ success: false });
-//           }
-//       });
-//   } catch (error) {
-//       console.log(error);
-//       res.json({ success: false });
-//   }
-// }
-
-
+//=========================================== to Add address From the User Profile======================================//
 
 const addAddressFromProfile = async (req,res)=>{
   try {
@@ -609,6 +596,10 @@ const addAddressFromProfile = async (req,res)=>{
     console.log(error);
   }
 }
+
+
+//=============================== to update the Address of the user from the Profile ========================================================//
+
 const updateAddress = async (req, res) => {
   try {
     // console.log(req.body);
@@ -632,6 +623,9 @@ const updateAddress = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+//================================ to add address from the checkout Page in the user side ============================//
 
 
 const addShippingAddress = async(req,res)=>{
@@ -674,6 +668,8 @@ const addShippingAddress = async(req,res)=>{
 }
 
 
+//============================= to delete the address of the user from user Profile ====================================//
+
 const deleteAddress = async (req,res) =>{
   try {
     const userAddress = await Address.findOne({userId:req.session.user_id})
@@ -690,6 +686,9 @@ const deleteAddress = async (req,res) =>{
     console.log(error);
   }
 }
+
+
+//============================== to calculate the total Price of the cart================================================//
 
 const calculateTotalPrice= async (userId) =>{
   try {
@@ -712,6 +711,9 @@ const calculateTotalPrice= async (userId) =>{
     console.log(error);
   }
 }
+
+//================================== to update the cart items quantity ================================================//
+
 
 const updateCart = async (req,res) =>{
   try {
@@ -739,10 +741,7 @@ const updateCart = async (req,res) =>{
   }
 }
 
-
-
-
-
+//======================================== to load the Cart Page ================================================//
 
 const cartPageLoad = async (req,res)=>{
   try {
@@ -778,7 +777,7 @@ const cartPageLoad = async (req,res)=>{
   }
 }
 
-
+//================================== to add a product to Cart ================================================//
 
 const addToCart = async (req,res)=>{
   try {
@@ -820,6 +819,9 @@ const addToCart = async (req,res)=>{
   }
 }
 
+
+//==================================== to remove  a product from Cart =====================================================//
+
 const removeCartItem = async (req,res) =>{
   try {
     const {user,product,qty} =req.body;
@@ -842,6 +844,8 @@ const removeCartItem = async (req,res) =>{
 }
 
 
+//======================================= to load the about Us page ====================================================//
+
 const aboutusLoad = async (req,res)=>{
   try {
     res.render('aboutus',{
@@ -853,6 +857,9 @@ const aboutusLoad = async (req,res)=>{
   }
 }
 
+//======================================= to Load the Contact Us Page ====================================================//
+
+
 const contactLoad = async (req,res)=>{
   try {
     res.render('contact',{
@@ -863,6 +870,9 @@ const contactLoad = async (req,res)=>{
     console.log(error);
   }
 }
+
+//============================== to export the modules ==========================================================//
+
 
 module.exports = {
   loginLoad,

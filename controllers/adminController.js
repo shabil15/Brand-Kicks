@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const { category } = require("../models/productsModel");
 
 
-//===================loading the admin Login=====================//
+//===================loading the admin Login==========================================================//
 
 
 const loadAdminLogin = async (req, res) => {
@@ -17,7 +17,7 @@ const loadAdminLogin = async (req, res) => {
   }
 };
 
-//====================verifying the adminn login=====================================//
+//====================verifying the adminn login==========================================================//
 
 const verifyLogin = async (req, res, next) => {
   try {
@@ -43,7 +43,7 @@ const verifyLogin = async (req, res, next) => {
   }
 };
 
-//============================loading the Dashboard======================//
+//============================loading the Dashboard===============================================================//
 
 const dashboardLoad = async (req, res) => {
   try {
@@ -54,7 +54,7 @@ const dashboardLoad = async (req, res) => {
 };
 
 
-//============================loading the Users List Page=======================//
+//============================loading the Users List Page==========================================================//
 
 const usersLoad = async (req, res) => {
   try {
@@ -65,7 +65,7 @@ const usersLoad = async (req, res) => {
   }
 };
 
-//=====================to get the Data of the Users================================//
+//=====================to get the Data of the Users=================================================================//
 
 
 const getAllUserData = async (req, res) => {
@@ -75,7 +75,7 @@ const getAllUserData = async (req, res) => {
   });
 };
 
-//==============================load the Category Page========================//
+//==============================load the Category Page=============================================================//
 
 
 const categoryLoad = async (req, res) => {
@@ -88,7 +88,7 @@ const categoryLoad = async (req, res) => {
 };
 
 
-//===========================get All the Categories===============================//
+//===========================get All the Categories====================================================================//
 
 const getAllCategoriesData = async (req, res) => {
   return new Promise(async (resolve, reject) => {
@@ -98,7 +98,7 @@ const getAllCategoriesData = async (req, res) => {
 };
 
 
-//==============================load the add category Page===========================//
+//==============================load the add category Page===============================================================//
 
 
 const addcategoryLoad = async (req, res) => {
@@ -109,7 +109,7 @@ const addcategoryLoad = async (req, res) => {
   }
 };
 
-//=============================to add the category ===================//
+//=============================to add the category ===================================================================//
 
 const addCategory = async (req, res) => {
   try {
@@ -144,7 +144,7 @@ const addCategory = async (req, res) => {
   }
 };
 
-//====================to unlist the category=======================//
+//====================to unlist the category=========================================================================//
 
 
 const unlistCategory = async (req, res) => {
@@ -165,7 +165,7 @@ const unlistCategory = async (req, res) => {
 };
 
 
-//===================to block the User==============================//
+//===================to block the User==================================================================================//
 
 const blockUser = async (req, res) => {
   try {
@@ -190,7 +190,7 @@ const blockUser = async (req, res) => {
   }
 };
 
-//=========================search Users================================//
+//=========================search Users===============================================================================//
 
 const searchUsers = async (req, res) => {
   const query = req.query.query; // Get the search query from the request
@@ -210,7 +210,7 @@ const searchUsers = async (req, res) => {
 
 
 
-//========================load the edit category Page====================//
+//========================load the edit category Page====================================================================//
 
 
 const editCategoryLoad = async (req, res) => {
@@ -223,7 +223,7 @@ const editCategoryLoad = async (req, res) => {
   }
 };
 
-//==================to take One User data=================================//
+//==================to take One User data===================================================================================//
 
 const takeOneUserData = async (categoryId) => {
   try {
@@ -234,28 +234,6 @@ const takeOneUserData = async (categoryId) => {
   }
 };
 
-//===================to Update the category===================================//
-
-// const   updateCategoryData = async (req, res) => {
-//   try {
-//     let categoryData = req.body;
-//     let updateCategory = await Category.updateOne(
-//       { _id: req.query.id },
-//       {
-//         $set: {
-//           category_name: categoryData.category_name,
-//           category_description: categoryData.category_description,
-//         },
-//       }
-//     );
-
-//     console.log(updateCategory);
-//     req.flash('success','The category Successfully Updated')
-//     res.redirect("/admin/categories");
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 
 const updateCategoryData = async (req, res) => {
@@ -298,7 +276,7 @@ const updateCategoryData = async (req, res) => {
 };
 
 
-//=========================to admin Logout==============================//
+//=========================to admin Logout==============================================================================//
 
 const logout = async (req, res) => {
   try {
