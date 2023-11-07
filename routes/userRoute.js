@@ -2,6 +2,7 @@ const express = require("express")
 const userController = require("../controllers/userController")
 const productController = require('../controllers/productController')
 const orderController = require('../controllers/orderController')
+const wishListController =require('../controllers/wishListController')
 const session = require("express-session")
 
 const config = require("../config/config")
@@ -94,6 +95,11 @@ user_route.post('/updateCart',userController.updateCart)
 
 user_route.delete('/removecartproduct',userController.removeCartItem)
 
+//============================== wishList Related ==========================//
+
+user_route.post('/addtoWishList',userAuth.isLogin,wishListController.addtoWishList)
+
+user_route.get('/wishList',wishListController.wishListPageLoad);
 
 //==========================order related================================//
 

@@ -1,0 +1,102 @@
+<%- include('../layouts/user/header.ejs') -%>
+<main class="main">
+  <div class="page-header text-center" style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
+      <div class="container">
+          <h1 class="page-title text-dar">My Wishlist</h1>
+      </div><!-- End .container -->
+  </div><!-- End .page-header -->
+  <nav aria-label="breadcrumb" class="breadcrumb-nav">
+      <div class="container">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
+          </ol>
+      </div><!-- End .container -->
+  </nav><!-- End .breadcrumb-nav -->
+  <div class="page-content">
+      <div class="container">
+          <%if(item!=0){%>
+
+          <table class="table table-wishlist table-mobile">
+              <thead>
+                  <tr>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Stock Status</th>
+                      <th></th>
+                      <th></th>
+                  </tr>
+              </thead>
+
+              <tbody>
+                 <%for(i=0;i<item.length;i++){%>
+                 
+                  <tr>
+                      <td class="product-col">
+                          <div class="product">
+                              <figure class="product-media">
+                                  <a href="#">
+                                      <img src="/public/products/images/<%=item[i].product.images.image1%>"
+                                          alt="Product image">
+                                  </a>
+                              </figure>
+
+                              <h3 class="product-title">
+                                  <a href="#"><%=item[i].product.product_name%></a>
+                              </h3><!-- End .product-title -->
+                          </div><!-- End .product -->
+                      </td>
+                      <td class="price-col">₹<%=item[i].product.product_price%></td>
+                      <%if(item[i].product.stock==0){%>
+                      <td class="stock-col"><span class="out-of-stock">Out of stock</span></td>
+                      <%}else{%>
+                      <td class="stock-col"><span class="in-stock">In stock</span></td>
+                      <%}%>
+                      <td class="action-col">
+                          <%if(item[i].product.stock==0){%>
+                              <button style="color: rgb(107, 107, 107);" disabled class="btn btn-block btn-outline-primary-2"><i
+                                  class="icon-cart-plus"></i>Add to Cart</button>
+                          <%}else{%>    
+                          <button onclick="addCart('<%=item[i].product._id%>','<%= user %>')" class="btn btn-block btn-outline-primary-2"><i
+                                  class="icon-cart-plus"></i>Add to Cart</button>
+                           <%}%>       
+                      </td>
+                      <td class="remove-col"><button onclick="removeWishItem('<%=item[i].product._id%>')" class="btn-remove"><i
+                                  class="icon-close"></i></button></td>
+                  </tr>
+                  <%}%>
+                  <br>
+                  
+                  
+                  
+              </tbody>
+              
+          </table><!-- End .table table-wishlist -->
+          <div class="row">
+            <div class="col-md-6 mb-3 mt-2">
+              <a href="/shop" class="btn btn-outline-dark btn-block">
+                <span>CONTINUE SHOPPING</span>
+                <i class="icon-refresh"></i>
+              </a>
+            </div>
+            <div class="col-md-6 mb-3 mt-2">
+              <a href="/cart" class="btn btn-outline-dark btn-block">
+                <span>GO TO CART</span>
+                <i class="icon-shopping-cart"></i>
+              </a>
+            </div>
+          </div>
+          
+          <%}else{%>
+              <div class="price-col w-100 my-5 text-center text-light">
+                  <i class="fa-regular fa-bookmark " style="font-size: 60px;"></i> <br><p class="mt-2 text-light"  style="font-size: 20px;">Your Wishlist is Empty</p>
+              </div>
+          <%}%>
+         
+          
+      </div><!-- End .container -->
+  </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+</main>
+<%- include('../layouts/user/footer.ejs') -%>

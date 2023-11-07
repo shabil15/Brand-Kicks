@@ -758,7 +758,7 @@ const cartPageLoad = async (req,res)=>{
 
       return res.render ('cart',{
         currentPage:'shop',
-        user :userData ,
+        user :userData,
         cartItems: cartDetails,
         total,
       })

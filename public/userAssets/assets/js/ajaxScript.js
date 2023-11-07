@@ -1,4 +1,4 @@
-
+//============== to add cart item ========================================//
 
 function addCart(id,user) {
   function showAlertBox(){
@@ -49,7 +49,7 @@ function addCart(id,user) {
 
 }
 
-
+//========================== to change the quantity in cart page ==================================//
 function changeQty(userId,productId,qty){
   let totalDis = document.getElementById('totalDisplay')
   let subTotalDis = document.getElementById('subtotalDisplay')
@@ -79,6 +79,8 @@ function changeQty(userId,productId,qty){
   }
 }
 
+//==================================== to remove a cart Item ==================================================//
+
 function removeCartItem(user,product,qty) {
   $.ajax({
     url:'/removecartproduct',
@@ -92,7 +94,44 @@ function removeCartItem(user,product,qty) {
   })
 }
 
+//========================================== to add item to WishList ===============================================//
 
+function addtoWishList(productId){
+  function showWishAlertBox() {
+    $("#wishAlert").fadeIn();
+  
+
+  setTimeout(function(){
+    $("#wishAlert").fadeOut();
+  },4000)
+}
+
+function showWishAlertBoxAlready() {
+  $("#wishAlertAlready").fadeIn();
+
+  setTimeout(function(){
+    $("#wishAlertAlready").fadeOut();
+  },3000)
+}
+
+
+  $.ajax({
+  url:'/addtoWishList',
+  method:'post',
+  data:{productId},
+  success:(response)=>{
+    if(response.status==1){
+      showWishAlertBox();
+    }else{
+      showWishAlertBoxAlready();
+    }
+  }
+})
+}
+
+
+
+//==================================== to remove address =======================================================//
 function removeAddress(id){
   $.ajax({
     url:'/profile/user_address/delete',
