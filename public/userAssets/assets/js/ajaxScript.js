@@ -79,24 +79,12 @@ function changeQty(userId,productId,qty){
   }
 }
 
-//==================================== to remove a cart Item ==================================================//
 
-function removeCartItem(user,product,qty) {
-  $.ajax({
-    url:'/removecartproduct',
-    method:'delete',
-    data:{user,product,qty},
-    success:(response)=>{
-      if(response.remove===1){
-        location.reload()
-      }
-    }
-  })
-}
+
 
 //========================================== to add item to WishList ===============================================//
 
-function addtoWishList(productId){
+function addtoWishList(productId,user){
   function showWishAlertBox() {
     $("#wishAlert").fadeIn();
   
@@ -115,7 +103,8 @@ function showWishAlertBoxAlready() {
 }
 
 
-  $.ajax({
+  if(user){
+$.ajax({
   url:'/addtoWishList',
   method:'post',
   data:{productId},
@@ -127,7 +116,15 @@ function showWishAlertBoxAlready() {
     }
   }
 })
+}else{
+  window.location.href= '/login'
 }
+  
+}
+
+
+//==================================== to remove a cart Item ==================================================//
+
 
 
 

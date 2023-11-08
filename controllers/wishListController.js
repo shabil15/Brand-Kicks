@@ -63,11 +63,11 @@ const wishListPageLoad = async (req,res)=>{
         }
         wishItem.push(item);
       }
-      console.log(wishItem);
+      
       res.render("wishlist", {
          user: req.session.user_id,
          currentPage:'shop',
-        item: wishItem 
+         item: wishItem 
       });
     } else {
       res.render("wishlist", {
@@ -81,10 +81,29 @@ const wishListPageLoad = async (req,res)=>{
   }
 }
 
+//=============================================== to remove wishList item ==============================================//
 
+const   removeWishItem= async (req,res)=>{
+  try {
+    console.log(req.body);
+    const {productId}= req.body;
+    const wishList = await WishList.findOne({user:req.session.user_id})
+    wishList.products = wishList.products.filter(
+      (wishitem)=>wishitem.product.toString()!== productId.toString()
+    )
+    let remove =await wishList.save()
+    res.json({status:"remove"})
+
+    console.log(wishList,"removed");
+
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 module.exports= {
   addtoWishList,
   wishListPageLoad,
+  removeWishItem
 }

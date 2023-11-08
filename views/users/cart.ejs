@@ -98,13 +98,11 @@
                                         %>.00
                                 </td>
                                 <!-- remove item button -->
-                                <td class="remove-col text-center">
-                                    <button
-                                        onclick="removeCartItem('<%= user._id %>','<%= cartItems.products[i].product._id %>','<%= cartItems.products[i].quantity %>')"
-                                        class="btn-remove">
+                                <td class="remove-col">
+                                    <button onclick="removeCartItem('<%= user._id %>','<%= cartItems.products[i].product._id %>','<%= cartItems.products[i].quantity %>')" class="btn-remove">
                                         <i class="icon-close"></i>
                                     </button>
-                                </td>
+                                </td>   
                             </tr>
                             <%}%>
 
@@ -267,8 +265,7 @@
                     // Update the subtotal and other UI elements
                     
                          updateSubtotal();
-                    
-                   
+
                     window.location.reload();
                 } catch (error) {
                     console.error("Error updating cart quantity:", error);

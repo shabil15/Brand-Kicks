@@ -90,12 +90,12 @@
                                   <div class="product product-7 text-center">
                                       <figure class="product-media">
                                           <a href="/product?id=<%= products[i]._id %>">
-                                              <img src="/public/products/images/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
-                                              <img src="/public/products/images/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
+                                              <img src="/public/products/croped/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
+                                              <img src="/public/products/croped/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
                                           </a>
   
                                           <div class="product-action-vertical">
-                                              <a href="#"  style="cursor: pointer;" onclick="addtoWishList('<%= products[i]._id %>')" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
+                                              <a href="#"  style="cursor: pointer;" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
                                           </div><!-- End .product-action-vertical -->
                                       </figure><!-- End .product-media -->
   

@@ -241,12 +241,12 @@
                       <div class="product product-11 text-center border">
                           <figure class="product-media">
                               <a href="/product?id=<%= products[i]._id %>" >
-                                  <img src="/public/products/images/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
-                                  <img src="/public/products/images/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
+                                  <img src="/public/products/croped/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
+                                  <img src="/public/products/croped/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
                               </a>
 
                               <div class="product-action-vertical">
-                                  <a  class="btn-product-icon btn-wishlist"><span>add to wishlist</span></a>
+                                  <a  class="btn-product-icon btn-wishlist" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')"><span>add to wishlist</span></a>
                               </div>
                           </figure>
 
@@ -308,12 +308,12 @@
               <div class="product product-7 text-center">
                   <figure class="product-media">
                       <a href="/product?id=<%= products[i]._id %>">
-                          <img src="/public/products/images/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
-                          <img src="/public/products/images/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
+                          <img src="/public/products/croped/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
+                          <img src="/public/products/croped/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
                       </a>
 
                       <div class="product-action-vertical">
-                          <a href="#" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
+                          <a href="#" class="btn-product-icon btn-wishlist " onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')"><span>add to wishlist</span></a>
                       </div><!-- End .product-action-vertical -->
                   </figure><!-- End .product-media -->
 

@@ -1,6 +1,7 @@
 const Category = require("../models/productsModel").category;
 const Product = require("../models/productsModel").product;
 const path = require("path");
+const sharp =require("sharp");
 
 
 //========================== to get the product Details with its id ===========================================//
@@ -69,6 +70,19 @@ const addProduct = async (req, res) => {
     let details = req.body;
     const files = await req.files;
     console.log(files);
+
+    const img = [
+      files.image1[0].filename,
+      files.image2[0].filename,
+      files.image3[0].filename,
+      files.image4[0].filename,
+    ];
+
+    for (let i = 0; i < img.length; i++) {
+      await sharp("public/products/images/" + img[i])
+        .resize(480, 480)
+        .toFile("public/products/croped/" + img[i]);
+    }
 
     const product = new Product({
       product_name: details.product_name,
@@ -160,6 +174,19 @@ const editProduct= async(req,res)=>{
       img2 = imagesFiles.image2 ? imagesFiles.image2[0].filename : currentData.images.image2;
       img3 = imagesFiles.image3 ? imagesFiles.image3[0].filename : currentData.images.image3;
       img4 = imagesFiles.image4 ? imagesFiles.image4[0].filename : currentData.images.image4;
+
+      const img = [
+        imagesFiles.image1 ? imagesFiles.image1[0].filename: currentData.images.image1,
+        imagesFiles.image2 ? imagesFiles.image2[0].filename: currentData.images.image2,
+        imagesFiles.image3 ? imagesFiles.image3[0].filename: currentData.images.image3,
+        imagesFiles.image4 ? imagesFiles.image4[0].filename: currentData.images.image4,
+      ];
+  
+      for (let i = 0; i < img.length; i++) {
+        await sharp("public/products/images/" + img[i])
+          .resize(480, 480)
+          .toFile("public/products/croped/" + img[i]);
+      }
 
       const update= await Product.updateOne(
         {_id:req.query.id},

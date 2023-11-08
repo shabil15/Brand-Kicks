@@ -101,6 +101,8 @@ user_route.post('/addtoWishList',userAuth.isLogin,wishListController.addtoWishLi
 
 user_route.get('/wishList',wishListController.wishListPageLoad);
 
+user_route.delete('/removewishitem',wishListController.removeWishItem)
+
 //==========================order related================================//
 
 user_route.get('/checkout',orderController.checkoutLoad)

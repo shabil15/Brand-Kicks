@@ -41,6 +41,9 @@ app.use('/',disable,user_route);
 const admin_route = require("./routes/adminRoute")
 app.use('/admin',disable,admin_route);
 
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'views', '404.html'))
+})
 
 app.listen(PORT,()=>{
   console.log(`The Brand Kicks server Running on ${PORT}`);
