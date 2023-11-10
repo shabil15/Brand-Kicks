@@ -182,12 +182,45 @@
                 if (response.cod) {
                     location.href = `/checkout/placeorder?id=${response.orderId}`
                 } else {
-                    payPayment(response.order,response.user)
+                    payPayment(response.order,response.user,response.orderId)
                 }
 
             }
         })
     })
+
+    function payPayment(order,user,orderId) {
+                console.log(order.amount);
+                var options = {
+                    "key": "rzp_test_2l0ILoKvXmQKDr", // Enter the Key ID generated from the Dashboard
+                    "amount":order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "INR",
+                    "name": "Brand Kicks Ltd",
+                    "description": "Test Transaction",
+                    "image": "public\ userAssets\assets\images\BRAND KICKS! black.png",
+                    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function (response) {
+                        // alert(response.razorpay_payment_id);
+                        // alert(response.razorpay_order_id);
+                        // alert(response.razorpay_signature)
+                        // verifyPayment(response, order,orderId)
+                    },
+                    "prefill": {
+                        "name": user.name,
+                        "email": user.email,
+                        "contact": user.mobile
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#000"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                
+                rzp1.open();
+            }
 
 </script>
 

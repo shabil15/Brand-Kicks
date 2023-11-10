@@ -66,17 +66,17 @@
                                         </div>
                                     </label>
                                 </div>
-                                <!-- <div class="col-md-7">
+                                <div class="col-md-7">
                                     <label class="p-3 border rounded-4 m-2 custom-label">
-                                        <div class="form-check d-flex align-items-center mx-4">
-                                            <input class="form-check-input" type="radio" name="paymentMethod" value="Online" id="onlineRadio" >
-                                            <div class="mx-4 p-3 row d-flex justify-content-between">
-                                                <span> <b>Online Payment</b></span>
-                                                <img width="130px" class="d-flex align-items-end mx-3" src="/user/images/payment-icons.jpg" alt="">
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div> -->
+                                                <div class="form-check d-flex align-items-center mx-4">
+                                                    <input class="form-check-input" type="radio" name="paymentMethod" value="Online" id="onlineRadio" >
+                                                    <div class="mx-4 p-3 row d-flex justify-content-between">
+                                                        <span> <b>Online Payment</b></span>
+                                                        <img width="120px" class="d-flex align-items-end mx-3" src="/user/images/payment-icons.jpg" alt="">
+                                                    </div>
+                                                </div>
+                                            </label>
+                                </div>
                             </div>
                             <input type="text" name="address" value="<%= address._id %>" hidden>
 
@@ -151,30 +151,32 @@
 
 
 <script>
-    // form submit handil
+    
     document.getElementById("paymentBtn").addEventListener("click", function () {
         document.getElementById("paymentForm").submit();
     })
 </script>
 
 <script>
-    // Get references to the radio buttons and the submit button
-    const codRadio = document.getElementById('codRadio');
-    const onlineRadio = document.getElementById('onlineRadio');
-    const paymentBtn = document.getElementById('paymentBtn');
+const codRadio = document.getElementById('codRadio');
+const onlineRadio = document.getElementById('onlineRadio');
+const walletRadio = document.getElementById('walletRadio');
+const paymentBtn = document.getElementById('paymentBtn');
 
-    // Add event listeners to the radio buttons
-    codRadio.addEventListener('change', toggleButtonState);
-    onlineRadio.addEventListener('change', toggleButtonState);
 
-    // Function to toggle the button state based on the radio button selection
-    function toggleButtonState() {
-        if (codRadio.checked || onlineRadio.checked) {
-            paymentBtn.disabled = false; // Enable the button if a radio button is selected
-        } else {
-            paymentBtn.disabled = true; // Disable the button if no radio button is selected
-        }
-    }
+codRadio.addEventListener('change', toggleButtonState);
+onlineRadio.addEventListener('change', toggleButtonState);
+walletRadio.addEventListener('change', toggleButtonState);
+
+
+function toggleButtonState() {
+      if (codRadio.checked || onlineRadio.checked || walletRadio.checked) {
+          paymentBtn.disabled = false; 
+      } else {
+          paymentBtn.disabled = true; 
+   }
+}
+
 
 </script>
 <%- include('../layouts/user/footer.ejs') -%>

@@ -5,7 +5,49 @@ const Product = require("../models/productsModel").product;
 const Order = require('../models/orderModel').Order;
 const { log } = require("console");
 const path = require("path");
+const Razorpay = require('razorpay');
 
+//================================== razorpay related functions==================================================//
+
+var instance = new Razorpay({
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.KEY_SECRET,
+});
+
+const genarateRazorpay = (orderId, total) => {
+  return new Promise((resolve, reject) => {
+    var options = {
+      amount: total * 100, 
+      currency: "INR",
+      receipt: orderId,
+    };
+    instance.orders.create(options, function (err, order) {
+      resolve(order);
+    });
+  });
+};
+
+//=================================== generate Order Unique Id =============================================//
+
+const generateUniqueTrackId = async () => {
+  try {
+    let orderID;
+    let isUnique = false;
+
+    while (!isUnique) {
+
+      orderID = Math.floor(100000 + Math.random() * 900000);
+      const existingOrder = await Order.findOne({ orderID });
+   if (!existingOrder) {
+        isUnique = true;
+      }
+    }
+
+    return orderID;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 //========================= to Load the Checkout Page ======================================================//
 
@@ -252,28 +294,119 @@ const orderStatusPageLoad = async(req,res)=>{
 
 //====================================== function to Place the Order ======================================================//
 
-const placeOrderManage = async (req, res) => {
-  try {
+// const placeOrderManage = async (req, res) => {
+//   try {
     
    
+//     let addressId = req.body.address;
+
+//     let paymentType = req.body.payment;
+
+//     const cartDetails = await Cart.findOne({ user: req.session.user_id });
+
+//     const products = cartDetails.products;
+
+//     let userAddrs = await Address.findOne({ userId: req.session.user_id });
+//     const shipAddress = userAddrs.addresses.find((address) => {
+//       return address._id.toString() === addressId.toString();
+//     });
+
+    
+//     console.log("collected:", shipAddress);
+
+
+//     if (paymentType !== "Online") {
+//     if (!shipAddress) {
+//       return res.status(400).json({ error: "Address not found" });
+//     }
+//     // console.log("collected :" + shipAddress);
+//     const { country, fullName, mobileNumber, pincode, city, state } =
+//       shipAddress;
+//     // console.log(state);
+
+//     const cartProducts = cartDetails.products.map((productItem) => ({
+//       productId: productItem.product,
+//       quantity: productItem.quantity,
+//       OrderStatus: "pending",
+//       StatusLevel: 1,
+//     }));
+//     let total = await calculateTotalPrice(req.session.user_id);
+
+//     // console.log(cartProducts);
+//     const order = new Order({
+//       userId: req.session.user_id,
+//       "shippingAddress.country": country,
+//       "shippingAddress.fullName": fullName,
+//       "shippingAddress.mobileNumber": mobileNumber,
+//       "shippingAddress.pincode": pincode,
+//       "shippingAddress.city": city,
+//       "shippingAddress.state": state,
+//       products: cartProducts,
+//       totalAmount: total,
+//       paymentMethod: paymentType,
+//       paymentStatus: "success",
+//     });
+
+//     const placeorder = await order.save();
+//     console.log(placeorder._id);
+
+
+   
+//       console.log(placeorder._id);
+
+//       let changeOrderStatus = await Order.updateOne(
+//         { _id: placeorder._id },
+//         { $set: { OrderStatus: "success" } }
+//       );
+
+//       await Cart.deleteOne({ user: req.session.user_id });
+
+//       for (const productItem of cartDetails.products) {
+//         const productId = productItem.product;
+//         const purchasedQuantity = productItem.quantity;
+  
+
+//         const product = await Product.findById(productId);
+  
+//         if (product) {
+         
+//           if (product.stock >= purchasedQuantity) {
+            
+//             product.stock -= purchasedQuantity;
+  
+//             await product.save();
+
+//           }else{
+//             return res.status(400).json({ error: `Insufficient stock for product: ${product.product_name}` });
+//           }
+//         }
+//       }
+
+//       return res.json({ cod: true,orderId:placeorder._id });
+//       }
+
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
+const placeOrderManage = async (req, res) => {
+  
+  try {
+    // console.log(req.body.address);
     let addressId = req.body.address;
 
     let paymentType = req.body.payment;
-
+    console.log("PYAMENT TYPE: "+paymentType);
     const cartDetails = await Cart.findOne({ user: req.session.user_id });
-
-    const products = cartDetails.products;
 
     let userAddrs = await Address.findOne({ userId: req.session.user_id });
     const shipAddress = userAddrs.addresses.find((address) => {
       return address._id.toString() === addressId.toString();
     });
 
-    
-    console.log("collected:", shipAddress);
+    // console.log("collected:", shipAddress);
 
-
-    if (paymentType !== "Online") {
     if (!shipAddress) {
       return res.status(400).json({ error: "Address not found" });
     }
@@ -287,10 +420,15 @@ const placeOrderManage = async (req, res) => {
       quantity: productItem.quantity,
       OrderStatus: "pending",
       StatusLevel: 1,
+      paymentStatus: "pending",
     }));
     let total = await calculateTotalPrice(req.session.user_id);
+    //coupon checking
+    // ===================
+   
 
     // console.log(cartProducts);
+    const trackId = await generateUniqueTrackId();
     const order = new Order({
       userId: req.session.user_id,
       "shippingAddress.country": country,
@@ -302,51 +440,69 @@ const placeOrderManage = async (req, res) => {
       products: cartProducts,
       totalAmount: total,
       paymentMethod: paymentType,
-      paymentStatus: "success",
+      // coupon: req.body.coupon ? req.body.coupon : "none",
+      orderDate: new Date(),
+      trackId,
     });
+    
 
     const placeorder = await order.save();
+    // let analaticResult = await CreateOrderAnalatic();
+    // console.log(analaticResult);
     console.log(placeorder._id);
-
-
-   
+    if (paymentType == "Cash on Delivery") {
       console.log(placeorder._id);
-
       let changeOrderStatus = await Order.updateOne(
         { _id: placeorder._id },
-        { $set: { OrderStatus: "success" } }
-      );
-
-      await Cart.deleteOne({ user: req.session.user_id });
-
-      for (const productItem of cartDetails.products) {
-        const productId = productItem.product;
-        const purchasedQuantity = productItem.quantity;
-  
-
-        const product = await Product.findById(productId);
-  
-        if (product) {
-         
-          if (product.stock >= purchasedQuantity) {
-            
-            product.stock -= purchasedQuantity;
-  
-            await product.save();
-
-          }else{
-            return res.status(400).json({ error: `Insufficient stock for product: ${product.product_name}` });
-          }
+        {
+          $set: {
+            "products.$[].OrderStatus": "placed",
+          },
         }
-      }
+      );
+      let changePaymentStatus = await Order.updateOne(
+        { _id: placeorder._id },
+        {
+          $set: {
+            "products.$[].paymentStatus": "success",
+          },
+        }
+      );
+      // console.log(changeOrderStatus);
+      await Cart.deleteOne({ user: req.session.user_id });
+     
+     
+      // return res.render("orderStatus", {
+      //   success: 1,
+      //   user: req.session.user_id
+      // });
+      return res.json({
+        cod: true,
+        orderId: placeorder._id,
+        status: "success",
+      });
+    } else if(paymentType === "Online") {
+      //here manage when the order is online
+      let order = await genarateRazorpay(placeorder._id, total);
 
-      return res.json({ cod: true,orderId:placeorder._id });
-      }
+      let userData = await User.findById(req.session.user_id);
 
+      // payment history create
+      
+      
+      let user = {
+        name: fullName,
+        mobile: mobileNumber,
+        email: userData.email,
+      };
+      return res.json({ order, user });
+    }
   } catch (error) {
     console.log(error.message);
   }
 };
+
+//======================== function to formate the Date=====================================================//
 
 function formatDate(date) {
   const options = {
