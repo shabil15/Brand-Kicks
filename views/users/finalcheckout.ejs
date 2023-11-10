@@ -165,7 +165,15 @@
     </form>
 </main><!-- End .main -->
 
+<form id="paymentVerifyForm" action="/checkout/placeorder/verify-payment" method="post">
+    <input type="text" name="status" id="statusInput" hidden>
+    <button type="submit" hidden></button>
+</form>
+
 <script>
+    let paymentVerifyForm = document.getElementById('paymentVerifyForm')
+    let paymentstatusInput = document.getElementById('statusInput')
+
     let addressBtn = document.getElementById('addressBtn')
     addressBtn.addEventListener('click', () => {
         submitForm.click()
@@ -180,7 +188,7 @@
             success: (response) => {
                 console.log(response);
                 if (response.cod) {
-                    location.href = `/checkout/placeorder?id=${response.orderId}`
+                    orderStatus(response.status)
                 } else {
                     payPayment(response.order,response.user,response.orderId)
                 }
@@ -188,6 +196,12 @@
             }
         })
     })
+
+    function orderStatus(status){
+        console.log("orderStatus Loaded");
+        paymentstatusInput.value = status
+        paymentVerifyForm.submit()
+    }
 
     function payPayment(order,user,orderId) {
                 console.log(order.amount);
@@ -197,13 +211,14 @@
                     "currency": "INR",
                     "name": "Brand Kicks Ltd",
                     "description": "Test Transaction",
-                    "image": "public\ userAssets\assets\images\BRAND KICKS! black.png",
+                    "image": "/public/userAssets/assets/images/BRAND KICKS! black.png",
                     "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                     "handler": function (response) {
                         // alert(response.razorpay_payment_id);
                         // alert(response.razorpay_order_id);
                         // alert(response.razorpay_signature)
                         // verifyPayment(response, order,orderId)
+                        verifyPayment(response,order,orderId)
                     },
                     "prefill": {
                         "name": user.name,
@@ -222,8 +237,43 @@
                 rzp1.open();
             }
 
-</script>
+         
 
+        function verifyPayment(payment,order,orderId) {
+            console.log("verify fun called");
+            $.ajax({
+                url:'/checkout/verify-payment',
+                method:"post",
+                data:{payment,order},
+                success:(response) =>{
+                    if(response){
+                        console.log("verifiction success");
+                        orderStatus(response.status);
+                    }
+                }
+            })
+        }
+</script>
+<script>
+    // Get references to the radio buttons and the submit button
+    const codRadio = document.getElementById('codRadio');
+    const onlineRadio = document.getElementById('onlineRadio');
+    const paymentBtn = document.getElementById('paymentBtn');
+
+    // Add event listeners to the radio buttons
+    codRadio.addEventListener('change', toggleButtonState);
+    onlineRadio.addEventListener('change', toggleButtonState);
+
+    // Function to toggle the button state based on the radio button selection
+    function toggleButtonState() {
+        if (codRadio.checked || onlineRadio.checked) {
+            paymentBtn.disabled = false; // Enable the button if a radio button is selected
+        } else {
+            paymentBtn.disabled = true; // Disable the button if no radio button is selected
+        }
+    }
+
+</script>
 
 
 

@@ -121,7 +121,11 @@ user_route.get('/profile/orders',orderController.allOrdersPageLoad)
 
 user_route.post('/profile/orders/cancel',orderController.cancelOrder)
 
+user_route.post('/checkout/verify-payment',orderController.verifyPayment) 
 
+user_route.get('/checkout/placeorder',orderController.orderStatusPageLoad)
+
+user_route.post('/checkout/placeorder/verify-payment',orderController.orderStatusPageLoad)
 
 
 

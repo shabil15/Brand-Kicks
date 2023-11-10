@@ -280,12 +280,27 @@ const paymentSelectionManage = async (req, res) => {
 
 const orderStatusPageLoad = async(req,res)=>{
   try {
-    console.log('stttttttt');
-    res.render('orderStatus',{
-      currentPage:'shop',
-      success:1,
-      user:req.session.user_id,
-    })
+    // console.log('stttttttt');
+    // res.render('orderStatus',{
+    //   currentPage:'shop',
+    //   success:1,
+    //   user:req.session.user_id,
+    // })
+    console.log(req.body);
+
+    if(req.body.status == "success") {
+      return res.render("orderStatus",{
+        success:1,
+        user:req.session.user_id,
+        currentPage:'shop',
+      })
+    }else{
+      return res.render('orderStatus',{
+        success:0,
+        user:req.session.user_id,
+        currentPage:'shop',
+      })
+    }
   } catch (error) {
     console.log(error);
   }
@@ -464,7 +479,7 @@ const placeOrderManage = async (req, res) => {
         { _id: placeorder._id },
         {
           $set: {
-            "products.$[].paymentStatus": "success",
+            "products.$[].paymentStatus": "pending",
           },
         }
       );
@@ -512,6 +527,64 @@ function formatDate(date) {
     day: "numeric",
   };
   return date.toLocaleDateString("en-US", options);
+}
+//================================ verify the payment ==================================================================//
+
+const verifyPayment = async (req,res)=>{
+  try {
+    console.log("verify fn called");
+    console.log("req.body",req.body);
+    const paymentDetails = req.body.payment;
+    paymentSignatureMatching(paymentDetails)
+    .then(async ()=>{
+      let changeOrderStatus = await Order.updateOne(
+        {_id:req.body.order.receipt},
+        {
+          $set:{
+            "products.$[].OrderStatus": "placed",
+          }
+        }
+      );
+      let changePaymentStatus= await Order.updateOne(
+        {_id:req.body.order.receipt},
+        {
+          $set:{
+            "products.$[].paymentStatus":"success",
+          }
+        }
+      );
+      console.log(changeOrderStatus,changePaymentStatus);
+      let userCartDelete = await Cart.deleteOne({
+        user:req.session.user_id,
+      })
+      console.log(userCartDelete);
+      console.log("payment Success");
+      res.json({status:"success"})
+    })
+    .catch((err)=>{
+      res.json({status:"fail"});
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+//================================= payment signature matching ========================================================//
+
+const paymentSignatureMatching = (payment) =>{
+  return new Promise((resolve,reject)=>{
+    const crypto = require("crypto");
+    const webhookSecretKey = process.env.KEY_SECRET;
+
+    const hmac = crypto.createHmac("sha256",webhookSecretKey);
+    hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id);
+    const calculatedHmac = hmac.digest("hex");
+
+    if(calculatedHmac === payment.razorpay_signature){
+      resolve()
+    }else{
+      console.log("Invalid payment Signature");
+    }
+  })
 }
 
 //============================== to Load the All Orders Page Load on the user Side ====================================//
@@ -797,6 +870,7 @@ module.exports={
   paymentSelectionManage,
   orderStatusPageLoad,
   placeOrderManage,
+  verifyPayment,
   allOrdersPageLoad,
   cancelOrder,
   ordersListPageLoad,
