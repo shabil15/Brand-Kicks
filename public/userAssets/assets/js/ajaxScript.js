@@ -125,7 +125,45 @@ $.ajax({
 
 //==================================== to remove a cart Item ==================================================//
 
+// function removeCartItem(user,product,qty) {
+//   $.ajax({
+//     url:'/removecartproduct',
+//     method:'delete',
+//     data:{user,product,qty},
+//     success:(response)=>{
+//       if(response.remove===1){
+//         location.reload()
+//       }
+//     }
+//   })
+// }
 
+function removeCartItem(user, product, qty) {
+  // Show a confirmation message with SweetAlert
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to remove this item from your cart?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // If confirmed, proceed with the removal
+      $.ajax({
+        url: '/removecartproduct',
+        method: 'delete',
+        data: { user, product, qty },
+        success: (response) => {
+          if (response.remove === 1) {
+            location.reload();
+          }
+        }
+      });
+    }
+  });
+}
 
 
 //==================================== to remove address =======================================================//
@@ -141,3 +179,4 @@ function removeAddress(id){
     }
   })
 }
+
