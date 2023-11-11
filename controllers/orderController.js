@@ -3,6 +3,7 @@ const Cart = require('../models/userModel').Cart;
 const Address= require('../models/userModel').UserAddress;
 const Product = require("../models/productsModel").product;
 const Order = require('../models/orderModel').Order;
+const Coupon = require('../models/couponModel').Coupon;
 const { log } = require("console");
 const path = require("path");
 const Razorpay = require('razorpay');
