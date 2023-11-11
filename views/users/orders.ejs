@@ -94,7 +94,7 @@
                       style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;">
                       <div class="card-header d-flex justify-content-between w-100">
                           <dir class="d-flex flex-column w-100">
-                              <%if(products[i].OrderStatus!="canceled"){%>
+                              <%if(products[i].OrderStatus!="canceled" && products[i].OrderStatus!="pending"){%>
                                   <p>ORDER PLACED</p>
                                   <p>
                                       <%= products[i].placeOrderDate%>
@@ -107,7 +107,7 @@
                       </div>
                       <hr class="m-0 mb-1">
                       <div>
-                          <%if(products[i].OrderStatus!="canceled"){%>
+                          <%if(products[i].OrderStatus!="canceled" && products[i].OrderStatus!="pending"){%>
                               <h6 class="mx-5 mb-2">Delivery Expect on : <b>
                                       <%= products[i].deliveryDate %>
                                   </b></h6>
@@ -134,7 +134,7 @@
                                   <h5 class="card-title mb-2">₹ <%= products[i].productDetails.product_price %>
                                   </h5>
 
-                                  <%if(products[i].OrderStatus!="canceled"){%>
+                                  <%if(products[i].OrderStatus!="canceled"&& products[i].OrderStatus!="pending"){%>
                                     <%if(products[i].OrderStatus!="Delivered"){%>
 
                                       <div class="col-12 row d-flex justify-content-start">
@@ -164,7 +164,7 @@
                       </div>
                       <!-- OrderStatus -->
 
-                      <%if(products[i].OrderStatus!="canceled"){%>
+                      <%if(products[i].OrderStatus!="canceled" && products[i].OrderStatus!="pending"){%>
                 
 
                       <div class="card-footer" style="background: #F3F3F9;">
