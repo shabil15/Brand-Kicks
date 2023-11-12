@@ -209,3 +209,50 @@ function removeAddress(id){
   })
 }
 
+//================================= apply coupon at checkout ====================================================================//
+
+function couponApply(){
+  let code = document.getElementById("couponInput").value
+  let discount = document.getElementById("dicountDisplay")
+  let discount2 = document.getElementById("dicountDisplay2")
+  let total = document.getElementById('totalDisplay')
+  let total2 = document.getElementById('totalDisplay2')
+
+  let MessDis = document.getElementById('MessDis')
+  let couponInDiv = document.getElementById("couponInDiv")
+  let couponShow = document.getElementById("couponShow")
+  let appliedCouponInput = document.getElementById("couponApInput")
+  let couponPass = document.getElementById("couponPass")
+  let validMessage = document.getElementById('CouponValidMessage')
+  let couponInvalidMess = document.getElementById("couponInvalidMess")
+
+
+  // alert(couponInput)
+  $.ajax({
+      url:'/checkout/placeorder/coupon',
+      method:'post',
+      data:{code},
+      success:(response)=>{
+          if(!response.valid){
+              validMessage.innerHTML=response.message
+              couponInvalidMess.classList.remove("couponHide")
+              setTimeout(() => {
+                  couponInvalidMess.classList.add("couponHide")
+              }, 5000);
+              
+
+          }else{
+              console.log(response.redeem);
+              discount.innerHTML=response.redeem.discount
+              total.innerHTML = response.redeem.total
+              discount2.innerHTML=response.redeem.discount
+              total2.innerHTML = response.redeem.total
+              MessDis.innerHTML =response.redeem.discount
+              couponInDiv.classList.add("couponHide")
+              couponShow.classList.remove("couponHide")
+              appliedCouponInput.value=response.redeem.code
+              couponPass.value = response.redeem._id
+          }
+      }
+  })
+}

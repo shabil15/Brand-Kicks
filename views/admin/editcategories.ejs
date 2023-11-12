@@ -8,6 +8,33 @@
           
           <!-- <p class="card-description"> Basic form elements </p> -->
           <hr class="white-line">
+          <% if (messages.success) { %>
+            <div class="alert alert-success mt-2" id="successAlert">
+              <%= messages.success %>
+            </div>
+            <script>
+              setTimeout(function() {
+                var successAlert = document.getElementById('successAlert');
+                if (successAlert) {
+                  successAlert.remove();
+                }
+              }, 4000); 
+            </script>
+          <% } %>
+          
+          <% if (messages.error) { %>
+            <div class="alert alert-danger mt-2" id="errorAlert">
+              <%= messages.error %>
+            </div>
+            <script>
+              setTimeout(function() {
+                var errorAlert = document.getElementById('errorAlert');
+                if (errorAlert) {
+                  errorAlert.remove();
+                }
+              }, 4000); 
+            </script>
+          <% } %>
           <form class="forms-sample" action="/admin/editCategory?id=<%= categories[0]._id %>" method="post">
             <h3 class="card-title pt-5">Edit New category</h3>
               <div class="form-group  row">

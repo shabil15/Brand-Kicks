@@ -34,7 +34,7 @@
                 <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Coupons</a>
+                <a class="nav-link" id="tab-coupons-link"  data-toggle="tab" href="#tab-coupons" role="tab" aria-controls="tab-coupons" aria-selected="false">Coupons</a>
             </li>
             
             
@@ -137,6 +137,80 @@
               <a href="/profile/orders" class="btn btn-outline-primary-2 p-5"><span>GO ORDERS</span><i class="icon-long-arrow-right"></i></a>
             </div><!-- .End .tab-pane -->
             
+            <div class="tab-pane fade" id="tab-coupons" role="tabpanel" aria-labelledby="tab-coupons-link">
+                <div class="container-fluid d-flex flex-column justify-content-center py-5">
+
+
+                    <div class="row p-2 col-12 d-flex justify-content-center" >
+                        <% for(let i in coupons){ %>
+                            <% var dateTo=new Date(coupons[i].expiryDate); %>
+                        
+                          <% var redeemed = null; %>
+    
+                          <% for (var j = 0; j < coupons[i].usedUsers.length; j++) { %>
+                              <% var usersId = coupons[i].usedUsers[j]; %>
+                              <% if (usersId.toString() === user.toString()) { %>
+                                  <% redeemed = usersId; %>
+                                  <% break; %>
+                              <% } %>
+                          <% } %>
+    
+    
+                        <div class="card  m-2 col-md-5 col-10 p-4 pt-3" style="background: #F3F3F9; border-radius: 10px;">
+                            <div class="card-body ">
+                                <h5 class="text-danger"><%if(redeemed!==null){%><i class="fa-solid fa-medal"></i> Redeemed<%}%></h5>
+                                
+                                <h6 class="card-title mb-1 <%if(redeemed!==null){%> text-light<%}%>"  style="font-size: 25px;">
+                                    <i class="fa-solid fa-gift"></i>
+                                    <%=coupons[i].code%>
+                                </h6>
+                                <p class="card-text"><%= coupons[i].description%>
+                                </p>
+                                <p class="card-text">Redeem upto <span class="text-dark">₹<%=coupons[i].discountAmount%></span>
+                                </p>
+                                <hr class="m-0 p-0 my-3">
+                                <div>
+                                    <p style="font-size: 10px;"> <b>T&C: </b>Coupon requires a <%=coupons[i].criteriaAmount%> minimum purchase. Use the code at checkout. Cannot be combined with other promotions. Limited-time offer."</p>
+    
+                                </div>
+                                <div class="d-flex justify-content-end ">
+                                    <%if(redeemed==null){%>
+                                    <p class="text-dark" type="button" >expire on</p>
+                                    <p class="mx-3">:</p>
+                                    <p class="text-danger" type="button"   > <%= dateTo.toLocaleDateString() %></p>
+                                    
+                                    <%}%>
+                                </div>
+                            </div>
+                        </div>
+                        <%}%>
+                        
+                        <%if(coupons.length==0){%>
+                            <div class="card  m-2 col-md-5 col-10 p-4 pt-3" style="background: #F3F3F9; border-radius: 10px;">
+                                <div class="card-body ">
+                                   
+                                    
+                                    <h6 class="card-title mb-1 text-center text-light"  style="font-size: 25px;">
+                                        <i class="fa-solid fa-gift"></i>
+                                        No Offers
+                                    </h6>
+                                    
+                                </div>
+                            </div>
+                        <%}%>
+    
+    
+    
+    
+    
+                    </div>
+    
+    
+    
+    
+                </div>
+                
+              </div>
            
 
             <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
@@ -298,7 +372,7 @@
                     
                   <% } %>
                   
-
+                  
 
 
             </div><!-- .End .tab-pane -->

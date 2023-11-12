@@ -55,10 +55,12 @@
                                                   <%= product.orderDetails.quantity %>
                                               </b></p><i class="fa-solid fa-file-invoice-dollar"></i> Payment
                                           Method : <%= product.orderDetails. paymentMethod %>
+                                          <p>payment Status: <%= product.orderDetails.paymentStatus%></p>
                                               </p>
                                               <h5 class="card-title mb-2">₹ <%= product.orderDetails.totalAmount
                                                       %>
                                               </h5>
+                                              
                                               <hr class="  " style="background:#555555">
                                               <h5 class="card-title" style="font-size: 15px;">
                                                   shipping Address

@@ -146,11 +146,11 @@
                                       </div>
                                       <%}%>
                                       <%}else{%>
-                                          <h6 class="text-danger text-center mr-5">Canceled Order</h6>
+                                          <h6 class="text-danger text-center mr-5"><%=products[i].OrderStatus%> Order</h6>
                                           <div class="progress-track  col-12">
                                               <ul id="progressbar">
                                                   <li class="step0 active " style="width: 50%; font-size: 1rem;" id="step1">Order placed</li>
-                                                  <li class="step0 active text-right text-danger" style="width: 50%; font-size: 1rem;" id="step4">Canceled</li>
+                                                  <li class="step0 active text-right text-danger" style="width: 50%; font-size: 1rem;" id="step4"><%=products[i].OrderStatus%></li>
                                               </ul>
                                           </div>
 

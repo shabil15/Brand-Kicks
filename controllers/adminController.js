@@ -119,7 +119,7 @@ const addCategory = async (req, res) => {
     const already = await Category.findOne({category_name:{$regex:category_name}})
     if(already){
       req.flash('error','The Category Already Exist')
-      res.redirect('/admin/categories')
+      res.redirect('/admin/addCategory')
 
     }else{
     let category = await new Category({
@@ -134,7 +134,7 @@ const addCategory = async (req, res) => {
     res.redirect("/admin/categories");
     }else{
       req.flash('error','something went wrong please try again')
-      res.redirect('/admin/categories')
+      res.redirect('/admin/addCategory')
       }
     
     
@@ -264,11 +264,13 @@ const updateCategoryData = async (req, res) => {
 
       if (updateCategory) {
         req.flash('success', 'The category was successfully updated');
+        res.redirect('/admin/categories');
       } else {
         req.flash('error', 'No changes were made to the category');
+        res.redirect('/admin/categories');
       }
 
-      res.redirect('/admin/categories');
+      
     }
   } catch (error) {
     console.log(error);

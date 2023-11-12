@@ -13,6 +13,7 @@ const Product = require("../models/productsModel").product;
 const Banner = require('../models/bannerModel');
 const Cart = require('../models/userModel').Cart;
 const Address= require('../models/userModel').UserAddress;
+const Coupon = require('../models/couponModel').Coupon;
 const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
 const Swal = require('sweetalert2'); 
@@ -430,10 +431,13 @@ const profilePageLoad = async (req,res)=>{
 
   const userData = await takeUserData(req.session.user_id)
   const address = await Address.findOne({userId:req.session.user_id})
+  const coupons = await Coupon.find();
+  console.log(coupons);
   if(address){
     res.render('profile',
     { currentPage:'profile',
       users:userData,
+      coupons,
       updatePassErr: req.session.updatePassErr,
       updatePass: req.session.updatePass,
       address:address.addresses,
@@ -456,6 +460,7 @@ const profilePageLoad = async (req,res)=>{
     res.render('profile',
     { currentPage:'home',
       address:0,
+      coupons,
       updatePassErr: req.session.updatePassErr,
       updatePass: req.session.updatePass,
       users:userData,

@@ -6,6 +6,33 @@
   <div class="card">
       <div class="card-body">
           <h4 class="card-title">Add New Category</h4>
+          <% if (messages.success) { %>
+            <div class="alert alert-success mt-2" id="successAlert">
+              <%= messages.success %>
+            </div>
+            <script>
+              setTimeout(function() {
+                var successAlert = document.getElementById('successAlert');
+                if (successAlert) {
+                  successAlert.remove();
+                }
+              }, 4000); 
+            </script>
+          <% } %>
+          
+          <% if (messages.error) { %>
+            <div class="alert alert-danger mt-2" id="errorAlert">
+              <%= messages.error %>
+            </div>
+            <script>
+              setTimeout(function() {
+                var errorAlert = document.getElementById('errorAlert');
+                if (errorAlert) {
+                  errorAlert.remove();
+                }
+              }, 4000); 
+            </script>
+          <% } %>
           <!-- <p class="card-description"> Basic form elements </p> -->
           <hr class="white-line">
           <form class="forms-sample" action="/admin/addCategory" method="post">

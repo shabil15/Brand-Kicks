@@ -73,7 +73,7 @@ const addcoupon = async (req,res)=>{
     }else {
       
       req.flash('error','Coupon code already exist,Try another Code');
-      return res.redirect('/admin/coupons')
+      return res.redirect('/admin/addcoupon')
     }
   } catch (error) {
     console.log(error);
@@ -160,6 +160,10 @@ const deleteCoupon = async (req,res)=>{
     console.log(error);
   }
 }
+
+//============================= to apply the coupon from checkout =================================//
+
+
 
 
 module.exports= {

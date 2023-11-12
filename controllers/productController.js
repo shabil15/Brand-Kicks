@@ -105,7 +105,7 @@ const addProduct = async (req, res) => {
       res.redirect("/admin/products");
     }else{
       req.flash('error','Something went wrong please try again!');
-      res.redirect("/admin/products");
+      res.redirect("/admin/addproduct");
     }
   } catch (error) {
     console.log(error);

@@ -3,6 +3,7 @@ const userController = require("../controllers/userController")
 const productController = require('../controllers/productController')
 const orderController = require('../controllers/orderController')
 const wishListController =require('../controllers/wishListController')
+const couponsController = require('../controllers/couponsController')
 const session = require("express-session")
 
 const config = require("../config/config")
@@ -126,6 +127,11 @@ user_route.post('/checkout/verify-payment',orderController.verifyPayment)
 user_route.get('/checkout/placeorder',orderController.orderStatusPageLoad)
 
 user_route.post('/checkout/placeorder/verify-payment',orderController.orderStatusPageLoad)
+
+
+//======================================== coupon related ================================================//
+
+ user_route.post('/checkout/placeorder/coupon',couponsController.applyCoupon)
 
 
 

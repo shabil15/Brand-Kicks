@@ -173,3 +173,8 @@
       transform: translateY(-3px); /* Adjust the distance for the desired bounce effect */
   }
 }
+/* coupon */
+
+.couponHide{
+  display: none;
+}

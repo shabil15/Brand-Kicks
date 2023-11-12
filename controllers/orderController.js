@@ -436,7 +436,7 @@ const placeOrderManage = async (req, res) => {
       quantity: productItem.quantity,
       OrderStatus: "pending",
       StatusLevel: 1,
-      paymentStatus: "pending",
+      paymentStatus: "success",
     }));
     let total = await calculateTotalPrice(req.session.user_id);
     //coupon checking
@@ -809,7 +809,7 @@ const orderManagePageLoad = async (req, res) => {
         orderStatus: productInfo.OrderStatus,
         StatusLevel: productInfo.StatusLevel,
         paymentMethod: order.paymentMethod,
-        paymentStatus: order.paymentStatus,
+        paymentStatus: productInfo.paymentStatus,
         quantity: productInfo.quantity,
       },
     };
