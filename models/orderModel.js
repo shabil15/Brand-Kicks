@@ -84,6 +84,7 @@ const orderSchema = new mongoose.Schema({
   },
   coupon:{
     type:String,
+    require:true,
   },
   trackId:{
     type:Number,

@@ -52,6 +52,7 @@ const wishListPageLoad = async (req,res)=>{
         const productId = items.product;
         
         const productDetails = await Product.findById(productId, {
+          _id:1,
           images: 1,
           product_name: 1,
           category: 1,

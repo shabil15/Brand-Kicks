@@ -128,6 +128,7 @@ user_route.get('/checkout/placeorder',orderController.orderStatusPageLoad)
 
 user_route.post('/checkout/placeorder/verify-payment',orderController.orderStatusPageLoad)
 
+user_route.get('/checkout/placeorder/amountverify',orderController.amountVerify)
 
 //======================================== coupon related ================================================//
 

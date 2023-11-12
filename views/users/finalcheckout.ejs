@@ -1,7 +1,8 @@
 <%- include('../layouts/user/header.ejs') -%>
 
+
 <main class="main">
-    <div class="page-header text-center " style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
+    <div class="page-header text-center" style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
         <div class="container">
             <h1 class="page-title text-dark">Checkout</h1>
         </div><!-- End .container -->
@@ -10,9 +11,8 @@
         <div class="container">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
-                <li class="breadcrumb-item"><a href="/cart">Shopping Cart</a></li>
-                <li class="breadcrumb-item active" ><a href="/">Checkout</a></li>
+                <li class="breadcrumb-item " aria-current="page">Shopping Cart</li>
+                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
 
             </ol>
         </div><!-- End .container -->
@@ -55,153 +55,200 @@
 
                         <div class=" py-4    " style="border-radius: 10px; background: #F3F3F9;">
                             <div class="form-check d-flex align-items-center mx-4 ">
-                                <h6 class="pt-2">2. <b><%= payment %></b> Payment method choosed</h6>
+                                <h6 class="pt-2">2. <b>
+                                        <%= payment %>
+                                    </b> Payment method choosed</h6>
                             </div>
                         </div>
                         <hr>
                         <div class=" py-4  mt-1  " style="border-radius: 10px; background: #F3F3F9;">
                             <div class="form-check d-flex  flex-column mx-4 ">
-                                <h5 class="mt-3">3. Items and delivery</h5><br>
                                 <!-- <hr> -->
 
-                                <p>The product Will be delivered on <%=deliveryDate%></p>
-                                <br>
 
-
-                                <div class="col-12 row d-flex justify-content-center">
+                                <div class="col-12 row d-flex justify-content-end ">
+                                    <div class="col-12">
+                                        <h5 class="mt-3">3. Items and delivery</h5>
+                                        <hr>
+                                    </div>
                                     <% for(i=0;i<cartItems.products.length;i++){ %>
-                                    <div class="card   col-4 m-1 p-2 d-flex flex-column" style="border-radius: 7px; ">
-                                        <div class="row g-0 ">
-                                            <div class="col-12 d-flex align-items-center">
-                                                <img style="width: 150px; height: 150px; border-radius: 17px;"
-                                                    src="/public/products/images/<%= cartItems.products[i].product.images.image1%>"
-                                                    class="card-img-start" alt="...">
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="card-body">
-                                                    <h6 class="card-title">
-                                                        <%= cartItems.products[i].product.product_name %>
-                                                    </h6>
-                                                    <p class="card-title"><%= cartItems.products[i].product.product_description %></p>
-                                                    <p class="card-text text-dark"><%= cartItems.products[i].product.product_price %>
-                                                    </p>
-                                                    
-                                                    <p class="card-text">
-                                                       qty: <%= cartItems.products[i].quantity %>
-                                                    </p>
+                                        <div class="card col-12 m-1 p-2 d-flex bg-light"
+                                            style="border-radius: 7px; ">
+                                            <div class="row g-0 ">
+                                                <div class="col-4 d-flex align-items-center px-5">
+                                                    <img style="width: 15rem;  border-radius: 17px;"
+                                                        src="/public/products/images/<%= cartItems.products[i].product.images.image1%>"
+                                                        class="card-img-start" alt="...">
+                                                </div>
+                                                <div class="col-8">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title pt-2">
+                                                            <%= cartItems.products[i].product.product_name %>
+                                                        </h6>
+                                                        <p class="card-title pt-2"><%= cartItems.products[i].product.product_price %>
+                                                        </p>
+                                                        
+                                                        
+                                                        <p class="card-text">
+                                                            Qty: <%= cartItems.products[i].quantity %>
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <%}%>
+                                        <%}%>
+                                        <div class="col-12">
+                                            <hr>
+                                            <h5 class="mt-3">Order Summary</h5>
+                                            <p class="mt-1">Delivery Expect on  <b class="text-success"><%= deliveryDate %></b></p>
+                                            <table class="table table-summary">
+                                                <tbody>
+
+                                                    <tr class="summary-subtotal">
+                                                        <td>Subtotal:</td>
+                                                        <td>₹<span id="subTotalDisplay">
+                                                                <%= total%>
+                                                            </span></td>
+                                                    </tr>
+
+                                                    <tr class="summary-shipping-row">
+                                                        <td>
+                                                            <label class=""
+                                                                for="standart-shipping">Discount:</label>
+                                                        </td>
+                                                        <td id="dicountDisplay2">0.00</td>
+                                                    </tr>
+
+                                                    <tr class="summary-total">
+                                                        <td>Total:</td>
+                                                        <td>₹<span id="totalDisplay2">
+                                                                <%=total%>
+                                                            </span></td>
+                                                    </tr><!-- End .summary-total -->
+                                                </tbody>
+                                            </table><!-- End .table table-summary -->
+                                            <hr>
+                                            <button 
+                                                                class="btn btn-outline-primary-2 mb-4 btn-block
+                                                                py-4 "
+                                                                style="background-color: #000; color: #fff;
+                                                                border-radius: 10px; font-size: 18px;"
+                                                                onMouseOver="this.style.background=' #575757'"
+                                                            onMouseOut="this.style.background='#000'"
+                                                            id="addressBtn">Place Order</button>
+
+                                                    </div>
 
 
-                                </div>
+                                                </div>
 
+                                            </div>
+                                        </div>
 
-                            </div>
-                        </div>
+                                </div><!-- End .col-lg-9 -->
+                                <aside class="col-lg-3">
+                                    <div id="couponInvalidMess" class="summary summary-cart  couponHide" style="background: rgb(245,194,194);
+                                    background: linear-gradient(344deg, rgba(245,194,194,1) 5%, rgba(206,0,0,0.8156512605042017) 63%);" >
+                                        <h6 class="text-white m-0">This coupon cannot be Redeemed </h6>
+                                        <hr class="my-3">
+                                        <p class="text-white"><i class="fa-regular fa-face-frown"></i> <span id="CouponValidMessage">minimumSpend not meet</span></p>
+                                    </div><!-- End .summary -->
+                                    <div class="summary summary-cart">
 
-                    </div><!-- End .col-lg-9 -->
-                    <aside class="col-lg-3">
-                        <div id="couponInvalidMess" class="summary summary-cart  couponHide" style="background: rgb(245,194,194);
-                                            background: linear-gradient(344deg, rgba(245,194,194,1) 5%, rgba(206,0,0,0.8156512605042017) 63%);" >
-                                                <h6 class="text-white m-0">This coupon cannot be Redeemed </h6>
-                                                <hr class="my-3">
-                                                <p class="text-white"><i class="fa-regular fa-face-frown"></i> <span id="CouponValidMessage">minimumSpend not meet</span></p>
-                                            </div><!-- End .summary -->
-                                            <div class="summary summary-cart">
-
-                                                <!-- <button class="btn btn-outline-primary-2  btn-block py-3 "
-                                        style="background-color: #000; color: #fff; "
-                                        onMouseOver="this.style.background=' #575757'"
-                                        onMouseOut="this.style.background='#000'" id="addressBtn2"
-                                        >Place Order</button> -->
-
-                                                <!-- <h3 class="summary-title"></h3> -->
-                                                <!-- <h6 class="pt-1 mx-3" style="font-size: 2rem;">coupon code</h6> -->
-                                                <span id="couponInDiv" class="">
-                                                  <div  class=" w-100 mt-2 d-flex justify-content-around bg-white align-items-center" style="width: 100%; height: 5rem; border-radius: 7rem; border: 0.2px solid #bebebe; display: none;">
-                                                  
-                                                      <input id="couponInput" placeholder="coupon code" style="border: #ffffff; height: 4rem; border-radius: 7rem;" class="col-7   coupon mx-auto" type="text" name="code" onkeyup="this.value = this.value.toUpperCase();" required>
-                                                      <button onclick="couponApply()" id="applyBtn" type="button" class="col-4 btn-dark mx-auto" style=" border: none; border-radius: 5rem; height: 4rem;">Apply</button>
-                                                  
-                                                  </div>
-                                                </span>
-
-                                                
-                                                <span id="couponShow" class="couponHide">
-                                                  <div class="w-100 mt-2 d-flex justify-content-around bg-white align-items-center" style="width: 100%; height: 5rem; border-radius: 1rem 0rem 0rem 2rem; border: 0.2px solid #bebebe;">
-                                                  
-                                                        <button type="button" class="text-uppercase col-5 btn-dark mx-auto" style=" border: none; border-radius: 1rem 0 0 1rem  ; height: 5rem; letter-spacing: 1px; font-size: 15px;" disabled>Redeemed</button>
-                                                        <input id="couponApInput" value="FRAMES15" style="border: #ffffff; height: 4rem; border-radius: 7rem; font-size: 19px; letter-spacing: 4px;" class="col-7 text-uppercase  coupon mb-2 mx-auto" type="text" name="code" disabled>
-                                                      
-                                                     
-                                                  </div>
-                                                  <div class="pt-1">
-                                                    <p><b class="text-success"><i class="fa-solid fa-gift"></i> Congratulations! </b> You've saved <span id="MessDis"></span> on your order. Your vision is clearer, and your wallet is happier.</p>
-                                                    <p class="text-danger " style="text-align-last:end; cursor: pointer;" onclick="removeCoupon()" >Remove <i class="fa-light fa-xmark"></i></p>
-                                                  </div>
-                                                </span>
-                        <div class="summary summary-cart">
-
-                            <button class="btn btn-outline-primary-2  btn-block py-3"
+                                        <!-- <button class="btn btn-outline-primary-2  btn-block py-3 "
                                 style="background-color: #000; color: #fff; "
-                                onMouseOver="this.style.background='#575757'"
-                                onMouseOut="this.style.background='#000'" id="addressBtn" >Place
-                                order</button>
+                                onMouseOver="this.style.background=' #575757'"
+                                onMouseOut="this.style.background='#000'" id="addressBtn2"
+                                >Place Order</button> -->
 
-                                
+                                        <!-- <h3 class="summary-title"></h3> -->
+                                        <!-- <h6 class="pt-1 mx-3" style="font-size: 2rem;">coupon code</h6> -->
+                                        <span id="couponInDiv" class="">
+                                          <div  class=" w-100 mt-2 d-flex justify-content-around bg-white align-items-center" style="width: 100%; height: 5rem; border-radius: 7rem; border: 0.2px solid #bebebe; display: none;">
+                                          
+                                              <input id="couponInput" placeholder="coupon code" style="border: #ffffff; height: 4rem; border-radius: 7rem;" class="col-7   coupon mx-auto" type="text" name="code" onkeyup="this.value = this.value.toUpperCase();" required>
+                                              <button onclick="couponApply()" id="applyBtn" type="button" class="col-4 btn-dark mx-auto" style=" border: none; border-radius: 5rem; height: 4rem;">Apply</button>
+                                          
+                                          </div>
+                                        </span>
 
-                            <h3 class="summary-title"></h3>
+                                        
+                                        <span id="couponShow" class="couponHide">
+                                          <div class="w-100 mt-2 d-flex justify-content-around bg-white align-items-center" style="width: 100%; height: 5rem; border-radius: 1rem 0rem 0rem 2rem; border: 0.2px solid #bebebe;">
+                                          
+                                                <button type="button" class="text-uppercase col-5 btn-dark mx-auto" style=" border: none; border-radius: 1rem 0 0 1rem  ; height: 5rem; letter-spacing: 1px; font-size: 15px;" disabled>Redeemed</button>
+                                                <input id="couponApInput" value="FRAMES15" style="border: #ffffff; height: 4rem; border-radius: 7rem; font-size: 19px; letter-spacing: 4px;" class="col-7 text-uppercase  coupon mx-auto" type="text" name="code" disabled>
+                                              
+                                             
+                                          </div>
+                                          <div class="pt-1">
+                                            <p><b class="text-success"><i class="fa-solid fa-gift"></i> Congratulations! </b> You've saved <span id="MessDis"></span> on your order. Your vision is clearer, and your wallet is happier.</p>
+                                            <p class="text-danger " style="text-align-last:end; cursor: pointer;" onclick="removeCoupon()" >Remove <i class="fa-light fa-xmark"></i></p>
+                                          </div>
+                                        </span>
+                                        <!-- <div class="w-100 d-flex justify-content-around align-items-center" style="width: 100%; height: 8rem; border-radius: 19px; border: 0.2px dotted #d3d3d3;  ">
+                                          
+                                            <p class="">Coupon applied : TEST12</p>
+                                            <h6></h6>
+                                          
+                                        </div> -->
+                                        <hr class="my-4" style="background-color: #d8d8d8; height: 0.3px;">
+                                        <table class="table table-summary">
+                                            <tbody>
 
-                            <table class="table table-summary">
-                                <tbody>
-
-                                    <tr class="summary-subtotal">
-                                        <td>Subtotal:</td>
-                                        <td>₹<span id="subTotalDisplay">
-                                                <%= total%>
-                                            </span></td>
-                                    </tr><!-- End .summary-subtotal -->
+                                                <tr class="summary-subtotal">
+                                                    <td>Subtotal:</td>
+                                                    <td>₹<span id="subTotalDisplay">
+                                                            <%= total%>
+                                                        </span></td>
+                                                </tr><!-- End .summary-subtotal -->
 
 
 
 
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <label class="" for="standart-shipping">Discount:</label>
-                                        </td>
-                                        <td id="discountDisplay">0.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
+                                                <tr class="summary-shipping-row">
+                                                    <td>
+                                                        <label class=""
+                                                            for="standart-shipping">Discount:</label>
+                                                    </td>
+                                                    <td id="dicountDisplay">0.00</td>
+                                                </tr><!-- End .summary-shipping-row -->
 
 
 
 
 
-                                    <tr class="summary-total">
-                                        <td>Total:</td>
-                                        <td>₹<span id="totalDisplay">
-                                                <%=total%>
-                                            </span></td>
-                                    </tr><!-- End .summary-total -->
-                                </tbody>
-                            </table><!-- End .table table-summary -->
-                            <dotlottie-player> </dotlottie-player>
-                            <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
+                                                <tr class="summary-total">
+                                                    <td>Total:</td>
+                                                    <td>₹<span id="totalDisplay">
+                                                            <%=total%>
+                                                        </span></td>
+                                                </tr><!-- End .summary-total -->
+                                                
+                                            </tbody>
+                                            
+                                        </table><!-- End .table table-summary -->
+                                        
+                                        <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
                             Address</button> -->
-                        </div><!-- End .summary -->
-                    </aside><!-- End .col-lg-3 -->
-                </div><!-- End .row -->
-            </div><!-- End .container -->
-        </div><!-- End .cart -->
-    </div><!-- End .page-content -->
-    <form id="addressForm">
-        <input type="text" name="address" value="<%= address._id %>" id="addressInput" hidden>
-        <input type="text" name="payment" value="<%=payment%>" hidden>
-        <input id="couponPass" type="text" name="coupon" hidden>
-        <button id="submitForm" type="submit" hidden></button>
-    </form>
+                                        <dotlottie-player> </dotlottie-player>
+                                    </div><!-- End .summary -->
+                                    
+                                </aside><!-- End .col-lg-3 -->
+
+                               
+                                    
+
+                            </div><!-- End .row -->
+                        </div><!-- End .container -->
+                    </div><!-- End .cart -->
+                </div><!-- End .page-content -->
+                <form id="addressForm">
+                    <input type="text" name="address" value="<%= address._id %>" id="addressInput" hidden>
+                    <input type="text" name="payment" value="<%=payment%>" hidden>
+                    <input id="couponPass" type="text" name="coupon" hidden>
+                    <button id="submitForm" type="submit" hidden></button>
+                </form>
 </main><!-- End .main -->
 
 <form id="paymentVerifyForm" action="/checkout/placeorder/verify-payment" method="post">

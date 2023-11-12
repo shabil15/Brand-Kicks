@@ -36,8 +36,8 @@
                     <tbody>
 
                         <% for(i=0;i<cartItems.products.length;i++){ %>
-                            <tr>
-                                <td class="product-col">
+                            <tr class="table" id="cartItem-<%= cartItems.products[i].product._id %>">
+                                <td class="product-col" >
                                     <div class="product">
                                         <figure class="product-media">
                                             <a

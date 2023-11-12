@@ -407,13 +407,16 @@ const orderStatusPageLoad = async(req,res)=>{
 // };
 
 const placeOrderManage = async (req, res) => {
-  
+  let discountDetails = {
+    codeId: 0,
+    amount: 0,
+  };
   try {
     // console.log(req.body.address);
     let addressId = req.body.address;
 
     let paymentType = req.body.payment;
-    console.log("PYAMENT TYPE: "+paymentType);
+    console.log("PAYMENT TYPE: "+paymentType);
     const cartDetails = await Cart.findOne({ user: req.session.user_id });
 
     let userAddrs = await Address.findOne({ userId: req.session.user_id });
@@ -441,7 +444,21 @@ const placeOrderManage = async (req, res) => {
     let total = await calculateTotalPrice(req.session.user_id);
     //coupon checking
     // ===================
-   
+    console.log("cou",req.body.coupon);
+    if (req.body.coupon != "") {
+      const couponDetails = await Coupon.findById(req.body.coupon);
+      console.log(couponDetails);
+      console.log(req.body.coupon);
+      total -=couponDetails.discountAmount;
+      console.log(total);
+      discountDetails.codeId = couponDetails._id;
+      console.log(discountDetails.codeId);
+      console.log(total);
+      discountDetails.amount = couponDetails.discountAmount;
+      console.log(discountDetails.amount);
+      couponDetails.usedUsers.push(req.session.user_id);
+      await couponDetails.save();
+    }
 
     // console.log(cartProducts);
     const trackId = await generateUniqueTrackId();
@@ -456,7 +473,7 @@ const placeOrderManage = async (req, res) => {
       products: cartProducts,
       totalAmount: total,
       paymentMethod: paymentType,
-      // coupon: req.body.coupon ? req.body.coupon : "none",
+      coupon: req.body.coupon ? req.body.coupon : "none",
       orderDate: new Date(),
       trackId,
     });
@@ -486,7 +503,26 @@ const placeOrderManage = async (req, res) => {
       );
       // console.log(changeOrderStatus);
       await Cart.deleteOne({ user: req.session.user_id });
-     
+     for (const productItem of cartDetails.products) {
+        const productId = productItem.product;
+        const purchasedQuantity = productItem.quantity;
+  
+
+        const product = await Product.findById(productId);
+  
+        if (product) {
+         
+          if (product.stock >= purchasedQuantity) {
+            
+            product.stock -= purchasedQuantity;
+  
+            await product.save();
+
+          }else{
+            return res.status(400).json({ error: `Insufficient stock for product: ${product.product_name}` });
+          }
+        }
+      }
      
       // return res.render("orderStatus", {
       //   success: 1,
@@ -499,6 +535,7 @@ const placeOrderManage = async (req, res) => {
       });
     } else if(paymentType === "Online") {
       //here manage when the order is online
+      console.log(total);
       let order = await genarateRazorpay(placeorder._id, total);
 
       let userData = await User.findById(req.session.user_id);
@@ -512,11 +549,18 @@ const placeOrderManage = async (req, res) => {
         email: userData.email,
       };
       return res.json({ order, user });
+      
     }
   } catch (error) {
     console.log(error.message);
   }
 };
+//====================== decrease the stock ======================================================//
+
+
+
+
+
 
 //======================== function to formate the Date=====================================================//
 
@@ -536,6 +580,7 @@ const verifyPayment = async (req,res)=>{
     console.log("verify fn called");
     console.log("req.body",req.body);
     const paymentDetails = req.body.payment;
+    const cartDetails = await Cart.findOne({ user: req.session.user_id });
     paymentSignatureMatching(paymentDetails)
     .then(async ()=>{
       let changeOrderStatus = await Order.updateOne(
@@ -559,7 +604,28 @@ const verifyPayment = async (req,res)=>{
         user:req.session.user_id,
       })
       console.log(userCartDelete);
+      
       console.log("payment Success");
+      for (const productItem of cartDetails.products) {
+        const productId = productItem.product;
+        const purchasedQuantity = productItem.quantity;
+  
+
+        const product = await Product.findById(productId);
+  
+        if (product) {
+         
+          if (product.stock >= purchasedQuantity) {
+            
+            product.stock -= purchasedQuantity;
+  
+            await product.save();
+
+          }else{
+            return res.status(400).json({ error: `Insufficient stock for product: ${product.product_name}` });
+          }
+        }
+      }
       res.json({status:"success"})
     })
     .catch((err)=>{
@@ -864,6 +930,17 @@ const changeOrderStatus = async (req, res)=>{
   }
 }
 
+//================ to verify the total amount when applying coupon ============================================//
+
+  const amountVerify = async(req,res)=>{
+    try {
+      const total = await calculateTotalPrice(req.session.user_id);
+      res.json(total);
+    } catch (error) {
+      console.log(error);
+    }
+  } 
+
 module.exports={
   checkoutLoad,
   reciveShippingAddress,
@@ -877,5 +954,6 @@ module.exports={
   ordersListPageLoad,
   orderManagePageLoad,
   changeOrderStatus,
+  amountVerify
   
 }

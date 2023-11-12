@@ -1,6 +1,7 @@
 
 const User = require('../models/userModel').User;
 const Product = require('../models/productsModel').product;
+const Cart = require('../models/userModel').Cart;
 const Coupon = require('../models/couponModel').Coupon;
 const Address= require('../models/userModel').UserAddress;
 const Order  = require('../models/orderModel').Order;
@@ -9,7 +10,19 @@ const Order  = require('../models/orderModel').Order;
 
 const calculateTotalPrice = async (userId) =>{
   try {
-   console.log("hi");
+   const cart= await Cart.findOne({user:userId}).populate(
+    "products.product"
+   );
+   if(!cart) {
+    console.log("User does not have a cart");
+   }
+   let totalPrice= 0;
+   for (const cartProduct of cart.products) {
+    const {product,quantity}=cartProduct;
+    const productSubtotal =product.product_price * quantity;
+    totalPrice +=productSubtotal;
+   }
+   return totalPrice;
   } catch (error) {
     console.log(error);
   }
@@ -163,7 +176,76 @@ const deleteCoupon = async (req,res)=>{
 
 //============================= to apply the coupon from checkout =================================//
 
+const applyCoupon = async (req,res)=>{
+  try {
+    const couponCode = req.body.code;
+    const userId = req.session.user_id;
+    const cartTotalAmount =await calculateTotalPrice(userId);
+    console.log(cartTotalAmount);
 
+    const coupon = await Coupon.findOne({code:couponCode});
+    console.log("coup",coupon);
+    if(coupon == null ){
+      console.log("null");
+      return res.json({
+        valid:false,
+        message:"coupon not valid"
+      })
+    }
+
+    if(coupon.usedUsers.includes(userId)) {
+      console.log("used");
+      return res.json({
+        valid:false,
+        message:"You have already claimed this coupon",
+      })
+    }
+
+    const currentDate = new Date();
+
+    // if(currentDate < coupon.activationDate || currentDate > coupon.expiryDate) {
+    //   console.log(coupon.activationDate);
+    //   console.log(coupon.expiryDate);
+     
+    //   console.log("expire");
+    //   return res.json({
+    //     valid:false,
+    //     message:"Coupon is not valid"
+    //   })
+    // }
+
+    if(cartTotalAmount<coupon.criteriaAmount) {
+      console.log("criteria");
+      return res.json({
+        valid:false,
+        message:"The minimum criteria amount has not been met"
+      })
+    }
+
+    if(coupon.usedUsers.length>=coupon.maxUser){
+      console.log("maxUser");
+      return res.json({
+        valid:false,
+        message:"Coupon has reached the maximum usage Limit"
+      })
+    }
+
+    await coupon.save();
+    let redeem = {
+      code:coupon.code,
+      discount:coupon.discountAmount,
+      total:cartTotalAmount - coupon.discountAmount,
+      _id:coupon._id
+    }
+
+    return res.json({
+      valid:true,
+      redeem
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 module.exports= {
@@ -173,6 +255,7 @@ module.exports= {
   editCouponPageLoad,
   editCoupon,
   deleteCoupon,
+  applyCoupon
 
 
 }

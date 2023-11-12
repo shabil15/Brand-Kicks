@@ -141,7 +141,7 @@ function removeWishItem(productId){
         data:{productId},
         success:(response)=>{
             if(response.status=="remove"){
-                window.location.reload()
+              location.reload()
             }
         }
 
@@ -186,7 +186,11 @@ function removeCartItem(user, product, qty) {
         data: { user, product, qty },
         success: (response) => {
           if (response.remove === 1) {
-            location.reload();
+            $("#cartItem-"+product).remove()
+            const tableLength = $('.table').length;
+            if(tableLength===0){
+              location.reload;
+            } 
           }
         }
       });

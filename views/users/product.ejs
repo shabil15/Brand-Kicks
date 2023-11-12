@@ -86,15 +86,20 @@
 
                           <div class="details-filter-row details-row-size">
                               <span>Category : <b>
-                                      <%= product.category %>
+                                      <%= product.category %> 
                                   </b></span>
-
+                               
                               <div class="product-nav product-nav-thumbs">
                                   <p></p>
-
+                                  
+                                
                               </div><!-- End .product-nav -->
+                              
                           </div><!-- End .details-filter-row -->
-
+                          <% if (product.stock < 10) { %>
+                            <p class="mb-2 text-danger">Only <%= product.stock %> pieces left</p>
+                        <% } %>
+                        
 
 
 
