@@ -19,7 +19,7 @@ const calculateTotalPrice = async (userId) =>{
 //============================= Load the page for Add Coupon =========================================================//
 
 
-addCouponPageLoad = async (req,res)=>{
+const addCouponPageLoad = async (req,res)=>{
   try {
     res.render('addcoupon',{
       codeErr:req.session.couponErr
@@ -67,10 +67,13 @@ const addcoupon = async (req,res)=>{
 
       })
       await coupon.save();
-      req.session.couponAdded=1
-      return res.redirect('/admin/coupon');
+
+      req.flash('success','The coupon added Successfully');
+      return res.redirect('/admin/coupons');
     }else {
-      return res.redirect('/admin/coupon')
+      
+      req.flash('error','Coupon code already exist,Try another Code');
+      return res.redirect('/admin/coupons')
     }
   } catch (error) {
     console.log(error);
@@ -105,14 +108,58 @@ const editCouponPageLoad = async (req,res) =>{
 
 //============================================= to edit the coupon ===============================================//
 
-// const editCoupon= async (req,res) =>{
-//   try {
-    
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+const editCoupon= async (req,res) =>{
+  try {
+    console.log("reqbodyLL",req.body);
+    const {
+      code,
+      discountAmount,
+      activationDate,
+      expiryDate,
+      description,
+      criteriaAmount,
+      maxUser,
+    }=req.body;
 
+   const couponvalidation = await Coupon.findOne({code:code})
+   console.log(couponvalidation);
+   
+   const editCoupon = await Coupon.updateOne(
+    {_id: req.query.id},
+    {
+      $set:{
+        code:code,
+        discountAmount:discountAmount,
+        activationDate:activationDate,
+        expiryDate:expiryDate,
+        description:description,
+        criteriaAmount:criteriaAmount,
+        maxUser:maxUser
+      }
+    }
+   );
+   console.log(editCoupon);
+   req.flash('success','The coupon updated Successfully');
+   return res.redirect('/admin/coupons');
+  
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+//========================= delete the coupon ======================================//
+
+const deleteCoupon = async (req,res)=>{
+  try {
+    console.log(req.query.id)
+    const deletecoupon = await Coupon.deleteOne({_id:req.query.id})
+    console.log(deletecoupon);
+    req.flash('success','the Coupon deleted successfully')
+    res.redirect('/admin/coupons');
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 module.exports= {
@@ -120,6 +167,8 @@ module.exports= {
   addcoupon,
   couponsPageLoad,
   editCouponPageLoad,
+  editCoupon,
+  deleteCoupon,
 
 
 }

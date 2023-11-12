@@ -90,32 +90,7 @@
   </div>
   <!-- content-wrapper ends -->
   <!-- partial:partials/_footer.html -->
-  <footer class="footer">
-      <div class="content-wrapper ">
-          <div id="FormAlert" data-aos="fade-down" class="alert alert-danger col-md-3 col-8 mx-auto fixed-top "
-          style="display: none;  top:30px; border-radius: 7px; opacity: 0.9; " role="alert">
-          <h6 class="alert-heading text-center">Please provide only valid data.</h6>
-          <hr>
-          <span class="row "><i class="fa-sharp fa-light fa-circle-xmark fa-shake" style="color: #ff0505; font-size: 18px;"></i> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess"></p></span>
-           
-      </div>
-
-      <%if(codeErr==1){%>
-          <div class="content-wrapper ">
-              <div id="CodeAlert" data-aos="fade-down" class="alert alert-danger col-md-3 col-8 mx-auto fixed-top "
-              style="  top:30px; border-radius: 7px; opacity: 0.9; " role="alert">
-              <h6 class="alert-heading text-center">Code Not available</h6>
-              <hr>
-              <span class="row "> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess">This coupon code isn't available, it's already been used</p></span>
-               
-          </div>
-          <script>
-                setTimeout(function () {
-                  $("#CodeAlert").fadeOut();
-                }, 5000);
-          </script>
-      <%}%>
-  </footer>
+  
   <!-- partial -->
   
 
@@ -147,14 +122,14 @@
   var code = document.getElementById("exampleInputName1").value;
 
   var discountAmount = parseFloat(
-    document.getElementsByName("discount_amount")[0].value
+    document.getElementsByName("discountAmount")[0].value
   );
-  var validFrom = new Date(document.getElementsByName("validFrom")[0].value);
-  var validTo = new Date(document.getElementsByName("validTo")[0].value);
+  var validFrom = new Date(document.getElementsByName("activationDate")[0].value);
+  var validTo = new Date(document.getElementsByName("expiryDate")[0].value);
   var minimumSpend = parseFloat(
-    document.getElementsByName("minimumSpend")[0].value
+    document.getElementsByName("criteriaAmount")[0].value
   );
-  var maxUsers = parseInt(document.getElementsByName("maxUsers")[0].value);
+  var maxUsers = parseInt(document.getElementsByName("maxUser")[0].value);
   var description = document.getElementById("exampleTextarea1").value;
   var ValidErrMess = document.getElementById("ValidErrMess");
 
@@ -167,7 +142,7 @@
   }
 
   // Check for negative discount amount, minimum spend, and max users
-  if (discountAmount < 0 || minimumSpend < 0 || maxUsers < 1) {
+  if (discountAmount < 0 || criteriaAmount < 0 || maxUser < 1) {
     // alert("Negative values are not allowed.");
     ValidErrMess.innerHTML = "Negative values are not allowed.";
     showFormValidAlert();
@@ -175,7 +150,7 @@
   }
 
   // Check if validFrom is after or equal to validTo
-  if (validFrom >= validTo) {
+  if (activationDate >= expiryDate) {
     // alert("Valid Date From must be earlier than Valid Date To.");
     ValidErrMess.innerHTML =
       "Valid Date From must be earlier than Valid Date To.";
@@ -184,7 +159,7 @@
   }
 
   // Check if maxUsers is a non-decimal number
-  if (!Number.isInteger(maxUsers)) {
+  if (!Number.isInteger(maxUser)) {
     // alert("Max Users cannot have decimal points.");
     ValidErrMess.innerHTML = "Max Users cannot have decimal points.";
     showFormValidAlert();
@@ -197,34 +172,6 @@
   return true;
 }
 
-//category validations
-// ======================
-function categoryValidation() {
-  const categoryName = document.getElementById("categoryName");
-  const imageInput = document.getElementById("imageInput1");
-
-  if (categoryName.value.trim() === "") {
-    ValidErrMess.innerHTML = "Category Name must not be empty.";
-    showFormValidAlert();
-    return false;
-  }
-
-  if (!isNaN(parseInt(categoryName.value))) {
-    ValidErrMess.innerHTML = "Category Name cannot be a valid integer.";
-    showFormValidAlert();
-    return false;
-  }
-
-  if (!imageInput.files || imageInput.files.length === 0) {
-    ValidErrMess.innerHTML = "Please select an image.";
-    showFormValidAlert();
-    return false;
-  }
-
-  return true;
-}
-
-  
 
 </script>
       

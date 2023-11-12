@@ -1,17 +1,13 @@
 <%- include('../layouts/admin/header.ejs') %>
 <div class="main-panel">
   <div class="content-wrapper">
-      
-
-
-
 
       <div class="col-12 grid-margin stretch-card">
           <div class="card">
               <div class="card-body">
                   <h4 class="card-title">Add New Coupon</h4>
                   <!-- <p class="card-description"> Basic form elements </p> -->
-                  <form class="forms-sample " action="/admin/coupon/edit" method="post" onsubmit="return validateCouponForm();">
+                  <form class="forms-sample " action="/admin/coupon/edit?id=<%=coupon._id %>" method="post" onsubmit="return validateCouponForm();">
 
                       <div class="form-group  row">
                           <div class="col-6  text-light">

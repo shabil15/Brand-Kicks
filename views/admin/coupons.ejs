@@ -11,14 +11,42 @@
                   <div class="card-body">
 
                       <div class="d-flex justify-content-between">
-                          <h4 class="card-title">
+                          <h3 class="card-title">
                               <p class=""></p>Coupon Management
-                          </h4>
+                          </h3>
                           <a href="/admin/addcoupon"
                                                                                                                                                                                                                                                                                          class="btn btn-outline-success d-flex align-items-center">&nbsp<b>+
                               </b> &nbsp Add
                               Coupon</a>
                       </div>
+                      <% if (messages.success) { %>
+                        <div class="alert alert-success mt-2" id="successAlert">
+                          <%= messages.success %>
+                        </div>
+                        <script>
+                          setTimeout(function() {
+                            var successAlert = document.getElementById('successAlert');
+                            if (successAlert) {
+                              successAlert.remove();
+                            }
+                          }, 4000); 
+                        </script>
+                      <% } %>
+                      
+                      <% if (messages.error) { %>
+                        <div class="alert alert-danger mt-2" id="errorAlert">
+                          <%= messages.error %>
+                        </div>
+                        <script>
+                          setTimeout(function() {
+                            var errorAlert = document.getElementById('errorAlert');
+                            if (errorAlert) {
+                              errorAlert.remove();
+                            }
+                          }, 4000); 
+                        </script>
+                      <% } %>
+                      
                       <hr class="white-line my-4">
                       <div class="mb-5 ">
                           <ul class="navbar-nav w-100">
@@ -89,7 +117,7 @@
                                                   </td>
                                                   <td>
 
-                                                      <button type="button" class="btn btn-inverse-danger"   data-bs-target="#mod<%= Coupons[i]._id %>" data-bs-toggle="modal"
+                                                      <butto type="button" class="btn btn-inverse-danger"   data-bs-target="#mod<%= Coupons[i]._id %>" data-bs-toggle="modal"
                                                                                                                                                                                                                                                                                                                      data-bs-target="#mod">
                                                           remove
                                                       </button>
@@ -147,6 +175,8 @@
                                                           </div>
                                                       </div>
                                                   </div>
+                                                  </div>
+                                                  
 
                                                   <%}%>
 
