@@ -121,7 +121,36 @@ $.ajax({
 }
   
 }
+//============================= to remove a wishList Item ==============================================//
 
+function removeWishItem(productId){
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to remove this item from your wishlist?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+  }).then((result) => {
+    if (result.isConfirmed) {
+    console.log(productId);
+    $.ajax({
+        url:'/removewishitem',
+        method:"delete",
+        data:{productId},
+        success:(response)=>{
+            if(response.status=="remove"){
+                window.location.reload()
+            }
+        }
+
+    })
+  }
+}
+  )
+
+}
 
 //==================================== to remove a cart Item ==================================================//
 
