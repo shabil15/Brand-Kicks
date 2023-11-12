@@ -15,6 +15,10 @@ const calculateTotalPrice = async (userId) =>{
   }
 }
 
+
+//============================= Load the page for Add Coupon =========================================================//
+
+
 addCouponPageLoad = async (req,res)=>{
   try {
     res.render('addcoupon',{
@@ -31,6 +35,8 @@ addCouponPageLoad = async (req,res)=>{
     console.log(error);
   }
 }
+
+//========================================== to add the coupon ===============================================//
 
 
 const addcoupon = async (req,res)=>{
@@ -71,6 +77,8 @@ const addcoupon = async (req,res)=>{
   }
 }
 
+//================================ to Load the coupons Page ==========================================//
+
 const couponsPageLoad = async (req,res)=>{
   try {
     const Coupons = await Coupon.find()
@@ -81,9 +89,37 @@ const couponsPageLoad = async (req,res)=>{
     console.log(error);
   }
 }
+
+
+//================================= to Load the page for the edit coupon ======================================//
+
+const editCouponPageLoad = async (req,res) =>{
+  try {
+    console.log(req.query.id);
+    const coupon = await Coupon.findOne({_id:req.query.id});
+    res.render("editCoupon",{coupon,coupon})
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//============================================= to edit the coupon ===============================================//
+
+// const editCoupon= async (req,res) =>{
+//   try {
+    
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+
+
 module.exports= {
   addCouponPageLoad,
   addcoupon,
   couponsPageLoad,
+  editCouponPageLoad,
+
 
 }

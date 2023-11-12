@@ -1,0 +1,218 @@
+<%- include('../layouts/admin/header.ejs') %>
+<div class="main-panel">
+  <div class="content-wrapper">
+      
+
+
+
+
+      <div class="col-12 grid-margin stretch-card">
+          <div class="card">
+              <div class="card-body">
+                  <h4 class="card-title">Add New Coupon</h4>
+                  <!-- <p class="card-description"> Basic form elements </p> -->
+                  <form class="forms-sample " action="/admin/coupon/edit" method="post" onsubmit="return validateCouponForm();">
+
+                      <div class="form-group  row">
+                          <div class="col-6  text-light">
+                              <label for="exampleInputName1">Coupon Code</label>
+                              <input type="text" class="form-control  text-light" name="code" id="exampleInputName1" value="<%=coupon.code%>" placeholder="code" onkeyup="this.value = this.value.toUpperCase();" >
+                          </div>
+                          <div class="col-6">
+                              <label for="exampleInputName1">Discount Amount</label>
+                              <input type="number" class="form-control text-light" id="exampleInputName1" name="discountAmount"  value="<%=coupon.discountAmount%>" placeholder="price" >
+                          </div>
+
+                      </div>
+                      
+                      <div class="row">
+                          <div class="col-md-6 d-flex ">
+                              <div class="d-flex  mt-4 ">
+                                  <p class="mdi mdi-calendar-multiple-check " style="font-size: 2.1rem;"></p>
+
+                              </div>
+                              <div class="form-group row mx-2 w-100" >
+                                  <div class="col-sm-12 ">
+                                      <label for="start-date" class="col-sm-22 col-form-label">Valid Date
+                                          From</label>
+                                      <input type="text" value="<%=coupon.activationDate.toISOString().slice(0, 10)%>" autocomplete="off" id="start-date" class="form-control text-light"  value="<%=coupon.activationDate%>" name="activationDate" placeholder="Select Starting Date">
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-6  d-flex ">
+                              <div class="d-flex  mt-4 ">
+                                  <p class="mdi mdi-calendar-multiple-check " style="font-size: 2.1rem;"></p>
+
+                              </div>
+                              <div class="form-group row mx-2 w-100" >
+                                  <div class="col-sm-12  ">
+                                      <label for="end-date" class="col-sm-22 col-form-label">Valid Date To</label>
+                                      <input type="text" value="<%=coupon.expiryDate.toISOString().slice(0, 10)%>" autocomplete="off" id="end-date" class="form-control text-light"  value="<%=coupon.expiryDate%>" name="expiryDate" placeholder="Select Expiring Date" >
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="form-group row">
+                                  <div class="col-sm-12">
+                                      <label class="col-sm-3 col-form-label">Minimum Spend</label>
+                                      <input type="number" class="form-control text-light" id="exampleInputName1"  value="<%=coupon.criteriaAmount%>" name="criteriaAmount" placeholder="Enter Stock" >
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                              <div class="form-group row">
+                                  <div class="col-sm-12">
+                                      <label class="col-sm-3 col-form-label">Maxinum Users</label>
+                                      <input type="number" class="form-control text-light" id="exampleInputName1"  value="<%=coupon.maxUser%>" name="maxUser" placeholder="Enter Stock" >
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="form-group mt-2">
+                          <label for="exampleTextarea1">Description</label>
+                          <textarea name="description" class="form-control text-light"    id="exampleTextarea1" rows="4" ><%=coupon.description%></textarea>
+                      </div>
+
+                      <button type="submit" class="btn btn-lg btn-primary mr-2 mt-5">Add Coupon</button>
+                  </form>
+
+
+              </div>
+          </div>
+      </div>
+      
+
+
+  </div>
+  <!-- content-wrapper ends -->
+  <!-- partial:partials/_footer.html -->
+  <footer class="footer">
+      <div class="content-wrapper ">
+          <div id="FormAlert" data-aos="fade-down" class="alert alert-danger col-md-3 col-8 mx-auto fixed-top "
+          style="display: none;  top:30px; border-radius: 7px; opacity: 0.9; " role="alert">
+          <h6 class="alert-heading text-center">Please provide only valid data.</h6>
+          <hr>
+          <span class="row "><i class="fa-sharp fa-light fa-circle-xmark fa-shake" style="color: #ff0505; font-size: 18px;"></i> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess"></p></span>
+           
+      </div>
+
+      
+  </footer>
+  <!-- partial -->
+  
+
+  
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+
+  
+
+  $("#start-date").datepicker({
+      dateFormat: 'yy-mm-dd',
+      onSelect: function (selectedDate) {
+          var minDate = new Date(selectedDate);
+          minDate.setDate(minDate.getDate() + 1); // Set the minimum date for the end date picker to the next day
+          $("#end-date").datepicker("option", "minDate", minDate);
+      }
+  });
+
+  $("#end-date").datepicker({
+      dateFormat: 'yy-mm-dd'
+  });
+
+
+  
+  function validateCouponForm() {
+  // Get form input values
+  var code = document.getElementById("exampleInputName1").value;
+
+  var discountAmount = parseFloat(
+    document.getElementsByName("discount_amount")[0].value
+  );
+  var validFrom = new Date(document.getElementsByName("validFrom")[0].value);
+  var validTo = new Date(document.getElementsByName("validTo")[0].value);
+  var minimumSpend = parseFloat(
+    document.getElementsByName("minimumSpend")[0].value
+  );
+  var maxUsers = parseInt(document.getElementsByName("maxUsers")[0].value);
+  var description = document.getElementById("exampleTextarea1").value;
+  var ValidErrMess = document.getElementById("ValidErrMess");
+
+  // Check for blank space in all fields
+  if (code.trim() === "" || description.trim() === "") {
+    // alert("All fields must be filled out.");
+    ValidErrMess.innerHTML = "All fields must be filled out.";
+    showFormValidAlert();
+    return false;
+  }
+
+  // Check for negative discount amount, minimum spend, and max users
+  if (discountAmount < 0 || minimumSpend < 0 || maxUsers < 1) {
+    // alert("Negative values are not allowed.");
+    ValidErrMess.innerHTML = "Negative values are not allowed.";
+    showFormValidAlert();
+    return false;
+  }
+
+  // Check if validFrom is after or equal to validTo
+  if (validFrom >= validTo) {
+    // alert("Valid Date From must be earlier than Valid Date To.");
+    ValidErrMess.innerHTML =
+      "Valid Date From must be earlier than Valid Date To.";
+    showFormValidAlert();
+    return false;
+  }
+
+  // Check if maxUsers is a non-decimal number
+  if (!Number.isInteger(maxUsers)) {
+    // alert("Max Users cannot have decimal points.");
+    ValidErrMess.innerHTML = "Max Users cannot have decimal points.";
+    showFormValidAlert();
+    return false;
+  }
+
+  //check code is valid using ajax with pass code
+
+  // If all validation checks pass, allow form submission
+  return true;
+}
+
+//category validations
+// ======================
+function categoryValidation() {
+  const categoryName = document.getElementById("categoryName");
+  const imageInput = document.getElementById("imageInput1");
+
+  if (categoryName.value.trim() === "") {
+    ValidErrMess.innerHTML = "Category Name must not be empty.";
+    showFormValidAlert();
+    return false;
+  }
+
+  if (!isNaN(parseInt(categoryName.value))) {
+    ValidErrMess.innerHTML = "Category Name cannot be a valid integer.";
+    showFormValidAlert();
+    return false;
+  }
+
+  if (!imageInput.files || imageInput.files.length === 0) {
+    ValidErrMess.innerHTML = "Please select an image.";
+    showFormValidAlert();
+    return false;
+  }
+
+  return true;
+}
+
+  
+
+</script>
+      
+
+<%- include('../layouts/admin/footer.ejs') %>

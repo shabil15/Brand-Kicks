@@ -74,5 +74,5 @@ admin_route.post('/orders/manage/cancel',orderController.cancelOrder);
 admin_route.get('/addcoupon',couponController.addCouponPageLoad);
 admin_route.post('/addcoupon',couponController.addcoupon);
 admin_route.get('/coupons',couponController.couponsPageLoad)
-
+admin_route.get('/coupon/edit',couponController.editCouponPageLoad)
 module.exports=admin_route
