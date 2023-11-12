@@ -36,21 +36,28 @@ token:{
   type:String,
   default:''
 },
-address:{
-  shippingAddress:{
-    type:String,
-  },
-  pincode:{
-    type:Number
-  },
-  state:{
-    type:String
-  }
-
+wallet: {
+  type: Number,
+  default: 0
 },
-avatar:{
-  type:String
-}
+walletHistory: [{
+
+  transactionDate: {
+      type: Date,
+  },
+  transactionDetails: {
+      type: String
+  },
+  transactionType: {
+      type: String
+  },
+  transactionAmount: {
+      type: Number
+  },
+  currentBalance: {
+      type: Number
+  },
+}],
 },
 {
   timestamps:true

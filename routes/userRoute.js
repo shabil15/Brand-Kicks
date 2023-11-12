@@ -4,6 +4,7 @@ const productController = require('../controllers/productController')
 const orderController = require('../controllers/orderController')
 const wishListController =require('../controllers/wishListController')
 const couponsController = require('../controllers/couponsController')
+const walletController = require('../controllers/walletController')
 const session = require("express-session")
 
 const config = require("../config/config")
@@ -71,71 +72,75 @@ user_route.get('/product',productController.productPageLoad);
 
 user_route.get('/profile',userAuth.isLogin,userController.profilePageLoad)
 
-user_route.post('/updateuser',userController.updateUserData)
+user_route.post('/updateuser',userAuth.isLogin,userController.updateUserData)
 
-user_route.post('/changepassword',userController.changePassword)
+user_route.post('/changepassword',userAuth.isLogin,userController.changePassword)
 
 
 //===================address related=================================//
 
-user_route.post('/addaddess',userController.addShippingAddress)
+user_route.post('/addaddess',userAuth.isLogin,userController.addShippingAddress)
 
-user_route.post('/profile/user_address',userController.addAddressFromProfile)
+user_route.post('/profile/user_address',userAuth.isLogin,userController.addAddressFromProfile)
 
-user_route.post('/profile/user_address/edit',userController.updateAddress)
+user_route.post('/profile/user_address/edit',userAuth.isLogin,userController.updateAddress)
 
-user_route.delete('/profile/user_address/delete',userController.deleteAddress);
+user_route.delete('/profile/user_address/delete',userAuth.isLogin,userController.deleteAddress);
 
 //===============================cart related================================//
 
-user_route.get('/cart',userController.cartPageLoad)
+user_route.get('/cart',userAuth.isLogin,userController.cartPageLoad)
 
-user_route.post('/addtocart',userController.addToCart)
+user_route.post('/addtocart',userAuth.isLogin,userController.addToCart)
 
-user_route.post('/updateCart',userController.updateCart)
+user_route.post('/updateCart',userAuth.isLogin,userController.updateCart)
 
-user_route.delete('/removecartproduct',userController.removeCartItem)
+user_route.delete('/removecartproduct',userAuth.isLogin,userController.removeCartItem)
 
 //============================== wishList Related ==========================//
 
 user_route.post('/addtoWishList',userAuth.isLogin,wishListController.addtoWishList)
 
-user_route.get('/wishList',wishListController.wishListPageLoad);
+user_route.get('/wishList',userAuth.isLogin,wishListController.wishListPageLoad);
 
-user_route.delete('/removewishitem',wishListController.removeWishItem)
+user_route.delete('/removewishitem',userAuth.isLogin,wishListController.removeWishItem)
 
 //==========================order related================================//
 
-user_route.get('/checkout',orderController.checkoutLoad)
+user_route.get('/checkout',userAuth.isLogin,orderController.checkoutLoad)
 
-user_route.post('/checkout',orderController.reciveShippingAddress)
+user_route.post('/checkout',userAuth.isLogin,orderController.reciveShippingAddress)
 
-user_route.get('/checkout/paymentselection',orderController.paymenetPageLoad)
+user_route.get('/checkout/paymentselection',userAuth.isLogin,orderController.paymenetPageLoad)
 
-user_route.post('/checkout/paymentselection',orderController.paymentSelectionManage)
+user_route.post('/checkout/paymentselection',userAuth.isLogin,orderController.paymentSelectionManage)
 
-user_route.get('/checkout/placeorder',orderController.orderStatusPageLoad)
+user_route.get('/checkout/placeorder',userAuth.isLogin,orderController.orderStatusPageLoad)
 
-user_route.post('/checkout/placeorder',orderController.placeOrderManage)
+user_route.post('/checkout/placeorder',userAuth.isLogin,orderController.placeOrderManage)
 
-user_route.get('/profile/orders',orderController.allOrdersPageLoad)
+user_route.get('/profile/orders',userAuth.isLogin,orderController.allOrdersPageLoad)
 
-user_route.post('/profile/orders/cancel',orderController.cancelOrder)
+user_route.post('/profile/orders/cancel',userAuth.isLogin,orderController.cancelOrder)
 
-user_route.post('/checkout/verify-payment',orderController.verifyPayment) 
+user_route.post('/checkout/verify-payment',userAuth.isLogin,orderController.verifyPayment) 
 
-user_route.get('/checkout/placeorder',orderController.orderStatusPageLoad)
+user_route.get('/checkout/placeorder',userAuth.isLogin,orderController.orderStatusPageLoad)
 
-user_route.post('/checkout/placeorder/verify-payment',orderController.orderStatusPageLoad)
+user_route.post('/checkout/placeorder/verify-payment',userAuth.isLogin,orderController.orderStatusPageLoad)
 
-user_route.get('/checkout/placeorder/amountverify',orderController.amountVerify)
+user_route.get('/checkout/placeorder/amountverify',userAuth.isLogin,orderController.amountVerify)
 
 //======================================== coupon related ================================================//
 
- user_route.post('/checkout/placeorder/coupon',couponsController.applyCoupon)
+ user_route.post('/checkout/placeorder/coupon',userAuth.isLogin,couponsController.applyCoupon)
 
 
+//======================================== user wallet =============================================//
 
+user_route.get('/profile/wallet',userAuth.isLogin,walletController.walletPageLoad)
+
+user_route.post('/profile/addtoWallet',userAuth.isLogin,walletController.addToWallet)
 
 
 module.exports = user_route 

@@ -439,7 +439,7 @@ const placeOrderManage = async (req, res) => {
       quantity: productItem.quantity,
       OrderStatus: "pending",
       StatusLevel: 1,
-      paymentStatus: "success",
+      paymentStatus: "pending",
     }));
     let total = await calculateTotalPrice(req.session.user_id);
     //coupon checking
@@ -744,6 +744,7 @@ const cancelOrder = async (req, res) => {
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
+    const user = req.session.user_id;
 
     if (!productInfo) {
       console.log('Product not found in the order');
@@ -772,6 +773,29 @@ const cancelOrder = async (req, res) => {
 
     await product.save();
     console.log('Product saved with updated stock');
+
+    //========= wallet money= ==================//
+    if(productInfo.paymentStatus==='success'){
+      const totalAmount = order.totalAmount
+      const walletHistory = {
+        transactionDate: new Date(),
+        transactionDetails: 'Refund',
+        transactionType: 'Credit',
+        transactionAmount: totalAmount,
+         currentBalance: !isNaN(user.wallet) ? user.wallet + amount : totalAmount
+       }
+        await User.findByIdAndUpdate(
+            {_id: user },
+            {
+                $inc:{
+                    wallet: totalAmount
+                },
+                $push:{
+                    walletHistory
+                }
+            }
+        );
+      }      
 
     await order.save();
     console.log('Order saved with updated status');
