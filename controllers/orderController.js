@@ -414,9 +414,11 @@ const placeOrderManage = async (req, res) => {
   try {
     // console.log(req.body.address);
     let addressId = req.body.address;
-
+    
     let paymentType = req.body.payment;
+    const userId =req.session.user_id
     console.log("PAYMENT TYPE: "+paymentType);
+    const totalAmount = parseInt(req.body.amount);
     const cartDetails = await Cart.findOne({ user: req.session.user_id });
 
     let userAddrs = await Address.findOne({ userId: req.session.user_id });
@@ -428,6 +430,12 @@ const placeOrderManage = async (req, res) => {
 
     if (!shipAddress) {
       return res.status(400).json({ error: "Address not found" });
+    }
+
+    const user = await User.findById(req.session.user_id );
+
+    if (paymentType === 'wallet' && user.wallet < totalAmount) {
+      return res.status(201).json({});
     }
     // console.log("collected :" + shipAddress);
     const { country, fullName, mobileNumber, pincode, city, state } =
@@ -483,8 +491,45 @@ const placeOrderManage = async (req, res) => {
     // let analaticResult = await CreateOrderAnalatic();
     // console.log(analaticResult);
     console.log(placeorder._id);
-    if (paymentType == "Cash on Delivery") {
+    if (paymentType == "Cash on Delivery" || paymentType=="wallet") {
       console.log(placeorder._id);
+      if(paymentType== 'wallet'){
+        console.log("entered wallet");
+        let changeOrderStatus = await Order.updateOne(
+          { _id: placeorder._id },
+          {
+            $set: {
+              'products.$[].paymentStatus': 'Success' ,"products.$[].OrderStatus": "Placed"
+            },
+          }
+        );
+        const walletHistory = {
+          transactionDate: new Date(),
+          transactionDetails: 'Product Purchased',
+          transactionType: 'Debit',
+          transactionAmount: totalAmount,
+          
+         }
+         console.log(walletHistory);
+          await User.findByIdAndUpdate(
+              {_id: userId },
+              {
+                  $inc:{
+                      wallet: -totalAmount
+                  },
+                  $push:{
+                      walletHistory
+                  }
+              }
+          );
+
+      } else {
+
+      
+
+    
+    
+
       let changeOrderStatus = await Order.updateOne(
         { _id: placeorder._id },
         {
@@ -493,15 +538,8 @@ const placeOrderManage = async (req, res) => {
           },
         }
       );
-      let changePaymentStatus = await Order.updateOne(
-        { _id: placeorder._id },
-        {
-          $set: {
-            "products.$[].paymentStatus": "pending",
-          },
-        }
-      );
-      // console.log(changeOrderStatus);
+    }
+        // console.log(changeOrderStatus);
       await Cart.deleteOne({ user: req.session.user_id });
      for (const productItem of cartDetails.products) {
         const productId = productItem.product;

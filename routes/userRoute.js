@@ -142,5 +142,7 @@ user_route.get('/profile/wallet',userAuth.isLogin,walletController.walletPageLoa
 
 user_route.post('/profile/addtoWallet',userAuth.isLogin,walletController.addToWallet)
 
+user_route.post('/verifyWalletpayment',userAuth.isLogin,walletController.verifyWalletPayment)
+
 
 module.exports = user_route 

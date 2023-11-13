@@ -47,7 +47,7 @@
 
             <div class="col-lg-6 col-12 ">
                 <div class="w-100">
-                    <h4> Wallet History</h4> 
+                    <h4 class="text-center"> Wallet History</h4> 
                     
                     
                     <% if(userData.walletHistory && userData.walletHistory.length>0) {%>
@@ -151,9 +151,9 @@ function payPayment(order) {
                         verifyPayment(response,order)
                     },
                     "prefill": {
-                        "name": user.name,
-                        "email": user.email,
-                        "contact": user.mobile
+                        "name": "brand Kicks",
+                        "email":"brandreselling15@gmail.com",
+                        "contact": "9562321211"
                     },
                     "notes": {
                         "address": "Razorpay Corporate Office"
@@ -179,9 +179,9 @@ function payPayment(order) {
                 },
                 success: (res) => {
                     if (res.status) {
-                        location.href = '/wallet'
+                        location.href = '/profile/wallet'
                     } else{
-                        location.href = '/wallet'
+                        location.href = '/profile/wallet'
                         alert('Payment Failed');
                     }
                 }
