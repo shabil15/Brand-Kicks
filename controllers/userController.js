@@ -787,6 +787,7 @@ const cartPageLoad = async (req,res)=>{
 const addToCart = async (req,res)=>{
   try {
     const existingCart = await Cart.findOne({user:req.body.user});
+    const user= req.session.user_id;
     if (!existingCart){
       const cart = new Cart({
         user:req.body.user,
@@ -809,12 +810,16 @@ const addToCart = async (req,res)=>{
         res.json({cart:2})
         
       }else {
+        const updatedCart = await Cart.findOne({ user: user });
+        let updatedCount = updatedCart ? updatedCart.products.length : 0;
+        updatedCount = updatedCount+1;
+        console.log("count",updatedCount);
         existingCart.products.push({
           product:req.body.id,
           quantity :1
         })
         const result = await existingCart.save()
-        res.json({cart:1})
+        res.json({cart:1,cartCount: updatedCount})
       }
       
     }

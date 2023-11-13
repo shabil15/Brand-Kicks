@@ -33,6 +33,7 @@ function addCart(id,user) {
       success: function (response){
         if(response.cart==1){
         showAlertBox()
+        $('.cart-item-count').text(response.cartCount);
       }
       if(response.cart==2){
         showAlertBoxAlready()

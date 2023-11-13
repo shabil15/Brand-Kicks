@@ -26,7 +26,9 @@ const userAuth =require('../middlewares/user')
 //     resave:false,
 //     saveUninitialized:true
 // }))
+const cartCount =require('../middlewares/cartCount')
 
+user_route.use(cartCount)
 
 
 user_route.get('/signup',userController.loadRegister)
