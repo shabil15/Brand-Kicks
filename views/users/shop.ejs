@@ -85,11 +85,11 @@
 
                     <div class="products mb-3">
                         <div class="row justify-content-center">        
-                            <% for(i=0;i<6;i++) {%>
+                            <% for(i=0;i<1;i++) {%>
                               <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                                   <div class="product product-7 text-center">
                                       <figure class="product-media">
-                                          <a href="/product?id=<%= products[i]._id %>">
+                                          <a href="/product?id=<%= products[i]._id%>">
                                               <img src="/public/products/croped/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
                                               <img src="/public/products/croped/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
                                           </a>

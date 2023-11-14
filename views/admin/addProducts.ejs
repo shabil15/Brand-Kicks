@@ -190,10 +190,9 @@ function validateForm() {
 
   
 
-  if (productName === "") {
+  if (productName.trim() === "") {
     document.getElementById("productNameError").textContent = "Product Name is required.";
-    
-  } else {
+  }else {
     document.getElementById("productNameError").textContent = "";
   }
 
@@ -216,7 +215,7 @@ function validateForm() {
     document.getElementById("genderError").textContent = "";
   }
 
-  if (brand === "") {
+  if (brand.trim() === "") {
     document.getElementById("brandError").textContent = "Brand is required.";
     
   } else {
@@ -233,7 +232,7 @@ function validateForm() {
     document.getElementById("quantityError").textContent = "";
   }
 
-  if (description === "") {
+  if (description.trim() === "") {
     document.getElementById("descriptionError").textContent = "Description is required.";
    
   } else {

@@ -1,53 +1,75 @@
 <%- include('../layouts/admin/header.ejs') %>
+
 <div class="main-panel">
   <div class="content-wrapper">
-
-<div class="col-12 grid-margin stretch-card">
-  <div class="card">
-      <div class="card-body">
-          <!-- <p class="card-description"> Basic form elements </p> -->
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
           <hr class="white-line">
-          <form class="forms-sample" action="/admin/addbanner" method="post" enctype="multipart/form-data">
+          <form class="forms-sample" action="/admin/addbanner" method="post" enctype="multipart/form-data" onsubmit="return validateForm()" novalidate>
             <h3 class="card-title">Add New Banner</h3>
-              <div class="form-group  row">
-                  <div class="col-12 col-md-9 mt-2">
-                      <label for="exampleInputName1">Banner Name</label>
-                      <input type="text" class="form-control  text-light mb-3 " name="name"
-                          id="exampleInputName1" placeholder="name" required>
-                          <div class="form-group mt-2">
-                            <label for="exampleTextarea1">Description</label>
-                            <textarea name="description" class="form-control text-light" id="exampleTextarea1" rows="4" required></textarea>
-                          </div>
-                        <div class="col-lg-12 col-md-12 mt-3 rounded-image-preview "style="width: 500px;" >
-                            <label for="imageInput1" class="image-label">Banner
-                              <div class="rounded-image-preview" style="width: 500px;">
-                                <img id="imagePreview1"
-                                  src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                                  alt="Preview" />
-                              </div>
-                              <input name="banner" type="file" accept="image/*" id="imageInput1" class="imageInput" required>
-                            </label>
-                          </div>
-                      <button type="submit" class="btn btn-lg btn-inverse-primary mr-2 mt-5">Add
-                          Banner</button>
-                  </div>
+            <div class="form-group  row">
+              <div class="col-12 col-md-9 mt-2">
+                <label for="exampleInputName1">Banner Name</label>
+                <input type="text" class="form-control text-light mb-3" name="name" id="exampleInputName1" placeholder="name" required>
+                <p id="nameError" class="text-danger"></p> <!-- Error message for name -->
+                <div class="form-group mt-2">
+                  <label for="exampleTextarea1">Description</label>
+                  <textarea name="description" class="form-control text-light" id="exampleTextarea1" rows="4" required></textarea>
+                  <p id="descriptionError" class="text-danger"></p> <!-- Error message for description -->
+                  <p id="fileError" class="text-danger"></p> <!-- Error message for file -->
 
+                </div>
+                <div class="col-lg-12 col-md-12 mt-3 rounded-image-preview" style="width: 500px;">
+                  <label for="imageInput1" class="image-label">Banner
+                    <div class="rounded-image-preview" style="width: 500px;">
+                      <img id="imagePreview1" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg" alt="Preview" />
+                    </div>
+                    <input name="banner" type="file" accept="image/*" id="imageInput1" class="imageInput" required>
+                   
+                  </label>
+                </div>
+                <button type="submit" class="btn btn-lg btn-inverse-primary mr-2 mt-5">Add Banner</button>
               </div>
-
+            </div>
           </form>
-
+        </div>
       </div>
+    </div>
   </div>
 </div>
 
-
-</div>
-<!-- content-wrapper ends -->
-<!-- partial:partials/_footer.html -->
-<footer class="footer">
-
-</footer>
-<!-- partial -->
-</div>
 <%- include('../layouts/admin/footer.ejs') %>
 
+<script>
+  function validateForm() {
+    const name = document.getElementById('exampleInputName1').value.trim();
+    const description = document.getElementById('exampleTextarea1').value.trim();
+    const file = document.getElementById('imageInput1').value.trim();
+
+    const nameError = document.getElementById('nameError');
+    const descriptionError = document.getElementById('descriptionError');
+    const fileError = document.getElementById('fileError');
+
+    nameError.textContent = ''; // Reset error messages
+    descriptionError.textContent = '';
+    fileError.textContent = '';
+
+    if (name === '') {
+      nameError.textContent = 'Name is required.';
+      return false;
+    }
+
+    if (description === '') {
+      descriptionError.textContent = 'Description is required.';
+      return false;
+    }
+
+    if (file === '') {
+      fileError.textContent = 'Please select a file.';
+      return false;
+    }
+
+    return true; // Allow form submission if all fields are filled
+  }
+</script>

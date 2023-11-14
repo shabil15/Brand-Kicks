@@ -1,207 +1,186 @@
 <%- include('../layouts/admin/header.ejs') %>
 <div class="main-panel">
   <div class="content-wrapper">
-      
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Add New Coupon</h4>
+          <% if (messages.success) { %>
+            <div class="alert alert-success mt-2" id="successAlert">
+              <%= messages.success %>
+            </div>
+            <script>
+              setTimeout(function() {
+                var successAlert = document.getElementById('successAlert');
+                if (successAlert) {
+                  successAlert.remove();
+                }
+              }, 4000);
+            </script>
+          <% } %>
 
+          <% if (messages.error) { %>
+            <div class="alert alert-danger mt-2" id="errorAlert">
+              <%= messages.error %>
+            </div>
+            <script>
+              setTimeout(function() {
+                var errorAlert = document.getElementById('errorAlert');
+                if (errorAlert) {
+                  errorAlert.remove();
+                }
+              }, 4000);
+            </script>
+          <% } %>
 
+          <form class="forms-sample" action="/admin/addcoupon" method="post" onsubmit="return validateCouponForm();" novalidate>
 
-
-      <div class="col-12 grid-margin stretch-card">
-          <div class="card">
-              <div class="card-body">
-                  <h4 class="card-title">Add New Coupon</h4>
-                  <% if (messages.success) { %>
-                    <div class="alert alert-success mt-2" id="successAlert">
-                      <%= messages.success %>
-                    </div>
-                    <script>
-                      setTimeout(function() {
-                        var successAlert = document.getElementById('successAlert');
-                        if (successAlert) {
-                          successAlert.remove();
-                        }
-                      }, 4000); 
-                    </script>
-                  <% } %>
-                  
-                  <% if (messages.error) { %>
-                    <div class="alert alert-danger mt-2" id="errorAlert">
-                      <%= messages.error %>
-                    </div>
-                    <script>
-                      setTimeout(function() {
-                        var errorAlert = document.getElementById('errorAlert');
-                        if (errorAlert) {
-                          errorAlert.remove();
-                        }
-                      }, 4000); 
-                    </script>
-                  <% } %>
-                  <!-- <p class="card-description"> Basic form elements </p> -->
-                  <form class="forms-sample " action="/admin/addcoupon" method="post" onsubmit="return validateCouponForm();">
-
-                      <div class="form-group  row">
-                          <div class="col-6  text-light">
-                              <label for="exampleInputName1">Coupon Code</label>
-                              <input type="text" class="form-control  text-light" name="code" id="exampleInputName1" placeholder="code" onkeyup="this.value = this.value.toUpperCase();" >
-                          </div>
-                          <div class="col-6">
-                              <label for="exampleInputName1">Discount Amount</label>
-                              <input type="number" class="form-control text-light" id="exampleInputName1" name="discountAmount" placeholder="price" >
-                          </div>
-
-                      </div>
-                      
-                      <div class="row">
-                          <div class="col-md-6 d-flex ">
-                              <div class="d-flex  mt-4 ">
-                                  <p class="mdi mdi-calendar-multiple-check " style="font-size: 2.1rem;"></p>
-
-                              </div>
-                              <div class="form-group row mx-2 w-100" >
-                                  <div class="col-sm-12 ">
-                                      <label for="start-date" class="col-sm-22 col-form-label">Valid Date
-                                          From</label>
-                                      <input type="text" autocomplete="off" id="start-date" class="form-control text-light" name="activationDate" placeholder="Select Starting Date">
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-6  d-flex ">
-                              <div class="d-flex  mt-4 ">
-                                  <p class="mdi mdi-calendar-multiple-check " style="font-size: 2.1rem;"></p>
-
-                              </div>
-                              <div class="form-group row mx-2 w-100" >
-                                  <div class="col-sm-12  ">
-                                      <label for="end-date" class="col-sm-22 col-form-label">Valid Date To</label>
-                                      <input type="text" autocomplete="off" id="end-date" class="form-control text-light" name="expiryDate" placeholder="Select Expiring Date" >
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-
-                      <div class="row">
-                          <div class="col-md-6">
-                              <div class="form-group row">
-                                  <div class="col-sm-12">
-                                      <label class="col-sm-3 col-form-label">Minimum Spend</label>
-                                      <input type="number" class="form-control text-light" id="exampleInputName1" name="criteriaAmount" placeholder="Enter Stock" >
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-6">
-                              <div class="form-group row">
-                                  <div class="col-sm-12">
-                                      <label class="col-sm-3 col-form-label">Maxinum Users</label>
-                                      <input type="number" class="form-control text-light" id="exampleInputName1" name="maxUser" placeholder="Enter Stock" >
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-
-                      <div class="form-group mt-2">
-                          <label for="exampleTextarea1">Description</label>
-                          <textarea name="description" class="form-control text-light" id="exampleTextarea1" rows="4" ></textarea>
-                      </div>
-
-                      <button type="submit" class="btn btn-lg btn-primary mr-2 mt-5">Add Coupon</button>
-                  </form>
-
-
+            <div class="form-group row">
+              <div class="col-6 text-light">
+                <label for="exampleInputName1">Coupon Code</label>
+                <input type="text" class="form-control text-light" name="code" id="code" placeholder="code" onkeyup="this.value = this.value.toUpperCase();" required>
+                <p class="text-danger" id="codeError"></p>
               </div>
-          </div>
+              <div class="col-6">
+                <label for="exampleInputName1">Discount Amount</label>
+                <input type="number" class="form-control text-light" id="discountAmount" name="discountAmount" placeholder="price" required>
+                <p class="text-danger" id="discountAmountError"></p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 d-flex ">
+                <div class="d-flex  mt-4 ">
+                  <p class="mdi mdi-calendar-multiple-check " style="font-size: 2.1rem;"></p>
+                </div>
+                <div class="form-group row mx-2 w-100">
+                  <div class="col-sm-12">
+                    <label for="start-date" class="col-sm-22 col-form-label">Valid Date From</label>
+                    <input type="text" autocomplete="off" id="start-date" class="form-control text-light" name="activationDate" placeholder="Select Starting Date" required>
+                    <p class="text-danger" id="activationDateError"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6  d-flex ">
+                <div class="d-flex  mt-4 ">
+                  <p class="mdi mdi-calendar-multiple-check " style="font-size: 2.1rem;"></p>
+                </div>
+                <div class="form-group row mx-2 w-100">
+                  <div class="col-sm-12  ">
+                    <label for="end-date" class="col-sm-22 col-form-label">Valid Date To</label>
+                    <input type="text" autocomplete="off" id="end-date" class="form-control text-light" name="expiryDate" placeholder="Select Expiring Date" required>
+                    <p class="text-danger" id="expiryDateError"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label class="col-sm-3 col-form-label">Minimum Spend</label>
+                    <input type="number" class="form-control text-light" id="criteriaAmount" name="criteriaAmount" placeholder="Enter Stock" required>
+                    <p class="text-danger" id="criteriaAmountError"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label class="col-sm-3 col-form-label">Maximum Users</label>
+                    <input type="number" class="form-control text-light" id="maxUser" name="maxUser" placeholder="Enter Stock" required>
+                    <p class="text-danger" id="maxUserError"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group mt-2">
+              <label for="exampleTextarea1">Description</label>
+              <textarea name="description" class="form-control text-light" id="description" rows="4" required></textarea>
+              <p class="text-danger" id="descriptionError"></p>
+            </div>
+
+            <button type="submit" class="btn btn-lg btn-primary mr-2 mt-5">Add Coupon</button>
+          </form>
+        </div>
       </div>
-      
-
-
+    </div>
   </div>
-  <!-- content-wrapper ends -->
-  <!-- partial:partials/_footer.html -->
-  
-  <!-- partial -->
-  
-
-  
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script>
-
-  
-
   $("#start-date").datepicker({
-      dateFormat: 'yy-mm-dd',
-      onSelect: function (selectedDate) {
-          var minDate = new Date(selectedDate);
-          minDate.setDate(minDate.getDate() + 1); // Set the minimum date for the end date picker to the next day
-          $("#end-date").datepicker("option", "minDate", minDate);
-      }
+    dateFormat: 'yy-mm-dd',
+    onSelect: function(selectedDate) {
+      var minDate = new Date(selectedDate);
+      minDate.setDate(minDate.getDate() + 1);
+      $("#end-date").datepicker("option", "minDate", minDate);
+    }
   });
 
   $("#end-date").datepicker({
-      dateFormat: 'yy-mm-dd'
+    dateFormat: 'yy-mm-dd'
   });
 
-
-  
   function validateCouponForm() {
-  // Get form input values
-  var code = document.getElementById("exampleInputName1").value;
+    var code = document.getElementById('code').value;
+    var discountAmount = document.getElementById('discountAmount').value;
+    var activationDate = document.getElementById('start-date').value;
+    var expiryDate = document.getElementById('end-date').value;
+    var criteriaAmount = document.getElementById('criteriaAmount').value;
+    var maxUser = document.getElementById('maxUser').value;
+    var description = document.getElementById('description').value;
 
-  var discountAmount = parseFloat(
-    document.getElementsByName("discountAmount")[0].value
-  );
-  var validFrom = new Date(document.getElementsByName("activationDate")[0].value);
-  var validTo = new Date(document.getElementsByName("expiryDate")[0].value);
-  var minimumSpend = parseFloat(
-    document.getElementsByName("criteriaAmount")[0].value
-  );
-  var maxUsers = parseInt(document.getElementsByName("maxUser")[0].value);
-  var description = document.getElementById("exampleTextarea1").value;
-  var ValidErrMess = document.getElementById("ValidErrMess");
+    // Clear existing validation messages
+    document.getElementById('codeError').innerText = '';
+    document.getElementById('discountAmountError').innerText = '';
+    document.getElementById('activationDateError').innerText = '';
+    document.getElementById('expiryDateError').innerText = '';
+    document.getElementById('criteriaAmountError').innerText = '';
+    document.getElementById('maxUserError').innerText = '';
+    document.getElementById('descriptionError').innerText = '';
+    var codeRegex = /^[a-zA-Z0-9]{1,10}$/;
+    // Add your validation logic here
+    if (!codeRegex.test(code)) {
+      document.getElementById('codeError').innerText = 'Coupon code should only contain letters and numbers, and length should be less than 10.';
+      return false;
+    }
 
-  // Check for blank space in all fields
-  if (code.trim() === "" || description.trim() === "") {
-    // alert("All fields must be filled out.");
-    ValidErrMess.innerHTML = "All fields must be filled out.";
-    showFormValidAlert();
-    return false;
+    
+
+    if (discountAmount < 0 || criteriaAmount < 0 ) {
+      document.getElementById('discountAmountError').innerText = 'Please enter valid positive  discount amount';
+      return false;
+    }
+
+    if (Number(discountAmount) > Number(criteriaAmount) ) {
+      document.getElementById('discountAmountError').innerText = 'discount amount cant be greater than Criteria Amount';
+      return false;
+    }
+
+
+    if (!activationDate || !expiryDate || new Date(activationDate) >= new Date(expiryDate)) {
+      document.getElementById('activationDateError').innerText = 'Please select valid activation and expiry dates.';
+      return false;
+    }
+
+    if (!Number.isInteger(Number(maxUser)) || maxUser < 1) {
+      document.getElementById('maxUserError').innerText = 'Please enter a valid maximum user limit.';
+      return false;
+    }
+    
+    if (description.trim() === "") {
+      document.getElementById('descriptionError').innerText = 'Please enter a description.';
+      return false;
+    }
+
+    // Add additional validations as needed
+
+    return true;
   }
-
-  // Check for negative discount amount, minimum spend, and max users
-  if (discountAmount < 0 || criteriaAmount < 0 || maxUser < 1) {
-    // alert("Negative values are not allowed.");
-    ValidErrMess.innerHTML = "Negative values are not allowed.";
-    showFormValidAlert();
-    return false;
-  }
-
-  // Check if validFrom is after or equal to validTo
-  if (activationDate >= expiryDate) {
-    // alert("Valid Date From must be earlier than Valid Date To.");
-    ValidErrMess.innerHTML =
-      "Valid Date From must be earlier than Valid Date To.";
-    showFormValidAlert();
-    return false;
-  }
-
-  // Check if maxUsers is a non-decimal number
-  if (!Number.isInteger(maxUser)) {
-    // alert("Max Users cannot have decimal points.");
-    ValidErrMess.innerHTML = "Max Users cannot have decimal points.";
-    showFormValidAlert();
-    return false;
-  }
-
-  //check code is valid using ajax with pass code
-
-  // If all validation checks pass, allow form submission
-  return true;
-}
-
-
 </script>
-      
 
 <%- include('../layouts/admin/footer.ejs') %>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
