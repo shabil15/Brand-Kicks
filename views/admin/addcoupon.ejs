@@ -149,8 +149,6 @@
       return false;
     }
 
-    
-
     if (discountAmount < 0 || criteriaAmount < 0 ) {
       document.getElementById('discountAmountError').innerText = 'Please enter valid positive  discount amount';
       return false;
@@ -171,7 +169,7 @@
       document.getElementById('maxUserError').innerText = 'Please enter a valid maximum user limit.';
       return false;
     }
-    
+
     if (description.trim() === "") {
       document.getElementById('descriptionError').innerText = 'Please enter a description.';
       return false;
