@@ -1,24 +1,21 @@
-
-
 //=========================  dependecies=====================================//
-
 
 const User = require("../models/userModel").User;
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
-const randomstring= require('randomstring')
+const randomstring = require("randomstring");
 const path = require("path");
 const otpGenerator = require("otp-generator");
 const Product = require("../models/productsModel").product;
-const Banner = require('../models/bannerModel');
-const Cart = require('../models/userModel').Cart;
-const Address= require('../models/userModel').UserAddress;
-const Coupon = require('../models/couponModel').Coupon;
+const Banner = require("../models/bannerModel");
+const Cart = require("../models/userModel").Cart;
+const Address = require("../models/userModel").UserAddress;
+const Coupon = require("../models/couponModel").Coupon;
 const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
-const Swal = require('sweetalert2'); 
+const Swal = require("sweetalert2");
 const { log } = require("console");
-const flash = require('flash');
+const flash = require("flash");
 
 //=============code for securing the password============================================================//
 
@@ -36,8 +33,6 @@ const securePassword = async (password) => {
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
-
-
 
 //===================code for sending the verification Email===========================================//
 const sendVerificationEmail = async (email, otp) => {
@@ -70,37 +65,37 @@ const sendVerificationEmail = async (email, otp) => {
 
 //========================= to send the reset Password Mail=================================================//
 
-const resetPasswordMail = async (firstName,secondName,email,token)=>{
+const resetPasswordMail = async (firstName, secondName, email, token) => {
   try {
     const transporter = nodemailer.createTransport({
-      host:'smtp.gmail.com',
-      port:587,
-      secure:false,
-      requireTLS:true,
-      auth:{
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
         user: process.env.email,
         pass: process.env.password,
-      }
-    })
+      },
+    });
 
     const mailOptions = {
       from: process.env.email,
-      to:email,
-      subject:"For Reset Password",
-      html: `<p> Hi, ${firstName} ${secondName}, please click here to <a href="http://localhost:3000/forget-password?token=${token}"> Reset </a> your password</p>`
-    }
+      to: email,
+      subject: "For Reset Password",
+      html: `<p> Hi, ${firstName} ${secondName}, please click here to <a href="http://localhost:3000/forget-password?token=${token}"> Reset </a> your password</p>`,
+    };
 
-    transporter.sendMail(mailOptions,function(error,info){
-      if(error){
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
         console.log(error);
-      }else{
-        console.log("Email Has been Sent:-",info,response);
+      } else {
+        console.log("Email Has been Sent:-", info, response);
       }
-    })
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //==================to load the Login Page=================================================================//
 
@@ -112,19 +107,18 @@ const loginLoad = async (req, res) => {
   }
 };
 
-
 //=========================to load the Home Page============================================================//
 const loadHome = async (req, res) => {
   try {
     const products = await Product.find({});
-    const banners = await Banner.find({})
-    
-  
-    res.render("home", { 
-    currentPage:'home',
-    products: products ,
-    banners:banners,
-    user:req.session.user_id});
+    const banners = await Banner.find({});
+
+    res.render("home", {
+      currentPage: "home",
+      products: products,
+      banners: banners,
+      user: req.session.user_id,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -149,7 +143,6 @@ const showverifyOTPPage = async (req, res) => {
     console.log(error);
   }
 };
-
 
 //==================code for inserting the User Data==================================================================>
 
@@ -187,7 +180,7 @@ const insertUser = async (req, res) => {
         } else {
           res.render("signup");
         }
-      } 
+      }
     }
   } catch (error) {
     console.log(error);
@@ -218,46 +211,42 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-
-
 //============================ to resend the OTP ======================================================================//
 
-
-const resendOTP = async (req,res)=>{
+const resendOTP = async (req, res) => {
   try {
-    const currentTime = Date.now()/1000
-    if(req.session.otp.expiry!=null){
-      if(currentTime>req.session.otp.expiry){
-        console.log(expired,req.session.otp.expiry);
-        const newDigit = otpGenerator.generate(6, { 
+    const currentTime = Date.now() / 1000;
+    if (req.session.otp.expiry != null) {
+      if (currentTime > req.session.otp.expiry) {
+        console.log(expired, req.session.otp.expiry);
+        const newDigit = otpGenerator.generate(6, {
           digits: true,
-          alphabets: false, 
-          specialChars: false, 
+          alphabets: false,
+          specialChars: false,
           upperCaseAlphabets: false,
-          lowerCaseAlphabets: false 
-      });
+          lowerCaseAlphabets: false,
+        });
 
-      req.session.otp.code= newDigit;
-      const newExpiry = currentTime +45;
-      req.session.otp.expiry= newExpiry
-      sendVerificationEmail(req.session.email,req.session.otp.code)
+        req.session.otp.code = newDigit;
+        const newExpiry = currentTime + 45;
+        req.session.otp.expiry = newExpiry;
+        sendVerificationEmail(req.session.email, req.session.otp.code);
 
-      res.render('otpPage',{message:'message:OTP has send'})
-        
-      }else{
-        res.render('otpPage',{message: "You can request a new otp after old otp expires"});
+        res.render("otpPage", { message: "message:OTP has send" });
+      } else {
+        res.render("otpPage", {
+          message: "You can request a new otp after old otp expires",
+        });
       }
-    }else{
-        res.send('please Register again')
-      }
+    } else {
+      res.send("please Register again");
     }
-  catch (error) {
+  } catch (error) {
     console.log(error);
   }
-}
+};
 
 //==========================code for verifying the login===============================================================//
-
 
 const verifyLogin = async (req, res, next) => {
   try {
@@ -292,207 +281,206 @@ const verifyLogin = async (req, res, next) => {
   }
 };
 
-
 //====================== to Load the Forget Page Load ===================================================================//
 
-
-const forgetLoad = async (req,res)=>{
+const forgetLoad = async (req, res) => {
   try {
-    res.render('forget')
+    res.render("forget");
   } catch (error) {
-    console.log(error);    
+    console.log(error);
   }
-}
+};
 
 //========================= to verify the forget mail=====================================================================//
 
-
-const forgetVerify = async (req,res)=>{
+const forgetVerify = async (req, res) => {
   try {
-    const email = req.body.email
-    const userData = await User.findOne({email:email})
+    const email = req.body.email;
+    const userData = await User.findOne({ email: email });
 
-    if(userData){
-      if(userData.isVerified===false){
-        res.render('forget',{message:"Please verify your mail"})
-      }else{
-        const randomString = randomstring.generate()
-        const updatedData = await User.updateOne({email:email},
-          {$set:{token:randomString}})
+    if (userData) {
+      if (userData.isVerified === false) {
+        res.render("forget", { message: "Please verify your mail" });
+      } else {
+        const randomString = randomstring.generate();
+        const updatedData = await User.updateOne(
+          { email: email },
+          { $set: { token: randomString } }
+        );
 
-          resetPasswordMail(userData.firstName,userData.secondName,userData.email,randomString)
-          res.render('forget',{message:"Please Check Your Mail to Reset Your Password"})
+        resetPasswordMail(
+          userData.firstName,
+          userData.secondName,
+          userData.email,
+          randomString
+        );
+        res.render("forget", {
+          message: "Please Check Your Mail to Reset Your Password",
+        });
       }
-    }else{
-      res.render('forget',{message:"User email is Incorrect"})
+    } else {
+      res.render("forget", { message: "User email is Incorrect" });
     }
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //============================to Load the forget password Load ====================================================//
 
-
-const forgetPasswordLoad = async (req,res)=>{
+const forgetPasswordLoad = async (req, res) => {
   try {
-    const token = req.query.token
-    
-    const tokenData = await User.findOne({token:token})
-    
-    if(tokenData){
-      res.render('forget-password',{user_id:tokenData._id})
+    const token = req.query.token;
 
-    }else{
-      res.render('404',{message:"Token is Invalid"})
+    const tokenData = await User.findOne({ token: token });
+
+    if (tokenData) {
+      res.render("forget-password", { user_id: tokenData._id });
+    } else {
+      res.render("404", { message: "Token is Invalid" });
     }
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //=============================== to reset the password ===============================================//
 
-
-const resetPassword = async(req,res)=>{
+const resetPassword = async (req, res) => {
   try {
-    const password = req.body.password
-    const user_id = req.body.user_id
+    const password = req.body.password;
+    const user_id = req.body.user_id;
 
-    const spassword = await securePassword(password)
+    const spassword = await securePassword(password);
 
-    const updatedData= await User.findByIdAndUpdate({_id:user_id},{$set:{password:spassword,token:''}})
+    const updatedData = await User.findByIdAndUpdate(
+      { _id: user_id },
+      { $set: { password: spassword, token: "" } }
+    );
 
-    res.redirect('/login')
+    res.redirect("/login");
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 //==================================== to load the shop page =================================================//
 
-const loadShop = async (req,res)=>{
- try {
-  const products= await Product.find({})
-  res.render('shop',{
-    currentPage:'shop',
-    products:products,
-    user:req.session.user_id
-  })
- } catch (error) {
-  console.log(error);
- }
-}
-
+const loadShop = async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.render("shop", {
+      currentPage: "shop",
+      products: products,
+      user: req.session.user_id,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 //======================================= to logout for user =====================================================//
 
-
-const logout = async (req,res)=>{
+const logout = async (req, res) => {
   try {
-    req.session.user_id= null;
-    res.redirect('/')
+    req.session.user_id = null;
+    res.redirect("/");
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 //======================================== to take userData  =================================================//
 
-const takeUserData = async (userId)=>{
+const takeUserData = async (userId) => {
   try {
-    return new Promise ((resolve,reject)=>{
-      User.findOne({_id:userId}).then((response)=>{
-        resolve(response)
-      })
-    })
+    return new Promise((resolve, reject) => {
+      User.findOne({ _id: userId }).then((response) => {
+        resolve(response);
+      });
+    });
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 //===================================  to load the profile Page ===================================================//
 
-
-const profilePageLoad = async (req,res)=>{
-  try {const takeUserData = async (userId)=>{
+const profilePageLoad = async (req, res) => {
   try {
-    return new Promise((resolve,reject)=>{
-      User.findOne({ _id:userId}).then((response)=>{
-        resolve(response);
-      })
-    })
+    const takeUserData = async (userId) => {
+      try {
+        return new Promise((resolve, reject) => {
+          User.findOne({ _id: userId }).then((response) => {
+            resolve(response);
+          });
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const userData = await takeUserData(req.session.user_id);
+    const address = await Address.findOne({ userId: req.session.user_id });
+    const coupons = await Coupon.find();
+    console.log(coupons);
+    if (address) {
+      res.render(
+        "profile",
+        {
+          currentPage: "profile",
+          users: userData,
+          coupons,
+          updatePassErr: req.session.updatePassErr,
+          updatePass: req.session.updatePass,
+          address: address.addresses,
+          user: req.session.user_id,
+        },
+        (err, html) => {
+          if (!err) {
+            // Reset session variables after rendering
+            req.session.updatePassErr = false;
+            req.session.updatePass = false;
+            res.send(html);
+          } else {
+            console.log(err.message);
+            // Handle rendering error here, if necessary
+            res.status(500).send("Internal Server Error");
+          }
+        }
+      );
+    } else {
+      res.render(
+        "profile",
+        {
+          currentPage: "home",
+          address: 0,
+          coupons,
+          updatePassErr: req.session.updatePassErr,
+          updatePass: req.session.updatePass,
+          users: userData,
+          user: req.session.user_id,
+        },
+        (err, html) => {
+          if (!err) {
+            // Reset session variables after rendering
+            req.session.updatePassErr = false;
+            req.session.updatePass = false;
+            res.send(html);
+          } else {
+            console.log(err.message);
+            // Handle rendering error here, if necessary
+            res.status(500).send("Internal Server Error");
+          }
+        }
+      );
+    }
   } catch (error) {
     console.log(error);
   }
-}
-
-  const userData = await takeUserData(req.session.user_id)
-  const address = await Address.findOne({userId:req.session.user_id})
-  const coupons = await Coupon.find();
-  console.log(coupons);
-  if(address){
-    res.render('profile',
-    { currentPage:'profile',
-      users:userData,
-      coupons,
-      updatePassErr: req.session.updatePassErr,
-      updatePass: req.session.updatePass,
-      address:address.addresses,
-      user:req.session.user_id},
-      (err, html) => {
-        if (!err) {
-          // Reset session variables after rendering
-          req.session.updatePassErr = false;
-          req.session.updatePass = false;
-          res.send(html);
-        } else {
-          console.log(err.message);
-          // Handle rendering error here, if necessary
-          res.status(500).send("Internal Server Error");
-        }
-      }
-      
-      )
-  }else{
-    res.render('profile',
-    { currentPage:'home',
-      address:0,
-      coupons,
-      updatePassErr: req.session.updatePassErr,
-      updatePass: req.session.updatePass,
-      users:userData,
-      user:req.session.user_id},
-      (err, html) => {
-        if (!err) {
-          // Reset session variables after rendering
-          req.session.updatePassErr = false;
-          req.session.updatePass = false;
-          res.send(html);
-        } else {
-          console.log(err.message);
-          // Handle rendering error here, if necessary
-          res.status(500).send("Internal Server Error");
-        }
-      }
-      )
-  }
-    
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-
-
-
-
+};
 
 //======================================== to update the User Data =======================================//
-
-
 
 const updateUserData = async (req, res) => {
   try {
@@ -514,31 +502,29 @@ const updateUserData = async (req, res) => {
 
     // Send a success message using SweetAlert
     Swal.fire({
-      icon: 'success',
-      title: 'Success!',
-      text: 'User data has been successfully updated',
+      icon: "success",
+      title: "Success!",
+      text: "User data has been successfully updated",
     });
 
     res.json({ success: true }); // Send a JSON response to indicate success
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, error: 'Failed to update profile' }); // Send an error response
+    res.status(500).json({ success: false, error: "Failed to update profile" }); // Send an error response
   }
 };
 
-
 //=================================== function to change the user Password===================================//
 
-
-const changePassword = async (req,res) =>{
+const changePassword = async (req, res) => {
   try {
-    console.log("gettingggggg")
-    let userDetails = await User.findOne({_id:req.session.user_id})
+    console.log("gettingggggg");
+    let userDetails = await User.findOne({ _id: req.session.user_id });
     bcrypt
-    .compare(req.body.oldPassword,userDetails.password)
-    .then(async (status)=>{
-      if(status){
-        let newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
+      .compare(req.body.oldPassword, userDetails.password)
+      .then(async (status) => {
+        if (status) {
+          let newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
           let change = await User.updateOne(
             { _id: userDetails._id },
             { $set: { password: newSecurePassword } }
@@ -552,56 +538,51 @@ const changePassword = async (req,res) =>{
           req.session.updatePassErr = 1;
           res.redirect("/profile");
         }
-      
-    })
+      });
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 //=========================================== to Add address From the User Profile======================================//
 
-const addAddressFromProfile = async (req,res)=>{
+const addAddressFromProfile = async (req, res) => {
   try {
     let addrData = req.body;
-    let userAddress = await Address.findOne({ userId: req.session.user_id});
+    let userAddress = await Address.findOne({ userId: req.session.user_id });
 
-    if(!userAddress){
+    if (!userAddress) {
+      userAddress = new Address({
+        userId: req.session.user_id,
+        addresses: [
+          {
+            country: addrData.country,
+            fullName: addrData.fullName,
+            mobileNumber: addrData.mobileNumber,
+            city: addrData.city,
+            state: addrData.state,
+            pincode: addrData.pincode,
+          },
+        ],
+      });
+    } else {
+      userAddress.addresses.push({
+        country: addrData.country,
+        fullName: addrData.fullName,
+        mobileNumber: addrData.mobileNumber,
+        city: addrData.city,
+        state: addrData.state,
+        pincode: addrData.pincode,
+      });
+    }
 
-    
-    userAddress = new Address({
-      userId:req.session.user_id,
-      addresses:[
-        {
-          country:addrData.country,
-          fullName: addrData.fullName,
-          mobileNumber: addrData.mobileNumber,
-          city:addrData.city,
-          state:addrData.state,
-          pincode:addrData.pincode,
-        }
-      ]
-    })
-  }else{
-    userAddress.addresses.push({
-      country:addrData.country,
-      fullName: addrData.fullName,
-      mobileNumber:addrData.mobileNumber,
-      city:addrData.city,
-      state: addrData.state,
-      pincode:addrData.pincode,
-    })
-  }
-
-  const result = await userAddress.save();
-  const total= await calculateTotalPrice(req.session.user_id)
-  res.redirect('/profile');
+    const result = await userAddress.save();
+    const total = await calculateTotalPrice(req.session.user_id);
+    res.redirect("/profile");
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 //=============================== to update the Address of the user from the Profile ========================================================//
 
@@ -629,17 +610,15 @@ const updateAddress = async (req, res) => {
   }
 };
 
-
 //================================ to add address from the checkout Page in the user side ============================//
 
-
-const addShippingAddress = async(req,res)=>{
+const addShippingAddress = async (req, res) => {
   try {
     const addrData = req.body;
-    const  userAddress = await Address.findOne({userId:req.session.user_id})
-    if(!userAddress){
-      userAddress= new Address({
-        userId:req.session.user_id,
+    const userAddress = await Address.findOne({ userId: req.session.user_id });
+    if (!userAddress) {
+      userAddress = new Address({
+        userId: req.session.user_id,
         addresses: [
           {
             country: addrData.country,
@@ -648,241 +627,229 @@ const addShippingAddress = async(req,res)=>{
             city: addrData.city,
             state: addrData.state,
             pincode: addrData.pincode,
-          }
-        ]
-      })
+          },
+        ],
+      });
     } else {
       //if the user's address already exists, add a new address to array
       userAddress.addresses.push({
-            country: addrData.country,
-            fullName: addrData.fullName,
-            mobileNumber: addrData.mobileNumber,
-            city: addrData.city,
-            state: addrData.state,
-            pincode: addrData.pincode,
-      })
+        country: addrData.country,
+        fullName: addrData.fullName,
+        mobileNumber: addrData.mobileNumber,
+        city: addrData.city,
+        state: addrData.state,
+        pincode: addrData.pincode,
+      });
     }
 
     let result = await userAddress.save();
-    
 
-    res.redirect('/checkout')
-    } catch (error) {
-    console.log(error);
-  }
-}
-
-
-//============================= to delete the address of the user from user Profile ====================================//
-
-const deleteAddress = async (req,res) =>{
-  try {
-    const userAddress = await Address.findOne({userId:req.session.user_id})
-    const addressToDelete = userAddress.addresses.findIndex(
-      (address)=>address.id === req.body.id
-    );
-    if(addressToDelete===1){
-      return res.status(404).json({remove:0});
-    }
-    userAddress.addresses.splice(addressToDelete,1);
-    await userAddress.save();
-    return res.json({remove:1})
+    res.redirect("/checkout");
   } catch (error) {
     console.log(error);
   }
-}
+};
 
+//============================= to delete the address of the user from user Profile ====================================//
+
+const deleteAddress = async (req, res) => {
+  try {
+    const userAddress = await Address.findOne({ userId: req.session.user_id });
+    const addressToDelete = userAddress.addresses.findIndex(
+      (address) => address.id === req.body.id
+    );
+    if (addressToDelete === 1) {
+      return res.status(404).json({ remove: 0 });
+    }
+    userAddress.addresses.splice(addressToDelete, 1);
+    await userAddress.save();
+    return res.json({ remove: 1 });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 //============================== to calculate the total Price of the cart================================================//
 
-const calculateTotalPrice= async (userId) =>{
+const calculateTotalPrice = async (userId) => {
   try {
-    const cart=await Cart.findOne({user:userId}).populate(
+    const cart = await Cart.findOne({ user: userId }).populate(
       "products.product"
     );
-    if(!cart){
+    if (!cart) {
       console.log("User does not have a cart");
     }
 
     let totalPrice = 0;
-    for(const cartProduct of cart.products) {
-      const {product,quantity }=cartProduct;
-      const productSubtotal = product.product_price *quantity;
-      totalPrice +=productSubtotal;
+    for (const cartProduct of cart.products) {
+      const { product, quantity } = cartProduct;
+      const productSubtotal = product.product_price * quantity;
+      totalPrice += productSubtotal;
     }
 
     return totalPrice;
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //================================== to update the cart items quantity ================================================//
 
-
-const updateCart = async (req,res) =>{
+const updateCart = async (req, res) => {
   try {
-    console.log('updateCart')
+    console.log("updateCart");
     const user = req.session.user_id;
     const productID = req.body.productID;
     const quantity = req.body.quantity;
 
     if (quantity > 10) {
-      req.flash('error', 'Quantity limit reached');
-      return res.redirect('/cart'); // Redirect to the cart page
+      req.flash("error", "Quantity limit reached");
+      return res.redirect("/cart"); // Redirect to the cart page
     }
 
     const updatedCartItem = await Cart.findOneAndUpdate(
-      {'products.product':productID,user:user},
-      {$set:{'products.$.quantity':quantity}},
-      {new :true}
-    )
+      { "products.product": productID, user: user },
+      { $set: { "products.$.quantity": quantity } },
+      { new: true }
+    );
 
-    console.log(updatedCartItem)
+    console.log(updatedCartItem);
 
     res.json(updatedCartItem);
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //======================================== to load the Cart Page ================================================//
 
-const cartPageLoad = async (req,res)=>{
+const cartPageLoad = async (req, res) => {
   try {
     const userData = await takeUserData(req.session.user_id);
-    const cartDetails = await Cart.findOne({user : req.session.user_id})
-    .populate({
-      path: "products.product",
-      select :"product_name product_price category images.image1"
-    })
-    .exec();
+    const cartDetails = await Cart.findOne({ user: req.session.user_id })
+      .populate({
+        path: "products.product",
+        select: "product_name product_price category images.image1",
+      })
+      .exec();
 
-    if(cartDetails ) {
-      let total = await calculateTotalPrice(req.session.user_id)
+    if (cartDetails) {
+      let total = await calculateTotalPrice(req.session.user_id);
 
-      return res.render ('cart',{
-        currentPage:'shop',
-        user :userData,
+      return res.render("cart", {
+        currentPage: "shop",
+        user: userData,
         cartItems: cartDetails,
         total,
-      })
-    }else {
-      return res.render ('cart',{
-        currentPage:'shop',
-        user:userData,
-        cartItems:0,
-        total:0,
-      })
+      });
+    } else {
+      return res.render("cart", {
+        currentPage: "shop",
+        user: userData,
+        cartItems: 0,
+        total: 0,
+      });
     }
-    res.render('cart',
-    {user:req.session.user_id})
+    res.render("cart", { user: req.session.user_id });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //================================== to add a product to Cart ================================================//
 
-const addToCart = async (req,res)=>{
+const addToCart = async (req, res) => {
   try {
-    const existingCart = await Cart.findOne({user:req.body.user});
-    const user= req.session.user_id;
-    if (!existingCart){
+    const existingCart = await Cart.findOne({ user: req.body.user });
+    const user = req.session.user_id;
+    if (!existingCart) {
       const cart = new Cart({
-        user:req.body.user,
-        products:[
+        user: req.body.user,
+        products: [
           {
-            product:req.body.id,
-            quantity:1
-          }
-        ]      
-      })
-      const result= await cart.save();
-      res.json({cart:1});
-      
-    }else{
+            product: req.body.id,
+            quantity: 1,
+          },
+        ],
+      });
+      const result = await cart.save();
+      res.json({ cart: 1 });
+    } else {
       const productInCart = existingCart.products.find(
-        (item)=>item.product.toString()===req.body.id.toString()
+        (item) => item.product.toString() === req.body.id.toString()
       );
 
-      if(productInCart) {
-        res.json({cart:2})
-        
-      }else {
+      if (productInCart) {
+        res.json({ cart: 2 });
+      } else {
         const updatedCart = await Cart.findOne({ user: user });
         let updatedCount = updatedCart ? updatedCart.products.length : 0;
-        updatedCount = updatedCount+1;
-        console.log("count",updatedCount);
+        updatedCount = updatedCount + 1;
+        console.log("count", updatedCount);
         existingCart.products.push({
-          product:req.body.id,
-          quantity :1
-        })
-        const result = await existingCart.save()
-        res.json({cart:1,cartCount: updatedCount})
+          product: req.body.id,
+          quantity: 1,
+        });
+        const result = await existingCart.save();
+        res.json({ cart: 1, cartCount: updatedCount });
       }
-      
     }
-    
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 //==================================== to remove  a product from Cart =====================================================//
 
-const removeCartItem = async (req,res) =>{
+const removeCartItem = async (req, res) => {
   try {
-    const {user,product,qty} =req.body;
-    const cart = await Cart.findOne({user:user});
+    const { user, product, qty } = req.body;
+    const cart = await Cart.findOne({ user: user });
 
-    const qtyFind = cart.products.find(item=> item.product.toString()==product.toString())
-    
+    const qtyFind = cart.products.find(
+      (item) => item.product.toString() == product.toString()
+    );
 
     cart.products = cart.products.filter(
-      (cartProduct)=> cartProduct.product.toString() !== product.toString()
+      (cartProduct) => cartProduct.product.toString() !== product.toString()
     );
-    
+
     let remove = await cart.save();
 
-    res.json({remove:1});
+    res.json({ remove: 1 });
     console.log("product removed");
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 //======================================= to load the about Us page ====================================================//
 
-const aboutusLoad = async (req,res)=>{
+const aboutusLoad = async (req, res) => {
   try {
-    res.render('aboutus',{
-      currentPage:'aboutus',
-      user:req.session.user_id
-    })
+    res.render("aboutus", {
+      currentPage: "aboutus",
+      user: req.session.user_id,
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //======================================= to Load the Contact Us Page ====================================================//
 
-
-const contactLoad = async (req,res)=>{
+const contactLoad = async (req, res) => {
   try {
-    res.render('contact',{
-      currentPage:'contact',
-      user:req.session.user_id
-    })
+    res.render("contact", {
+      currentPage: "contact",
+      user: req.session.user_id,
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //============================== to export the modules ==========================================================//
-
 
 module.exports = {
   loginLoad,
