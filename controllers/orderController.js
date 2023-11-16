@@ -499,7 +499,7 @@ const placeOrderManage = async (req, res) => {
           { _id: placeorder._id },
           {
             $set: {
-              'products.$[].paymentStatus': 'Success' ,"products.$[].OrderStatus": "Placed"
+              'products.$[].paymentStatus': 'success' ,"products.$[].OrderStatus": "placed"
             },
           }
         );
