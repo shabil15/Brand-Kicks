@@ -986,6 +986,11 @@ const changeOrderStatus = async (req, res)=>{
     productInfo.OrderStatus = status;
     productInfo.StatusLevel = StatusLevel;
 
+    if (StatusLevel === 4) {
+      
+      productInfo.paymentStatus = "success";
+    }
+
     const result = await order.save();
 
     res.redirect(

@@ -84,6 +84,6 @@ admin_route.get('/coupon/delete',couponController.deleteCoupon);
 
 admin_route.post('/report/genarate',adminController.genarateSalesReports);
 admin_route.get('/report',reportController.loadSalesReport);
-admin_route.post('/sales-report/portfolio',reportController.portfoliofiltering);
+admin_route.post('/sales-report/portfolio',reportController.portfolioFiltering);
 
 module.exports=admin_route

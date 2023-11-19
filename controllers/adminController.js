@@ -51,10 +51,20 @@ const dashboardLoad = async (req, res) => {
 
     let users = await user.find({});
 
-    const TransactionHistory = await Order.find()
-    .sort({ orderDate: -1 })
-    .limit(10);
-
+    const TransactionHistory = await Order.aggregate([
+      {
+        $match: {
+          "products.paymentStatus": "success"
+        }
+      },
+      {
+        $sort: { orderDate: -1 }
+      },
+      {
+        $limit: 10
+      }
+    ]);
+    
     const countOfCod  = await Order.countDocuments({
       paymentMethod :"Cash on Delivery",
     })

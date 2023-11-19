@@ -217,7 +217,7 @@
                         "nav": false, 
                         "dots": true,
                         "margin": 0,
-                        "loop": false,
+                        "loop": true,
                         "responsive": {
                             "0": {
                                 "items":2
@@ -237,7 +237,8 @@
                             }
                         }
                     }'>
-                    <% for(i=0;i<6;i++) {%>
+                    <% if (products.length > 8) { %>
+                    <% for(i=0;i<8;i++) {%>
                       <div class="product product-11 text-center border">
                           <figure class="product-media">
                               <a href="/product?id=<%= products[i]._id %>" >
@@ -266,6 +267,7 @@
                       
                       </div><!-- End .product -->
                       <%}%>
+                      <% } %>
 
                      
             
@@ -302,8 +304,9 @@
         <h2 class="title">Recent Arrivals</h2><!-- End .title -->
         <p style="font-size: larger;" class="mb-3">Step Up Your Style</p>
   <div class="products mb-3">
-    <div class="row justify-content-center">        
-        <% for(i=0;i<6;i++) {%>
+    <div class="row justify-content-center">
+        <% if (products.length > 8) { %>
+        <% for(i=0;i<8;i++) {%>
           <div class="col-6 col-md-4 col-lg-4 col-xl-3">
               <div class="product product-7 text-center">
                   <figure class="product-media">
@@ -334,6 +337,8 @@
           </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
 
       <%}%>
+      <%}%>
+
     </div>
 </div>
 </main><!-- End .main -->
