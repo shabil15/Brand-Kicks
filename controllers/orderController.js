@@ -416,7 +416,7 @@ const placeOrderManage = async (req, res) => {
     let addressId = req.body.address;
     
     let paymentType = req.body.payment;
-    const userId =req.session.user_id
+    const userId =req.session.user_id;
     console.log("PAYMENT TYPE: "+paymentType);
     const totalAmount = parseInt(req.body.amount);
     const cartDetails = await Cart.findOne({ user: req.session.user_id });
@@ -448,6 +448,8 @@ const placeOrderManage = async (req, res) => {
       OrderStatus: "pending",
       StatusLevel: 1,
       paymentStatus: "pending",
+      "returnOrderStatus.status": "none",
+      "returnOrderStatus.reason": "none",
     }));
     let total = await calculateTotalPrice(req.session.user_id);
     //coupon checking
@@ -503,25 +505,25 @@ const placeOrderManage = async (req, res) => {
             },
           }
         );
-        const walletHistory = {
-          transactionDate: new Date(),
-          transactionDetails: 'Product Purchased',
-          transactionType: 'Debit',
-          transactionAmount: totalAmount,
+      //   const walletHistory = {
+      //     transactionDate: new Date(),
+      //     transactionDetails: 'Product Purchased',
+      //     transactionType: 'Debit',
+      //     transactionAmount: totalAmount,
           
-         }
-         console.log(walletHistory);
-          await User.findByIdAndUpdate(
-              {_id: userId },
-              {
-                  $inc:{
-                      wallet: -totalAmount
-                  },
-                  $push:{
-                      walletHistory
-                  }
-              }
-          );
+      //    }
+      //    console.log(walletHistory);
+      //    await User.findByIdAndUpdate(
+      //     {_id: userId },
+      //     {
+      //         $inc:{
+      //             wallet: -totalAmount
+      //         },
+      //         $push:{
+      //             walletHistory
+      //         }
+      //     }
+      // );
 
       } else {
 
@@ -833,8 +835,10 @@ const cancelOrder = async (req, res) => {
                 }
             }
         );
+        productInfo.paymentStatus = 'refund';
       }      
 
+      
     await order.save();
     console.log('Order saved with updated status');
 
@@ -881,7 +885,7 @@ const ordersListPageLoad = async (req,res)=>{
               OrderStatus:productInfo.OrderStatus,
               StatusLevel:productInfo.StatusLevel,
               paymentMethod:order.paymentMethod,
-              paymentStatus:order.paymentStatus,
+              paymentStatus:productInfo.paymentStatus,
               quantity:productInfo.quantity,
             }
           })

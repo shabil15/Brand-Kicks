@@ -1,7 +1,8 @@
 const admin = require("../models/adminModel");
 const user = require("../models/userModel").User;
-// const product= require('../models/productsModel').product
 const Category = require("../models/productsModel").category;
+const Product = require('../models/productsModel').product
+const Order = require('../models/orderModel').Order
 const bcrypt = require("bcrypt");
 const { category } = require("../models/productsModel");
 
@@ -47,12 +48,241 @@ const verifyLogin = async (req, res, next) => {
 
 const dashboardLoad = async (req, res) => {
   try {
-    res.render("dashboard");
+
+    let users = await user.find({});
+
+    const TransactionHistory = await Order.find()
+    .sort({ orderDate: -1 })
+    .limit(10);
+
+    const countOfCod  = await Order.countDocuments({
+      paymentMethod :"Cash on Delivery",
+    })
+
+    const countOfOnline = await Order.countDocuments({
+      paymentMethod:'Online'
+    }) 
+
+    const countOfWallet = await Order.countDocuments({
+      paymentMethod :'wallet'
+    })
+
+    const paymentChart = { countOfCod,countOfOnline,countOfWallet};
+
+    const orders = await recentOrder();
+
+    const result = await createSalesReport("year")
+
+    const report ={
+      totalSalesAmount:result.totalSalesAmount,
+      sales: result.totalProductsSold,
+      amount :result.profit,
+    }
+
+    res.render("dashboard",{
+      users:users,
+      paymentHistory:TransactionHistory,
+      orders,
+      paymentChart,
+      report
+    })
   } catch (error) {
     console.log(error);
   }
 };
 
+
+//================== finding the recent order ==============================================//
+
+const recentOrder = async () =>{
+  try {
+    const orders = await Order.find()
+    .sort({ orderDate: -1 })
+    .limit(10);
+
+    const productWiseOrdersArray = [];
+
+    for (const order of orders) {
+      for (const productInfo of order.products) {
+        const productId = productInfo.productId;
+
+        const product = await Product.findById(productId).select(
+          "product_name images product_price"
+        );
+
+        const userDetails = await user.findById(order.userId).select(
+          "email firstName"
+        );
+        
+        if(product) {
+          orderDate = await formatDate(order.orderDate );
+          productWiseOrdersArray.push({
+            user:userDetails,
+            product:product,
+            orderDetails:{
+              _id: order._id,
+              userId : order.userId,
+              shippingAddress:order.shippingAddress,
+              orderDate:orderDate,
+              totalAmount :productInfo.quantity * product.product_price,
+              OrderStatus : productInfo.OrderStatus,
+              StatusLevel:productInfo.StatusLevel,
+              paymentMethod:order.paymentMethod,
+              paymentStatus:productInfo.paymentStatus,
+              quantity:productInfo.quantity
+            }
+          })
+        }
+      }
+    }
+    return productWiseOrdersArray.slice(0,10);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//========================== generating sales Report ==============================================//
+
+const genarateSalesReports = async (req, res) => {
+  try {
+    const date = Date.now();    
+    
+    const result = await createSalesReport(req.body.data)
+    const report = {
+        reportDate: date,
+        totalSalesAmount: result.totalSalesAmount,
+        totalOrders: result.totalProductsSold,
+        totalProfit:result.profit
+      };
+
+    
+    res.status(200).json({report});
+    
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
+//=============================== creating Sales Report ======================================================//
+
+const createSalesReport = async (interval) => {
+  try {
+    let startDate, endDate;
+
+    if (interval === "day") {
+      const today = new Date();
+      startDate = new Date(today);
+      startDate.setHours(0, 0, 0, 0); // Start of the day
+      endDate = new Date(today);
+      endDate.setHours(23, 59, 59, 999); // End of the day
+    } else {
+      startDate = getStartDate(interval);
+      endDate = getEndDate(interval);
+    }
+
+
+
+    const orderDataData = await Order.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $unwind: "$products",
+      },
+      {
+        $match: { "products.paymentStatus": "success" },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'products.productId',
+          foreignField: '_id',
+          as: 'populatedProduct',
+        },
+      },
+      {
+        $unwind: '$populatedProduct',
+      },
+      {
+        $group: {
+          _id: '$populatedProduct._id',
+          productName: { $first: '$populatedProduct.productName' },
+          totalSalesAmount: {
+            $sum: { $multiply: [{$toDouble: '$populatedProduct.product_price'}, '$products.quantity'] },
+          },
+          totalProductsSold: { $sum: '$products.quantity' },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSalesAmount: { $sum: '$totalSalesAmount' },
+          totalProductsSold: { $sum: '$totalProductsSold' },
+        },
+      },
+    ]);
+    
+    // Extracting totals directly from the first result, as it's now a single document
+    const { totalSalesAmount, totalProductsSold } = orderDataData[0];
+
+    const profit =Math.floor(totalSalesAmount*0.3) 
+
+const salesReport = {
+  profit,
+  totalSalesAmount,
+  totalProductsSold
+};
+
+
+    return salesReport;
+  } catch (error) {
+    console.error("Error generating the sales report:", error.message);
+  }
+};
+
+//============================= this function used to formate date from new Date() function ============================//
+
+function formatDate(date) {
+  const options = {
+    weekday:'long',
+    year:'numeric',
+    month:'long',
+    day:'numeric',
+  }
+
+  return date.toLocaleDateString("en-US",options);
+}
+
+//======================== setting start Date and end  date ================================//
+
+const getStartDate = (interval) => {
+  const start = new Date();
+  if(interval === "week") {
+    start.setDate(start.getDate() -start.getDay());
+  }else if(interval ==='year') {
+    start.setMonth(0,1);
+  }
+  return start ;
+}
+
+
+const getEndDate = (interval) =>{
+  const end = new Date();
+  if(interval ==='week') {
+    end.setDate(end.getDate()-end.getDay() + 6);
+  } else if (interval ==='year') {
+    end.setMonth(11,31)
+  }
+
+  return end;
+}
 
 //============================loading the Users List Page==========================================================//
 
@@ -293,6 +523,7 @@ module.exports = {
   loadAdminLogin,
   verifyLogin,
   dashboardLoad,
+  genarateSalesReports,
   usersLoad,
   blockUser,
   searchUsers,

@@ -18,7 +18,18 @@
                               </li>
                           </ul>
                       </div>
-                      <h1 class="card-title ml-3">All Orders</h1>
+                      <div class="row">
+                        
+                        <div class="col-9">
+                            <h1 class="card-title ml-3">All Orders</h1>
+                        </div>
+                        <!-- <div class="col-3">
+                        <button class="btn btn-danger btn-sm  ">Refund</button>
+                        <button class="btn btn-success btn-sm " >Success</button>
+                        <button class="btn btn-warning btn-sm  ">Pending</button>
+                    </div> -->
+                      </div>
+                      
                       <div class="mx-auto">
                           <table class="table " id="user-table" >
                               <thead>
@@ -29,7 +40,7 @@
                                       <th > Order Date</th>
                                       <th > Quantity</th>
                                       <th> Payment </th>
-                                      <th> Status</th>
+                                      <th>Status</th>
                                       <th> Action</th>
                                   </tr>
                               </thead>
@@ -59,15 +70,15 @@
                                           
 
                                           <td>
-                                              <button 
-                                              <%if( orders[i].orderDetails.paymentStatus == "pending"){%>
-                                              
-                                              <%}else if(orders[i].orderDetails.paymentStatus == "success"){%>
-                                                  class="btn-inverse-success" 
-                                              <%}else if(orders[i].orderDetails.paymentStatus == "failed"){%>
-                                                  class="btn-inverse-danger" 
-                                              <%}%>        
-                                              >₹<%= orders[i].orderDetails.totalAmount %></button>
+                                            <button 
+                                            <%if( orders[i].orderDetails.paymentStatus == "pending"){%>
+                                            class="btn-inverse-warning" 
+                                            <%}else if(orders[i].orderDetails.paymentStatus == "success"){%>
+                                                class="btn-inverse-success" 
+                                            <%}else if(orders[i].orderDetails.paymentStatus == "refund"){%>
+                                                class="btn-inverse-danger" 
+                                            <%}%>        
+                                            >₹<%= orders[i].orderDetails.totalAmount %></button>
                                           </td>
 
                                           <td>

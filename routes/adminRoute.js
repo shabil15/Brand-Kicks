@@ -17,6 +17,7 @@ const fileUpload= require('../middlewares/fileUpload')
 const bannerController= require('../controllers/bannersController')
 const orderController =require('../controllers/orderController')
 const couponController = require('../controllers/couponsController');
+const reportController = require('../controllers/reportController')
 
 //=============================== authentication ============================================//
 
@@ -77,4 +78,12 @@ admin_route.get('/coupons',couponController.couponsPageLoad)
 admin_route.get('/coupon/edit',couponController.editCouponPageLoad)
 admin_route.post('/coupon/edit',couponController.editCoupon)
 admin_route.get('/coupon/delete',couponController.deleteCoupon);
+
+
+//============================= dashboard related =============================================//
+
+admin_route.post('/report/genarate',adminController.genarateSalesReports);
+admin_route.get('/report',reportController.loadSalesReport);
+admin_route.post('/sales-report/portfolio',reportController.portfoliofiltering);
+
 module.exports=admin_route
