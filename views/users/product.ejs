@@ -96,7 +96,7 @@
                               </div><!-- End .product-nav -->
                               
                           </div><!-- End .details-filter-row -->
-                          <% if (product.stock < 10) { %>
+                          <% if (product.stock < 10 && product.stock>1) { %>
                             <p class="mb-2 text-danger">Only <%= product.stock %> pieces left</p>
                         <% } %> 
                         
@@ -104,9 +104,16 @@
 
 
                           <div class="product-details-action">
-                              <button onclick="addCart('<%= product._id %>','<%= user %>')"
-                                  class="btn-product btn-cart"><span>add to cart</span></button>
-
+                            <% if (product.stock===0) { %>
+                                
+                                <button disabled class="btn-product btn-cart">
+                                    <span>Out of Stock</span>
+                                </button>
+                            <% } else { %>
+                                <button onclick="addCart('<%= product._id %>','<%= user %>')" class="btn-product btn-cart">
+                                    <span>Add to Cart</span>
+                                </button>
+                            <% } %>
                               <div class="details-action-wrapper">
                                   <a href="#" class="btn-product btn-wishlist" onclick="addtoWishList('<%= product._id %>','<%= user %>')" title="Wishlist"><span>Add to
                                           Wishlist</span></a>

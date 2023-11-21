@@ -559,7 +559,9 @@ const placeOrderManage = async (req, res) => {
             await product.save();
 
           }else{
-            return res.status(400).json({ error: `Insufficient stock for product: ${product.product_name}` });
+            console.log("no stock");
+            return res.status(400).json({ error: `Insufficient stock for product`});
+            
           }
         }
       }

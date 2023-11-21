@@ -25,8 +25,8 @@
                   </div>
               </div>
           </div>
-          <!-- <div class="col-lg-6 grid-margin stretch-card">
-              <div class="card">
+          <div class="col-lg-6 grid-margin stretch-card">
+              <!-- <div class="card">
                   <div class="card-body">
                       <h4 class="card-title">Most sold products</h4>
                       <canvas id="barChart" style="height:230px"></canvas>
@@ -42,8 +42,8 @@
                       
 
                   </div>
-              </div>
-          </div> -->
+              </div> -->
+          </div>
       </div>
       <div>
           <!-- <p class="mx-auto">Filter Report :</p> -->
@@ -52,14 +52,14 @@
                   <!-- <h3>Total Profit :<%= sales.totalSales %></h3> -->
                   <h3>Filter Report :</h3>
               </div>
-              <div class=" col-3 d-flex flex-row ">
+              <!-- <div class=" col-3 d-flex flex-row ">
                   <form class="d-flex flex-row" action="/admin/salesReport" method="get">
                       <h2 class="mdi mdi-calendar-clock"></h2>
                       <input type="text" autocomplete="off" id="start-date" class="form-control text-light m-1 " name="start" placeholder="From" required>
                       <input type="text" autocomplete="off" id="end-date" class="form-control text-light m-1 " name="end" placeholder="To" required>
                       <button type="submit" class="btn btn-inverse-primary m-2">Filter</button>
                   </form>
-              </div>
+              </div> -->
           </div>
       </div>
 
@@ -92,9 +92,9 @@
                       <div class="d-flex flex-row justify-content-between">
                           <h4 class="card-title mb-1">product wise profitability analysis</h4>
                           <div class="dropdown mt-2 text-right">
-                              <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <!-- <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                   <i class="mdi mdi-download"></i>
-                              </button>
+                              </button> -->
                               <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
                                   <h6 class="dropdown-header">Download Report</h6>
                                   <a class="dropdown-item text-white" id="excelDownload">Excel file</a>
@@ -155,9 +155,9 @@
               </div> -->
               <div class="card">
                   <div class="dropdown mt-2 text-right">
-                      <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <!-- <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="mdi mdi-download"></i>
-                      </button>
+                      </button> -->
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
                           <h6 class="dropdown-header">Download Report</h6>
                           <a class="dropdown-item text-white" id="excelDownload">Excel file</a>
@@ -267,7 +267,7 @@
 </div>
 
 
-<script src="/static/adminAssets/vendors/chart.js/Chart.min.js"></script>
+<script src="/public/adminAssets/assets/vendors/chart.js/Chart.min.js"></script>
 
 
 <script>

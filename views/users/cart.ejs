@@ -81,6 +81,7 @@
                                             readonly
                                             min="1"
                                             max="10"
+                                            data-product-stock="<%= cartItems.products[i].product.stock %>"
                                         />
                                         <div class="input-group-append ">
                                             <button class=" js-btn-plus btn-with-border px-4 mt-3" type="button">
@@ -217,10 +218,13 @@
                     }
                 });
 
-                plusButton.addEventListener("click", function () {
+                plusButton.addEventListener("click",async function () {
+
+                    const productStock = await getProductStock(productID);
+                    console.log("stock",productStock);
                     const quantity = parseInt(input.value, 10);
                     quantitys = quantity + 1;
-
+                    if (quantitys <= productStock) {
                     handleQuantityUpdate(productID, quantitys, index);
 
                     const totalPrice = quantitys * productPrices[index];
@@ -228,8 +232,35 @@
                     updateSubtotal();
                     updateMinusButtonStatus();
                     updatePlusButtonStatus();
+                    }else{
+                        Swal.fire({
+                    icon: "error",
+                    title: "Not Enough Stock",
+                    text: "There is not enough stock for some items.",
+                        })
+                        
+                    }
                 });
             });
+
+            // Add a function to fetch product stock from the server
+    async function getProductStock(productID) {
+        try {
+            const response = await fetch(`/getProductStock?productID=${productID}`);
+            const data = await response.json();
+
+            if (data && data.stock) {
+                return data.stock;
+            } else {
+                console.error("Invalid stock data:", data);
+                return 0; // Default to 0 if there's an issue
+            }
+        } catch (error) {
+            console.error("Error fetching product stock:", error);
+            return 0; // Default to 0 if there's an error
+        }
+    }
+
 
             async function handleQuantityUpdate(productID, quantitys, index) {
                 try {

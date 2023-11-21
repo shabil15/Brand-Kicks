@@ -4,7 +4,9 @@ const User = require('../models/userModel').User;
 const Order = require('../models/orderModel').Order
 
 
-// ========== loading sales report page ==========
+// ============================loading sales report page =========================================//
+
+
 const loadSalesReport = async (req, res) => {
   try {
     let start, end;
@@ -31,7 +33,7 @@ const loadSalesReport = async (req, res) => {
     const allOrders = await getorders ()
 
     
-
+    console.log("mp,",SoldProducts);
     if(sales === 0 ||SoldProducts==0 ){
       res.render("salesReport", {
        
@@ -53,7 +55,9 @@ const loadSalesReport = async (req, res) => {
 
 
 
-// ========== creating sales report ==========
+// =================================== creating sales report ===================================================//
+
+
 const createSalesReport = async (startDate, endDate) => {
   try {
     const orders = await Order.find({
@@ -134,7 +138,9 @@ const createSalesReport = async (startDate, endDate) => {
 
 
 
-// ========= finding most selling products =========
+// ================================================= finding most selling products ==========================================//
+
+
 const getMostSellingProducts = async () => {
   try {
     const pipeline = [
@@ -231,8 +237,10 @@ const getorders = async () => {
 
 
 
-//portfolio chart data filltering
-// --------------------------------
+//=====================================portfolio chart data filltering========================================//
+
+
+
 const portfolioFiltering = async (req, res) => {
 try {
   let datePriad = req.body.date;

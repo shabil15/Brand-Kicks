@@ -97,6 +97,8 @@ user_route.post('/addtocart',userAuth.isLogin,userController.addToCart)
 
 user_route.post('/updateCart',userAuth.isLogin,userController.updateCart)
 
+user_route.get('/getProductStock',userController.getProductStock)
+
 user_route.delete('/removecartproduct',userAuth.isLogin,userController.removeCartItem)
 
 //============================== wishList Related ==========================//

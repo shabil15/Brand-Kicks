@@ -280,7 +280,16 @@
                     payPayment(response.order,response.user,response.orderId)
                 }
 
-            }
+            },
+            error: (xhr, status, error) => {
+            const errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'An error occurred.';
+            // Display error using SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Not enough stock',
+                text: "not enough stock for some products",
+            });
+        }
         })
     })
 

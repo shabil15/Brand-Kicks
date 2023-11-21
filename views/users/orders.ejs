@@ -181,7 +181,7 @@ aria-label="Close">x</button> -->
                         <%if(products[i].OrderStatus!="Returned"){ %>
                             <div class="card-header d-flex justify-content-between w-100">
                                 <dir class="d-flex flex-column col-9">
-                                    <%if(products[i].OrderStatus!="canceled"){%>
+                                    <%if(products[i].OrderStatus!="canceled"&& products[i].OrderStatus!="pending"){%>
                                         <p>ORDER PLACED</p>
                                         <p>
                                             <%= products[i].placeOrderDate%>
@@ -205,7 +205,7 @@ aria-label="Close">x</button> -->
                             </div>
                             <hr class="m-0 mb-1">
                             <div>
-                                <%if(products[i].OrderStatus!="canceled" && products[i].OrderStatus!="Delivered"){%>
+                                <%if(products[i].OrderStatus!="canceled" && products[i].OrderStatus!="Delivered"&& products[i].OrderStatus!="pending"){%>
                                     <h6 class="mx-5 mb-2">Delivery Expect on : <b>
                                             <%= products[i].deliveryDate %>
                                         </b></h6>
@@ -238,7 +238,7 @@ aria-label="Close">x</button> -->
 
 
                                         <%if(products[i].returnOrderStatus!="none"){%>
-                                            <%if(products[i].OrderStatus!="canceled" ){%>
+                                            <%if(products[i].OrderStatus!="canceled"&& products[i].OrderStatus!="pending" ){%>
 
                                                 <div class="col-12 row d-flex justify-content-start">
                                                     <!-- <a href="#" class="btn btn-dark col-2 mb-1">Track your Order</a> -->
@@ -277,13 +277,13 @@ aria-label="Close">x</button> -->
 
                                                 </div>
                                                 <%}else{%>
-                                                    <h6 class="text-danger text-center mr-5">Canceled Order</h6>
+                                                    <h6 class="text-danger text-center mr-5"><%=products[i].OrderStatus%> Order</h6>
                                                     <div class="progress-track  col-12">
                                                         <ul id="progressbar">
                                                             <li class="step0 active " style="width: 50%; font-size: 1rem;"  id="step1">
                                                                 Order placed</li>
                                                             <li class="step0 active text-right text-danger" style="width: 50%; font-size: 1rem;" id="step4">
-                                                                Canceled</li>
+                                                                <%=products[i].OrderStatus%></li>
                                                         </ul>
                                                     </div>
 
@@ -303,7 +303,7 @@ aria-label="Close">x</button> -->
                                 
                             </div>
 
-                            <%if(products[i].OrderStatus!="canceled" ){%>
+                            <%if(products[i].OrderStatus!="canceled" && products[i].OrderStatus!="pending"){%>
 
                                 <div class="card-footer" style="background: #F3F3F9;">
                                     <h6 class="text-center">Order status</h6>

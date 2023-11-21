@@ -82,8 +82,8 @@ admin_route.get('/coupon/delete',couponController.deleteCoupon);
 
 //============================= dashboard related =============================================//
 
-admin_route.post('/report/genarate',adminController.genarateSalesReports);
-admin_route.get('/report',reportController.loadSalesReport);
-admin_route.post('/sales-report/portfolio',reportController.portfolioFiltering);
+admin_route.post('/report/genarate',adminAuth.isLogin,adminController.genarateSalesReports);
+admin_route.get('/report',adminAuth.isLogin,reportController.loadSalesReport);
+admin_route.post('/sales-report/portfolio',adminAuth.isLogin,reportController.portfolioFiltering);
 
 module.exports=admin_route

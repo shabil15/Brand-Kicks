@@ -720,7 +720,22 @@ const updateCart = async (req, res) => {
     console.log(error);
   }
 };
+//=============================== get the stock count ===================================//
 
+const getProductStock = async (req,res) => {
+  const productID = req.query.productID;
+  try {
+    const product = await Product.findById(productID);
+
+        if (product) {
+            res.json({ stock: product.stock });
+        } else {
+            res.status(404).json({ error: "Product not found" });
+        }
+  } catch (error) {
+    console.log(error);
+  }
+}
 //======================================== to load the Cart Page ================================================//
 
 const cartPageLoad = async (req, res) => {
@@ -879,4 +894,5 @@ module.exports = {
   deleteAddress,
   updateUserData,
   changePassword,
+  getProductStock
 };
