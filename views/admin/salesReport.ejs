@@ -26,7 +26,7 @@
               </div>
           </div>
           <div class="col-lg-6 grid-margin stretch-card">
-              <!-- <div class="card">
+              <div class="card">
                   <div class="card-body">
                       <h4 class="card-title">Most sold products</h4>
                       <canvas id="barChart" style="height:230px"></canvas>
@@ -34,7 +34,7 @@
                           <% if (Mproducts !== 0) { %>
                               <% for (let i = 0; i < Mproducts.length; i++) { %>
                                   <% const product = Mproducts[i].productData[0]; %>
-                                  <input id="product<%= i + 1 %>" value="<%= product ? product.productName : '' %>">
+                                  <input id="product<%= i + 1 %>" value="<%= product ? product.product_name : '' %>">
                                   <input id="product<%= i + 1 %>2" value="<%= Mproducts[i].count %>">
                               <% } %>
                           <% } %>
@@ -42,7 +42,7 @@
                       
 
                   </div>
-              </div> -->
+              </div>
           </div>
       </div>
       <div>
@@ -155,13 +155,21 @@
               </div> -->
               <div class="card">
                   <div class="dropdown mt-2 text-right">
-                      <!-- <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <button type="button" class="btn btn-inverse-info dropdown-toggle mx-3" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="mdi mdi-download"></i>
-                      </button> -->
+                      </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
                           <h6 class="dropdown-header">Download Report</h6>
-                          <a class="dropdown-item text-white" id="excelDownload">Excel file</a>
-                          <a class="dropdown-item text-white" id="pdfDownload">PDF File</a>
+                          <div class="ml-3">
+                            <button type="button" onclick="excelDownload()" id="excel-export" class="btn btn-success btn-icon-text ml-auto mb-1">
+                              Excel <i class="mdi mdi-printer btn-icon-append"></i>
+                            </button>
+                            
+                            <button type="button" onclick="printDiv('Print')" class="btn btn-info btn-icon-text ml-1 mr-auto mb-1">
+                              Print <i class="mdi mdi-printer btn-icon-append"></i>
+                            </button>
+                          </div>
+                          
                       </div>
                   </div>
                   <div class="card-body">
@@ -265,6 +273,7 @@
 
   </div>
 </div>
+
 
 
 <script src="/public/adminAssets/assets/vendors/chart.js/Chart.min.js"></script>
@@ -437,49 +446,91 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-      // fileDownloadPathsettings();
-      const excelDownload = document.getElementById("excelDownload");
-      const pdfDownload = document.getElementById("pdfDownload");
-      const queryString = window.location.search;
-      const urlSearchParams = new URLSearchParams(queryString);
+    //   // fileDownloadPathsettings();
+    //   const excelDownload = document.getElementById("excelDownload");
+    //   const pdfDownload = document.getElementById("pdfDownload");
+    //   const queryString = window.location.search;
+    //   const urlSearchParams = new URLSearchParams(queryString);
 
-      // Access specific query parameters by name
-      const startDate = urlSearchParams.get('start');
-      const endDate = urlSearchParams.get('end');
+    //   // Access specific query parameters by name
+    //   const startDate = urlSearchParams.get('start');
+    //   const endDate = urlSearchParams.get('end');
 
-      let today, start, end; // Declare these variables using let
+    //   let today, start, end; // Declare these variables using let
 
-      if (startDate == null || endDate == null) {
-        today = new Date();
-        start = new Date(today);
-        start.setDate(today.getDate() - 30);
-        end = today.toISOString().split('T')[0];
-        excelDownload.href = `/admin/sales-report/export-report?start=${start}&end=${end}`;
-        pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${start}&end=${end}`;
-      } else {
-        excelDownload.href = `/admin/sales-report/export-report?start=${startDate}&end=${endDate}`;
-        pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${startDate}&end=${endDate}`;
-      }
+    //   if (startDate == null || endDate == null) {
+    //     today = new Date();
+    //     start = new Date(today);
+    //     start.setDate(today.getDate() - 30);
+    //     end = today.toISOString().split('T')[0];
+    //     excelDownload.href = `/admin/sales-report/export-report?start=${start}&end=${end}`;
+    //     pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${start}&end=${end}`;
+    //   } else {
+    //     excelDownload.href = `/admin/sales-report/export-report?start=${startDate}&end=${endDate}`;
+    //     pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${startDate}&end=${endDate}`;
+    //   }
 
 
   // }
 
   // Don't use parentheses when assigning the function to onload
 
-  $("#start-date").datepicker({
-      dateFormat: 'yy-mm-dd',
-      onSelect: function (selectedDate) {
-          var minDate = new Date(selectedDate);
-          minDate.setDate(minDate.getDate() + 1); // Set the minimum date for the end date picker to the next day
-          $("#end-date").datepicker("option", "minDate", minDate);
-      }
-  });
+//   $("#start-date").datepicker({
+//       dateFormat: 'yy-mm-dd',
+//       onSelect: function (selectedDate) {
+//           var minDate = new Date(selectedDate);
+//           minDate.setDate(minDate.getDate() + 1); // Set the minimum date for the end date picker to the next day
+//           $("#end-date").datepicker("option", "minDate", minDate);
+//       }
+//   });
 
-  $("#end-date").datepicker({
-      dateFormat: 'yy-mm-dd'
-  });
+//   $("#end-date").datepicker({
+//       dateFormat: 'yy-mm-dd'
+//   });
   
 
+
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Extract data from hidden inputs
+        const productNames = [];
+        const productCounts = [];
+
+         if (Mproducts !== 0) { 
+          for (let i = 0; i < Mproducts.length; i++) {
+                const productName = document.getElementById("product<%= i + 1 %>").value;
+                const productCount = parseInt(document.getElementById("product<%= i + 1 %>2").value);
+
+                productNames.push(productName);
+                productCounts.push(productCount);
+             } 
+        } 
+
+        // Chart initialization
+        var ctx = document.getElementById('barChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: productNames,
+                datasets: [{
+                    label: 'Product Sales',
+                    data: productCounts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Example color
+                    borderColor: 'rgba(75, 192, 192, 1)', // Example color
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
 </script>
 
 <%- include('../layouts/admin/footer.ejs') %>

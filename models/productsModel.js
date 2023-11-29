@@ -52,7 +52,32 @@ const productSchema = mongoose.Schema({
       required:true
     }
 
-  }
+  },
+  reviews : [
+    {
+      user: {
+        userId:{
+          type:String
+        },
+        firstName: {
+          type: String,
+        },
+        secondName: {
+          type: String,
+        }
+      },
+      rating: {
+        type: Number,
+      },
+      comment: {
+        type:String,
+      },
+      date : {
+        type: Date,
+        default: Date.now,
+      }
+    }
+  ]
 
 },{
   timestamps:true

@@ -505,25 +505,25 @@ const placeOrderManage = async (req, res) => {
             },
           }
         );
-      //   const walletHistory = {
-      //     transactionDate: new Date(),
-      //     transactionDetails: 'Product Purchased',
-      //     transactionType: 'Debit',
-      //     transactionAmount: totalAmount,
+        const walletHistory = {
+          transactionDate: new Date(),
+          transactionDetails: 'Product Purchased',
+          transactionType: 'Debit',
+          transactionAmount: order.totalAmount,
           
-      //    }
-      //    console.log(walletHistory);
-      //    await User.findByIdAndUpdate(
-      //     {_id: userId },
-      //     {
-      //         $inc:{
-      //             wallet: -totalAmount
-      //         },
-      //         $push:{
-      //             walletHistory
-      //         }
-      //     }
-      // );
+         }
+         console.log(walletHistory);
+         await User.findByIdAndUpdate(
+          {_id: userId },
+          {
+              $inc:{
+                  wallet: -order.totalAmount
+              },
+              $push:{
+                  walletHistory
+              }
+          }
+      );
 
       } else {
 
@@ -715,6 +715,8 @@ const allOrdersPageLoad = async (req,res)=>{
     }
 
     const productWiseOrders = []
+    
+  
 
     for(const order of userOrders){
       for(const product of order.products) {
@@ -723,6 +725,7 @@ const allOrdersPageLoad = async (req,res)=>{
         const placeDate = formatDate(order.orderDate);
         const OrderStatus = product.OrderStatus;
         const StatusLevel = product.StatusLevel;
+        
 
 
         const productDetails = await Product.findById(productId,{
@@ -736,6 +739,7 @@ const allOrdersPageLoad = async (req,res)=>{
 
         const productWiseOrder = {
           orderId:order._id,
+          totalAmount: order.totalAmount,
           placeOrderDate:placeDate,
           paymentMethod:order.paymentMethod,
           productDetails,

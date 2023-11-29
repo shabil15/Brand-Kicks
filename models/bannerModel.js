@@ -1,21 +1,24 @@
 const mongoose = require('mongoose')
 
 const bannerSchema= new mongoose.Schema({
-  name:{
+  title:{
     type:String,
-    required:true
+    
   },
   banner:{
     type:String,
-    required:true
+    
   },
-  description:{
+  subtext:{
     type:String,
     
   },
   visibility: {
     type: Boolean,
     default:true,
+  },
+  bannerURL: {
+    type: String,
   }
 },{
   timestamps:true

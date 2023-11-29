@@ -69,7 +69,7 @@ const addProduct = async (req, res) => {
   try {
     let details = req.body;
     const files = await req.files;
-    console.log(files);
+    
 
     const img = [
       files.image1[0].filename,
@@ -150,10 +150,18 @@ const productPageLoad = async (req,res)=>{
   try {
     const product = await getProductDetails(req.query.id)
     // let relatedProducts = await getProductDetails({'$and':[{category:product.category},{_id:{"$ne":product._id}}]})
+
+    const reviews = product.reviews
+
+    const userReviews = reviews.filter(review=> review.user.user_id=== req.session.user_id)
+    
+    
     res.render('product',{
       currentPage:'shop',
       product:product,
-      user:req.session.user_id, 
+      user:req.session.user_id,
+      reviews: reviews,
+      userReviews:userReviews 
     })
   } catch (error) {
     console.log(error);
@@ -261,6 +269,174 @@ const searchProducts = async(req,res)=>{
   }
 }
 
+
+//========================================== shop page loading with pagination ===============================//
+
+const shopPageLoad = async(req,res) => {
+  try {
+    const categories = await Category.find()
+    let page = req.query.page|| 1;
+    let pageDB = Number(page) -1.
+    let productPerPage = 9;
+    let totalProduct = await Product.countDocuments();
+    let totalPage = Math.ceil(totalProduct/productPerPage);
+    let products = await Product.find()
+    .skip(pageDB * productPerPage )
+    .limit(productPerPage);
+
+    res.render('shop',{
+      products : products,
+      user:req.session.user_id,
+      totalPage,
+      curentPage:Number(page),
+      categories,
+      currentPage:'shop'
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//=================================== query filtering =======================================//
+
+const queryFilter = async (req,res) =>{
+  try {
+    const categories = await Category.find();
+    const page = req.query.page || 1;
+    const pageDB = Number(page)-1;
+    const productPerPage = 9;
+    const key= req.query.key || "";
+    let query = {};
+
+    let totalProduct;
+
+    if(key!=="") {
+      totalProduct = await Product.countDocuments({
+        $or: [
+          { product_name : {$regex:key,$options:"i"}},
+          {category:{$regex:key,$options:"i"}}
+        ]
+      })
+    }else {
+      if(req.query.category){
+        const Categories = req.query.category.split("%2C").map(cat=>cat.charAt(0).toUpperCase() + cat.slice(1)); 
+        query.category = {$in:Categories}
+      }
+
+      if(req.query.gender) {
+        const capitalizedGender = req.query.gender.split(",").map(cat=>cat.charAt(0).toUpperCase()+cat.slice(1));
+        query.gender = capitalizedGender;
+      }
+
+      if(req.query.brand) {
+        const brand = req.query.brand.split(",").map(brnd=>brnd.charAt(0).toUpperCase()+brnd.slice(1));
+        query.brand = brand;
+      }
+
+      if(req.query.minPrice && req.query.maxPrice) {
+        const minPrice = parseFloat(req.query.minPrice);
+        const maxPrice = parseFloat(req.query.maxPrice);
+        query.product_price = {$gte: minPrice ,$lte:maxPrice};
+      }
+
+      totalProduct = await Product.countDocuments(query);
+    }
+
+    const totalPage = Math.ceil(totalProduct/ productPerPage);
+
+    const products = key !== ""
+    ? await Product.find({
+      $or: [
+        { product_name : {$regex:key,$options:"i"}},
+        {category:{$regex:key,$options:"i"}}
+      ]
+    }).skip(pageDB * productPerPage)
+    .limit(productPerPage)
+    :await Product.find(query)
+    .skip(pageDB * productPerPage)
+    .limit(productPerPage);
+    console.log(query);
+    const totalProducts = await Product.countDocuments();
+
+
+    res.render("shop", {
+      products,
+      user:req.session.user_id,
+      totalPage,
+      curentPage: Number(page),
+      currentPage:'shop',
+      categories,
+      totalProducts
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
+// const queryFilter = async (req, res) => {
+//   try {
+//     const categories = await Category.find();
+//     const page = req.query.page || 1;
+//     const pageDB = Number(page) - 1;
+//     const productPerPage = 9;
+//     const key = req.query.key || "";
+
+//     let query = {};
+
+//     // Check if there's a general search key
+//     if (key !== "") {
+//       query.$or = [
+//         { product_name: { $regex: key, $options: "i" } },
+//         { category: { $regex: key, $options: "i" } },
+//       ];
+//     } else {
+//       // Check for other filters (category, gender, price range)
+//       if (req.query.category) {
+//         const categories = req.query.category.split("%2C").map((cat) => cat.charAt(0).toUpperCase() + cat.slice(1));
+//         query.category = { $in: categories };
+//       }
+
+//       if (req.query.gender) {
+//         const genders = req.query.gender.split(",").map((gen) => gen.charAt(0).toUpperCase() + gen.slice(1));
+//         query.gender = { $in: genders };
+//       }
+
+//       if (req.query.minPrice && req.query.maxPrice) {
+//         const minPrice = parseFloat(req.query.minPrice);
+//         const maxPrice = parseFloat(req.query.maxPrice);
+//         query.price = { $gte: minPrice, $lte: maxPrice };
+//       }
+//     }
+
+//     // Count total matching products and calculate total pages
+//     const totalProduct = await Product.countDocuments(query);
+//     const totalPage = Math.ceil(totalProduct / productPerPage);
+
+//     // Retrieve products based on the constructed query
+//     const products = key !== ""
+//       ? await Product.find(query).skip(pageDB * productPerPage).limit(productPerPage)
+//       : await Product.find(query).skip(pageDB * productPerPage).limit(productPerPage);
+
+//       const totalProducts = await Product.countDocuments();
+//     // Render the shop page with the filtered products
+//     res.render("shop", {
+//       products,
+//       user: req.session.user_id,
+//       totalPage,
+//       curentPage: Number(page),
+//       currentPage: 'shop',
+//       categories,
+//       totalProducts,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+
+
 module.exports = {
   addProductLoad,
   addProduct,
@@ -269,5 +445,7 @@ module.exports = {
   editProductLoad,
   editProduct,
   productPageLoad,
-  searchProducts
+  searchProducts,
+  shopPageLoad,
+  queryFilter
 };

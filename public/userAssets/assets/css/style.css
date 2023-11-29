@@ -178,3 +178,43 @@
 .couponHide{
   display: none;
 }
+
+
+.filtterClear {
+  width: 9rem;
+  border-radius: 7px;
+  border: 0.01px solid #747373;
+  background-color: #fff;
+  font-size: 12px;
+  transition: all 0.5s ease;
+
+}
+.filtterClear:hover {
+  background: #CC9966;
+  transition: ease-in-out;
+  color:#fff;
+  width: 9.1rem;
+  font-weight:  600;
+  transition: all 0.5s ease;
+}
+
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  
+}
+
+.brand img {
+  width: auto !important;
+  max-width: 100px !important
+}
+
+.brand:focus {
+  outline: none !important
+}
+.owl-carousel {
+  height: 50px;
+}

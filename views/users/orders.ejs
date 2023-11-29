@@ -233,7 +233,7 @@ aria-label="Close">x</button> -->
                                         </b></p><i class="fa-solid fa-file-invoice-dollar"></i>
                                     <%=products[i].paymentMethod %>
                                         </p>
-                                        <h5 class="card-title mb-2">₹ <%= products[i].productDetails.product_price %>
+                                        <h5 class="card-title mb-2">₹ <%= products[i].productDetails.product_price * products[i].quantity  %>
                                         </h5>
 
 

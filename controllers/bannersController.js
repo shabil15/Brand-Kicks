@@ -30,10 +30,12 @@ const addBanner=  async(req,res)=>{
     let img= await req.file.filename;
     console.log(img);
     let banner= new Banner({
-      name:req.body.name,
+      title:req.body.name,
       banner:img,
-      description:req.body.description,
+      subtext:req.body.description,
+      bannerURL:req.body.bannerURL,
       visibility:true
+
     })
 
     let result = await banner.save()

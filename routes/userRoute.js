@@ -63,11 +63,13 @@ user_route.get('/logout',userController.logout)
 
 //===================== products related==========================//
 
-user_route.get('/shop',userController.loadShop)
+// user_route.get('/shop',productController.shopPageLoad);
 
 user_route.get('/product',productController.productPageLoad);
 
+user_route.get('/shop',productController.queryFilter);
 
+user_route.post ('/submitReview',userController.submitReview);
 
 
 //========================profile related===============================//

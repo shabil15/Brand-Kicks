@@ -1,4 +1,26 @@
 <%- include('../layouts/user/header.ejs') -%>   
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-design-icons@3.0.1/iconfont/material-icons.css">
+<style>
+.fs-18 {
+    font-size: 18px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.wrap-rating {
+    display: flex;
+    align-items: center;
+}
+
+.item-rating {
+    font-size: 24px;
+    color: #ffdc18;
+}
+</style>
+
+
 <main class="main">
   <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
       <div class="container d-flex align-items-center">
@@ -142,7 +164,197 @@
                   </div><!-- End .col-md-6 -->
               </div><!-- End .row -->
           </div><!-- End .product-details-top -->
+
+
+          <div class="product-details-tab">
+            <ul class="nav nav-pills justify-content-center" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="product-desc-link" data-toggle="tab" href="#product-desc-tab" role="tab" aria-controls="product-desc-tab" aria-selected="true">Description</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="product-shipping-link" data-toggle="tab" href="#product-shipping-tab" role="tab" aria-controls="product-shipping-tab" aria-selected="false">Shipping & Returns</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="product-review-link" data-toggle="tab" href="#product-review-tab" role="tab" aria-controls="product-review-tab" aria-selected="false">Reviews (<%=reviews.length%>)</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+            <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel" aria-labelledby="product-desc-link">
+                <div class="product-desc-content">
+                    <h3>Product Information</h3>
+                    <p><%= product.product_description%></p>
+                    
+
+                    
+                </div><!-- End .product-desc-content -->
+            </div><!-- .End .tab-pane -->
+            
+            <div class="tab-pane fade" id="product-shipping-tab" role="tabpanel" aria-labelledby="product-shipping-link">
+                <div class="product-desc-content">
+                    <h3>Delivery & returns</h3>
+                    <p>We deliver to over 100 countries around the world. For full details of the delivery options we offer, please view our <a href="#">Delivery information</a><br>
+                    We hope you’ll love every purchase, but if you ever need to return an item you can do so within a month of receipt. For full details of how to make a return, please view our <a href="#">Returns information</a></p>
+                </div><!-- End .product-desc-content -->
+            </div><!-- .End .tab-pane -->
+
+
+                <div class="tab-pane fade" id="product-review-tab" role="tabpanel" aria-labelledby="product-review-link">
+                    <div class="reviews">
+                        <h3>Reviews (<%=reviews.length%>)</h3>
+                        
+
+                        <% if (reviews.length > 0) { %>
+                            <% for (let i = 0; i < reviews.length; i++) { %>
+                                <div class="review">
+                                    <div class="row no-gutters">
+                                        <div class="col-auto">
+                                            <h4><a href="#"><%= reviews[i].user.firstName %> <%= reviews[i].user.secondName %></a></h4>
+                                            <div class="ratings-container">
+                                                <div class="ratings">
+                                                    <div class="ratings-val" style="width: <%= reviews[i].rating %>820% "></div>
+                                                </div>
+                                            </div>
+                                            <span class="review-date"></span>
+                                        </div>
+                                        <div class="col">
+                                            
+                                            <div class="review-content">
+                                                <p><%= reviews[i].comment %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- End .review -->
+                            <% } %>
+                        <% } else { %>
+                            <p>No reviews available.</p>
+                        <% } %>
+                            <% if (user) {%>
+                        <form class="w-full" id="reviewForm">
+                            <h5 class="mtext-108 cl2 p-b-7">
+                                Add a review
+                            </h5>
+                            <input type="hidden" id="productId" name="productId" value="<%= product._id %>">
+                            <input type="hidden" id="userId" name="userId" value="<%= user %>">
+                            <p class="stext-102 cl6">
+                                Your email address will not be published. Required fields are marked *
+                            </p>
+                                <div class="flex-w flex-m pt-3 pb-23">
+                                    <span class="stext-102 cl3 mr1">
+                                        Your Rating
+                                    </span>
+                                    
+                                    <span class="wrap-rating fs-18 cl11 pointer" id="starRating" >
+                                        <i class="item-rating pointer far fa-star"></i>
+                                        <i class="item-rating pointer far fa-star"></i>
+                                        <i class="item-rating pointer far fa-star"></i>
+                                        <i class="item-rating pointer far fa-star"></i>
+                                        <i class="item-rating pointer far fa-star"></i>
+                                        <input style="display: none;" type="number" name="rating">
+                                    </span>
+                            </div>
+
+                            <div class="row p-b-25">
+                                <div class="col-12 p-b-5">
+                                    <label class="stext-102 cl3" for="review">Your review</label>
+                                    <textarea class="form-control" id="review" name="review"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <button class="btn btn-outline-dark">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                        <% } else { %>
+                             <a href="/login">Login For adding Reviews</a>
+
+                            <% } %>
+   
+
+                    </div><!-- End .reviews -->
+                </div><!-- .End .tab-pane -->
+            </div><!-- End .tab-content -->
+        </div><!-- End .product-details-tab -->
       </div>
-  </div>
+      
+    </div>
 </main>
 <%- include('../layouts/user/footer.ejs') -%>
+
+<script>
+    // Wait for the DOM to be ready
+    $(document).ready(function () {
+        // Variable to store the selected rating
+        let selectedRating;
+
+        // Add click event listeners to the star icons
+        $('.item-rating').click(function () {
+            // Remove existing star classes
+            $('.item-rating').removeClass('fas fa-star').addClass('far fa-star');
+
+            // Set the value of the selected rating variable
+            selectedRating = $(this).index() + 1;
+
+            // Log the selected rating to the console for debugging
+            console.log('Selected Rating: ' + selectedRating);
+
+            // Add the filled star class to the selected stars
+            $('.item-rating:lt(' + selectedRating + ')').addClass('fas fa-star');
+        });
+
+        // Add an event listener to the form submission
+        $('#reviewForm').submit(function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Validate the rating
+            if (!selectedRating) {
+                Swal.fire('Please select a rating.');
+                return;
+            }
+
+            // Get other form data
+            const reviewText = $('#review').val();
+          
+            // Validate other fields if needed
+            const userId = $('#userId').val();
+            // Get the product ID dynamically (replace this with the actual way you retrieve the product ID)
+            const productId = $('#productId').val(); // Assuming you have an input with id "productId"
+
+            // Prepare data for submission
+            const formData = {
+                productId: productId,
+                rating: selectedRating,
+                comment: reviewText,
+                userId: userId,
+            };
+
+            // Log the form data to the console for debugging
+            console.log(formData);
+
+            // Uncomment the following line to make sure the rating is being set correctly
+            // alert('Selected Rating: ' + selectedRating);
+
+            // Send the data to the server using AJAX (Assuming you have included jQuery)
+            $.ajax({
+                type: 'POST',
+                url: '/submitReview', // Replace with your actual endpoint
+                data: formData,
+                success: function (response) {
+                    // Handle the success response
+                    if (response.success) {
+                        Swal.fire('Success', response.message, 'success');
+                    } else {
+                        Swal.fire('Error', response.message, 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle the error response
+                    console.error(xhr.responseText);
+                    Swal.fire('Error', 'Internal server error', 'error');
+                },
+            });
+        });
+    });
+</script>

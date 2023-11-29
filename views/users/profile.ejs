@@ -56,7 +56,14 @@
               <p style="color: #000; font-weight: 500;">Full Name    : <%= users.firstName %> <%= users.secondName %></p>
               <p style="color: #000; font-weight: 500;">Email Address      : <%= users.email %></p>
               <p style="color: #000; font-weight: 500;">Phone Number : <%= users.mobile %> </p>
-              <p style="color: #000; font-weight: 500;">Country: <%= users.country%></p>
+              <p style="color: #000; font-weight: 500;">Country: India</p>
+              <div>
+                <p style="color: #000; font-weight: 500;">Your Referral Code:</p>
+                <input type="text" id="referralCodeInput" value="<%=users.referralCode%>" readonly>
+                <button onclick="copyToClipboard()"><i class="fas fa-copy"></i></button>
+            </div>
+            <p style="color: #777777; ">*Refer a friend, both get 100. Share the rewards!</p>
+
               
               </div>
               
@@ -675,4 +682,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return true;
     }
+
+
+        function copyToClipboard() {
+            // Get the input field
+            var copyText = document.getElementById("referralCodeInput");
+
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+            // Copy the text inside the text field
+            document.execCommand("copy");
+            
+            Swal.fire({
+        icon: 'success',
+        title: 'Referral Code Copied!',
+        showConfirmButton: false,
+        timer: 1500  // The alert will close after 1.5 seconds
+    });
+    
+        }
+    
 </script>

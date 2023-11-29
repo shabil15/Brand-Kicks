@@ -7,10 +7,13 @@ const randomstring = require("randomstring");
 const path = require("path");
 const otpGenerator = require("otp-generator");
 const Product = require("../models/productsModel").product;
+const Category = require('../models/productsModel').category;
 const Banner = require("../models/bannerModel");
 const Cart = require("../models/userModel").Cart;
 const Address = require("../models/userModel").UserAddress;
 const Coupon = require("../models/couponModel").Coupon;
+const Order = require('../models/orderModel').Order
+const shortid = require('shortid');
 const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
 const Swal = require("sweetalert2");
@@ -111,7 +114,8 @@ const loginLoad = async (req, res) => {
 const loadHome = async (req, res) => {
   try {
     const products = await Product.find({});
-    const banners = await Banner.find({});
+    const banners = await Banner.find({ visibility: true });
+
 
     res.render("home", {
       currentPage: "home",
@@ -162,6 +166,23 @@ const insertUser = async (req, res) => {
       req.session.secondName = req.body.secondName;
       req.session.mobile = req.body.mobile;
       req.session.email = req.body.email;
+
+      // === referral ===========//
+
+      if(req.body.referralCode){
+        const referringUser = await User.findOne({ referralCode: req.body.referralCode});
+
+        if(referringUser) {
+          req.session.referralUserId = referringUser._id;
+        }else {
+          res.render('signup',{message:'invalid referal code,Please Use valid code'})
+        }
+      }
+
+      const referralCode = shortid.generate();
+      req.session.referralCode = referralCode;
+
+
       if (
         req.body.firstName &&
         req.body.email &&
@@ -202,6 +223,32 @@ const verifyOTP = async (req, res) => {
       });
 
       const result = await user.save();
+
+      if(req.session.referralUserId) {
+        const referringUser = await User.findById(req.session.referralUserId);
+
+        const reward = 100;
+
+        referringUser.wallet += reward;
+        referringUser.walletHistory.push({
+          transactionDate:new Date(),
+          transactionAmount:reward,
+          transactionDetails:'Referal Reward',
+          transactionType:'Credit'
+        });
+
+        await referringUser.save();
+
+        result.wallet += reward;
+        result.walletHistory.push({
+          transactionAmount: new Date(),
+          transactionDate: reward,
+          transactionDetails:'Referal Reward',
+          transactionType:'Credit',
+        })
+        await result.save();
+      }
+      
       res.redirect("/login");
     } else {
       res.render("otpPage", { message: "invalid OTP" });
@@ -368,11 +415,13 @@ const resetPassword = async (req, res) => {
 
 const loadShop = async (req, res) => {
   try {
+    const categories = await Category.find({});
     const products = await Product.find({});
     res.render("shop", {
       currentPage: "shop",
       products: products,
       user: req.session.user_id,
+      categories
     });
   } catch (error) {
     console.log(error);
@@ -863,6 +912,81 @@ const contactLoad = async (req, res) => {
     console.log(error);
   }
 };
+//================================== TO SUBMIT REVIEW OF THE USER =======================================================//
+
+const submitReview = async (req,res) => {
+  try {
+    
+    const {productId , rating , comment , userId} = req.body;
+    console.log("Destructured variables:", { productId, rating, comment, userId });
+
+    console.log("Validating rating");
+        if (rating < 1 || rating > 5) {
+            return res.json({ success: false, message: 'Invalid rating. Please select a rating between 1 and 5.' });
+        }
+
+        // Find the product by ID
+        console.log("Finding product by ID");
+        const product = await Product.findById(productId);
+
+        if (!product) {
+          console.log("Product not found");
+          return res.json({ success: false, message: 'Product not found.' });
+      }
+
+      
+        // Check if the user with the provided userId exists
+        const user = await User.findById(userId);
+
+        if (!user) {
+            console.log("User not found");
+            return res.json({ success: false, message: 'User not found, Please Login' });
+        }
+
+        const existingReview = product.reviews.find(review => review.user.userId === userId);
+        
+        if (existingReview) {
+          console.log("User has already reviewed the product");
+          return res.json({ success: false, message: 'You have already reviewed this product.' });
+      }
+      console.log("user,pro",userId,productId );
+
+       // Check if the user has a delivered order for the product
+       const deliveredOrder = await Order.findOne({
+        userId      : userId,
+        'products.productId': productId,
+        'products.OrderStatus': 'Delivered',
+    });
+
+    
+    if (!deliveredOrder) {
+        console.log("User has not purchased the product yet");
+        return res.json({ success: false, message: 'You can only review or rate a product after receiving it.' });
+    }
+    console.log(deliveredOrder)
+
+    console.log("Adding review to product's reviews array");
+        product.reviews.push({
+            
+            user: {
+                userId: userId,
+                firstName: user.firstName,
+                lastName: user.lastName,
+            },
+            rating,
+            comment,
+            date: new Date(),
+        });
+        console.log("Updated product with review:", product);
+
+        await product.save();
+
+        res.json({ success: true, message: 'Review submitted successfully!' });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 //============================== to export the modules ==========================================================//
 
@@ -894,5 +1018,6 @@ module.exports = {
   deleteAddress,
   updateUserData,
   changePassword,
-  getProductStock
+  getProductStock,
+  submitReview
 };

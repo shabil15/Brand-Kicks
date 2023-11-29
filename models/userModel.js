@@ -36,6 +36,11 @@ token:{
   type:String,
   default:''
 },
+referralCode: {
+  type: String,
+  unique: true,
+
+},
 wallet: {
   type: Number,
   default: 0

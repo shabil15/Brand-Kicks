@@ -1,101 +1,177 @@
 <%- include('../layouts/user/header.ejs') -%>
 <main class="main">
-    <section class="hero">
-        <div class="hero__slider owl-carousel">
-            <% banners.forEach((banner)=>{%>
-                <div class="hero__items set-bg" data-setbg="/public/userAssets/assets/images/banners/<%=banner.banner%>">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xl-5 col-lg-7 col-md-8">
-                                <div class="hero__text">
-                                    <h6><%=banner.name%> Collection</h6>
+    <div class="intro-section bg-lighter pt-5 pb-6">
+        <div class="container">
+            <div class="row">
+                <% if (banners.length>3){%>
+                <div class="col-lg-8">
+                    <div class="intro-slider-container slider-container-ratio slider-container-1 mb-2 mb-lg-0">
+                        <div class="intro-slider intro-slider-1 owl-carousel owl-simple owl-light owl-nav-inside" data-toggle="owl" data-owl-options='{
+                            "nav": false, 
+                            "responsive": {
+                                "768": {
+                                    "nav": false
+                                }
+                            }
+                        }'>
+                            <div class="intro-slide">
+                                <figure class="slide-image">
+                                    <picture>
+                                        <source media="(max-width: 480px)" srcset="/products/banner/mobile/<%= banners[0].image %>">
+                                        <img src="/public/products/banners/<%=banners[1].banner%>" alt="Image Desc">
+                                    </picture>
+                                </figure><!-- End .slide-image -->
+                                
+                                <div class="intro-content">
+                                    <h3 class="intro-subtitle"><%= banners[0].subtext %></h3>
+                                    <!-- <h1 class="intro-title"><%= banners[0].mainHead %></h1> -->
+                                    <!-- <h3 class="intro-subtitle">Topsale Collection</h3> -->
+                                    <h1 class="intro-title text-dark"><%= banners[1].title %></h1>
+
+                                    <a href="/shop" class="btn btn-outline-white">
+                                        <span>SHOP NOW</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </a>
+                                </div><!-- End .intro-content -->
+                            </div><!-- End .intro-slide -->
+
+                            <div class="intro-slide">
+                                <figure class="slide-image">
+                                    <picture>
+                                        <source media="(max-width: 480px)" srcset="/products/banner/mobile/<%= banners[1].image %>">
+                                        <img src="/public/userAssets/assets/images/banners/3cols/banner-2.jpg" alt="Image Desc">
+                                    </picture>
+                                </figure><!-- End .slide-image -->
+
+                                <div class="intro-content">
+                                    <h3 class="intro-subtitle"><%= banners[1].subtext %></h3>
+                                    <h1 class="intro-title"><%= banners[1].mainHead %></h1>
+                                    <!-- <h3 class="intro-subtitle">News and Inspiration</h3>
+                                    <h1 class="intro-title">New Arrivals</h1> -->
+
+                                    <a href="/shop" class="btn btn-outline-white">
+                                        <span>SHOP NOW</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </a>
+                                </div><!-- End .intro-content -->
+                            </div><!-- End .intro-slide -->
+
+                            <div class="intro-slide">
+                                <figure class="slide-image">
+                                    <picture>
+                                        <source media="(max-width: 480px)" srcset="/products/banner/mobile/<%= banners[2].image %>">
+                                        <img src="/public/userAssets/assets/images/banners/3cols/banner-1.jpg" alt="Image Desc">
+                                    </picture>
+                                </figure><!-- End .slide-image -->
+
+                                <div class="intro-content">
+                                    <h3 class="intro-subtitle">Fashion Meets Function</h3><!-- End .h3 intro-subtitle -->
+                                    <h1 class="intro-title">Explore Clearer <br>Views</h1><!-- End .intro-title -->
                                     
-                                        <h2>Fall - Winter Collections 2030</h2>
-                                    
-                                    
-                                    <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
-                                    <!-- <div class="hero__social">
-                                        <a href="#"><i class="fa fa-facebook"></i></a>
-                                        <a href="#"><i class="fa fa-twitter"></i></a>
-                                        <a href="#"><i class="fa fa-pinterest"></i></a>
-                                        <a href="#"><i class="fa fa-instagram"></i></a>
-                                    </div> -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <% }) %>
-            
-        </div>
-    </section>
 
-  <div class="banner-group">
-      <div class="container">
-          <div class="row">
-              <div class="col-lg-8">
-                  <div class="row">
-                      <div class="col-sm-6">
-                          <div class="banner banner-overlay">
-                              <a href="#">
-                                  <img src="/public/userAssets/assets/images/demos/demo-10/banners/banner-1.jpg" alt="Banner">
-                              </a>
+                                    <a href="/shop" class="btn btn-outline-white">
+                                        <span>SHOP NOW</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </a>
+                                </div><!-- End .intro-content -->
+                            </div><!-- End .intro-slide -->
+                        </div><!-- End .intro-slider owl-carousel owl-simple -->
+                        <%}%>
+                        
+                            <span class="slider-loader"></span><!-- End .slider-loader -->
+                        
+                    </div><!-- End .intro-slider-container -->
+                </div><!-- End .col-lg-8 -->
+                
+                <div class="col-lg-4">
+                    <div class="intro-banners">
+                        <div class="row row-sm">
+                            <div class="col-md-6 col-lg-12">
+                                <div class="banner banner-display">
+                                    <a href="/shop">
+                                        <img src="/public/userAssets/assets/images/banners/banner-1.jpg" alt="Banner">
+                                    </a>
 
-                              <div class="banner-content banner-content-right">
-                                  <h4 class="banner-subtitle"><a href="#">New Arrivals</a></h4><!-- End .banner-subtitle -->
-                                  <h3 class="banner-title text-white"><a href="#">Sneakers & <br>Athletic Shoes</a></h3><!-- End .banner-title -->
-                                  <a href="#" class="btn btn-outline-white banner-link btn-round">Discover Now</a>
-                              </div><!-- End .banner-content -->
-                          </div><!-- End .banner -->
-                      </div><!-- End .col-sm-6 -->
+                                    <div class="banner-content">
+                                        <h4 class="banner-subtitle text-darkwhite"><a href="#">Clearence</a></h4><!-- End .banner-subtitle -->
+                                        <h3 class="banner-title text-white"><a href="#">Specs & Style<br>Up to 40% off</a></h3><!-- End .banner-title -->
+                                        <a href="#" class="btn btn-outline-white banner-link">Shop Now<i class="icon-long-arrow-right"></i></a>
+                                    </div><!-- End .banner-content -->
+                                </div><!-- End .banner -->
+                            </div><!-- End .col-md-6 col-lg-12 -->
 
-                      <div class="col-sm-6">
-                          <div class="banner banner-overlay banner-overlay-light">
-                              <a href="#">
-                                  <img src="/public/userAssets/assets/images/demos/demo-10/banners/banner-2.jpg" alt="Banner">
-                              </a>
+                            <div class="col-md-6 col-lg-12">
+                                <div class="banner banner-display mb-0">
+                                    <a href="/shop">
+                                        <img src="/public/userAssets/assets/images/banners/banner-1.jpg" alt="Banner">
+                                    </a>
 
-                              <div class="banner-content">
-                                  <h4 class="banner-subtitle bright-black"><a href="#">Clearance</a></h4><!-- End .banner-subtitle -->
-                                  <h3 class="banner-title"><a href="#">Sandals</a></h3><!-- End .banner-title -->
-                                  <div class="banner-text"><a href="#">up to 70% off</a></div><!-- End .banner-text -->
-                                  <a href="#" class="btn btn-outline-gray banner-link btn-round">Shop Now</a>
-                              </div><!-- End .banner-content -->
-                          </div><!-- End .banner -->
-                      </div><!-- End .col-sm-6 -->
-                  </div><!-- End .row -->
+                                    <div class="banner-content">
+                                        <h4 class="banner-subtitle text-darkwhite"><a href="#">New in</a></h4><!-- End .banner-subtitle -->
+                                        <h3 class="banner-title text-white"><a href="#">Visionary Eyewear <br>Collection</a></h3><!-- End .banner-title -->
+                                        <a href="/shop" class="btn btn-outline-white banner-link">Discover Now<i class="icon-long-arrow-right"></i></a>
+                                    </div><!-- End .banner-content -->
+                                </div><!-- End .banner -->
+                            </div><!-- End .col-md-6 col-lg-12 -->
+                        </div><!-- End .row row-sm -->
+                    </div><!-- End .intro-banners -->
+                </div><!-- End .col-lg-4 -->
+            </div><!-- End .row -->
 
-                  <div class="banner banner-large banner-overlay d-none d-sm-block">
-                      <a href="#">
-                          <img src="/public/userAssets/assets/images/demos/demo-10/banners/banner-3.jpg" alt="Banner">
-                      </a>
+            <div class="mb-6"></div><!-- End .mb-6 -->
 
-                      <div class="banner-content">
-                          <h4 class="banner-subtitle text-white"><a href="#">On Sale</a></h4><!-- End .banner-subtitle -->
-                          <h3 class="banner-title text-white"><a href="#">Slip-On Loafers</a></h3><!-- End .banner-title -->
-                          <div class="banner-text text-white"><a href="#">up to 30% off</a></div><!-- End .banner-text -->
-                          <a href="#" class="btn btn-outline-white banner-link btn-round">Shop Now</a>
-                      </div><!-- End .banner-content -->
-                  </div><!-- End .banner -->
-              </div><!-- End .col-lg-8 -->
+            <div class="owl-carousel owl-simple" data-toggle="owl" 
+                data-owl-options='{
+                    "nav": false, 
+                    "dots": false,
+                    "margin": 30,
+                    "loop": false,
+                    "responsive": {
+                        "0": {
+                            "items":2
+                        },
+                        "420": {
+                            "items":3
+                        },
+                        "600": {
+                            "items":4
+                        },
+                        "900": {
+                            "items":5
+                        },
+                        "1024": {
+                            "items":6
+                        }
+                    }
+                }'>
+                <a href="#" class="brand">
+                    <img src="/public/userAssets/assets/images/brands/nike-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
+                </a>
 
-              <div class="col-lg-4 d-sm-none d-lg-block">
-                  <div class="banner banner-middle banner-overlay">
-                      <a href="#">
-                          <img src="/public/userAssets/assets/images/demos/demo-10/banners/banner-4.jpg" alt="Banner">
-                      </a>
+                <a href="#" class="brand">
+                    <img src="/public/userAssets/assets/images/brands/nb-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
+                </a>
 
-                      <div class="banner-content banner-content-bottom">
-                          <h4 class="banner-subtitle text-white"><a href="#">On Sale</a></h4><!-- End .banner-subtitle -->
-                          <h3 class="banner-title text-white"><a href="#">Amazing <br>Lace Up Boots</a></h3><!-- End .banner-title -->
-                          <div class="banner-text text-white"><a href="#">from $39.00</a></div><!-- End .banner-text -->
-                          <a href="#" class="btn btn-outline-white banner-link btn-round">Discover Now</a>
-                      </div><!-- End .banner-content -->
-                  </div><!-- End .banner -->
-              </div><!-- End .col-lg-4 -->
-          </div><!-- End .row -->
-      </div><!-- End .container -->
-  </div><!-- End .banner-group -->
+                <a href="#" class="brand">
+                    <img src="/public/userAssets/assets/images/brands/jordan-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
+                </a>
+
+                <a href="#" class="brand">
+                    <img src="/public/userAssets/assets/images/brands/convers-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
+                </a>
+
+                <a href="#" class="brand">
+                    <img src="/public/userAssets/assets/images/brands/puma-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
+                </a>
+
+                <a href="#" class="brand">
+                    <img src="/public/userAssets/assets/images/brands/adidas-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
+                </a>
+            </div><!-- End .owl-carousel -->
+        </div><!-- End .container -->
+    </div><!-- End .bg-lighter -->
+
+ 
 
   <div class="icon-boxes-container icon-boxes-separator bg-transparent">
       <div class="container">
@@ -162,9 +238,9 @@
   <% let womenCount = 0; %>
   
   <% products.forEach(product => { %>
-    <% if (product.gender === "Men's") { %>
+    <% if (product.gender === "Male") { %>
       <% menCount++; %>
-    <% } else if (product.gender === "Women's") { %>
+    <% } else if (product.gender === "Women") { %>
       <% womenCount++; %>
     <% } %>
   <% }); %>
@@ -182,7 +258,7 @@
                   <div class="banner-content banner-content-overlay text-center">
                       <h3 class="banner-title font-weight-normal">Men's</h3><!-- End .banner-title -->
                       <h4 class="banner-subtitle"><%= menCount %> Products</h4><!-- End .banner-subtitle -->
-                      <a href="category.html" class="banner-link">SHOP NOW</a>
+                      <a href="/shop?category=&gender=Male&brand=&minPrice=&maxPrice=" class="banner-link">SHOP NOW</a>
                   </div><!-- End .banner-content -->
               </div><!-- End .banner -->
           </div><!-- End .col-md-4 -->
@@ -196,7 +272,7 @@
                   <div class="banner-content banner-content-overlay text-center">
                       <h3 class="banner-title font-weight-normal">Women's</h3><!-- End .banner-title -->
                       <h4 class="banner-subtitle"><%= womenCount %> Products</h4><!-- End .banner-subtitle -->
-                      <a href="category.html" class="banner-link">SHOP NOW</a>
+                      <a href="/shop?category=&gender=Women&brand=&minPrice=&maxPrice=" class="banner-link">SHOP NOW</a>
                   </div><!-- End .banner-content -->
               </div><!-- End .banner -->
           </div><!-- End .col-md-4 -->
