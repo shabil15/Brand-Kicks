@@ -148,14 +148,14 @@ const showverifyOTPPage = async (req, res) => {
   }
 };
 
-//==================code for inserting the User Data==================================================================>
+//==================code for inserting the User Data to session ==================================================================>
 
 const insertUser = async (req, res) => {
   try {
     // Generate OTP
     const otpCode = generateOTP();
     const otpcurTime = Date.now() / 1000;
-    const otpExpiry = otpcurTime + 180;
+    const otpExpiry = otpcurTime + 60;
 
     const userCheck = await User.findOne({ email: req.body.email });
     if (userCheck) {
@@ -219,6 +219,7 @@ const verifyOTP = async (req, res) => {
         email: req.session.email,
         mobile: req.session.mobile,
         password: req.session.password,
+        referralCode: req.session.referralCode,
         isVerified: 1,
       });
 
@@ -241,15 +242,15 @@ const verifyOTP = async (req, res) => {
 
         result.wallet += reward;
         result.walletHistory.push({
-          transactionAmount: new Date(),
-          transactionDate: reward,
+          transactionDate: new Date(),
+          transactionAmount: reward,
           transactionDetails:'Referal Reward',
           transactionType:'Credit',
         })
         await result.save();
       }
       
-      res.redirect("/login");
+      res.render('login',{message:"User Created Successfully,Plese Sign In"});
     } else {
       res.render("otpPage", { message: "invalid OTP" });
     }
@@ -472,7 +473,7 @@ const profilePageLoad = async (req, res) => {
     const userData = await takeUserData(req.session.user_id);
     const address = await Address.findOne({ userId: req.session.user_id });
     const coupons = await Coupon.find();
-    console.log(coupons);
+    
     if (address) {
       res.render(
         "profile",
@@ -988,6 +989,56 @@ const submitReview = async (req,res) => {
   }
 }
 
+//===========================edit review =====================================================================//
+
+const editReview = async (req,res)=> {
+  try {
+    console.log("Start of edit Review");
+
+    const {reviewId,productId,rating,comment,userId} = req.body;
+    console.log("dvar:",{reviewId,productId,rating,comment,userId} );
+
+
+    if(rating<1 || rating >5 ){
+      return res.json({success:false,message:'Invalid rating, Please select a valid rating'})
+    }
+
+    console.log("findign proid");
+
+    const product = await Product.findById(productId);
+
+    if(!product) {
+      res.json({success:false,message:'Product Not found'})
+    }
+
+    const user = await User.findById(userId);
+
+    if(!user) {
+      console.log("User Not found ");
+      return res.json({success:false,message:'User Not found, Please login'})
+
+    } 
+
+    const existingReviewIndex = product.reviews.findIndex(review=> review._id.toString()=== reviewId);
+
+    if(existingReviewIndex=== -1) {
+      return res.json({success:false,message:'Review Not Found'});
+    }
+
+    const existingReview = product.reviews[existingReviewIndex];
+    existingReview.rating = rating;
+    existingReview.comment = comment;
+    existingReview.date= new Date();
+
+    await product.save()
+
+    res.json({success:true,message: 'Review edited succesfully'})
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 //============================== to export the modules ==========================================================//
 
 module.exports = {
@@ -1019,5 +1070,6 @@ module.exports = {
   updateUserData,
   changePassword,
   getProductStock,
-  submitReview
+  submitReview,
+  editReview
 };

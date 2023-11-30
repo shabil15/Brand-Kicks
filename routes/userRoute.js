@@ -32,6 +32,7 @@ user_route.use(cartCount)
 
 
 user_route.get('/signup',userController.loadRegister)
+
 user_route.post('/signup',userController.insertUser)
 
 
@@ -70,6 +71,8 @@ user_route.get('/product',productController.productPageLoad);
 user_route.get('/shop',productController.queryFilter);
 
 user_route.post ('/submitReview',userController.submitReview);
+
+user_route.post('/edit-review',userController.editReview)
 
 
 //========================profile related===============================//

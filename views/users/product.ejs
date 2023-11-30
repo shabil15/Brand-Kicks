@@ -1,360 +1,717 @@
-<%- include('../layouts/user/header.ejs') -%>   
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-design-icons@3.0.1/iconfont/material-icons.css">
+<%- include('../layouts/user/header.ejs') -%>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/material-design-icons@3.0.1/iconfont/material-icons.css"
+/>
 <style>
-.fs-18 {
+  .fs-18 {
     font-size: 18px;
-}
+  }
 
-.pointer {
+  .pointer {
     cursor: pointer;
-}
+  }
 
-.wrap-rating {
+  .wrap-rating {
     display: flex;
     align-items: center;
-}
+  }
 
-.item-rating {
+  .item-rating {
     font-size: 24px;
     color: #ffdc18;
-}
+  }
 </style>
-
 
 <main class="main">
   <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
-      <div class="container d-flex align-items-center">
-          <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/">Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Products</a></li>
-          </ol>
-
-      </div><!-- End .container -->
-  </nav><!-- End .breadcrumb-nav -->
+    <div class="container d-flex align-items-center">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Products</a></li>
+      </ol>
+    </div>
+    <!-- End .container -->
+  </nav>
+  <!-- End .breadcrumb-nav -->
 
   <div class="page-content">
-      <div class="container">
-          <div class="product-details-top">
+    <div class="container">
+      <div class="product-details-top">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="product-gallery product-gallery-vertical">
               <div class="row">
-                  <div class="col-md-6">
-                      <div class="product-gallery product-gallery-vertical">
-                          <div class="row">
-                              <figure class="product-main-image">
-                                  <img id="product-zoom"
-                                      src="/public/products/images/<%= product.images.image1 %>"
-                                      data-zoom-image="/public/products/images/<%= product.images.image1 %>"
-                                      alt="product image">
+                <figure class="product-main-image">
+                  <img
+                    id="product-zoom"
+                    src="/public/products/images/<%= product.images.image1 %>"
+                    data-zoom-image="/public/products/images/<%= product.images.image1 %>"
+                    alt="product image"
+                  />
 
-                                  <!-- <a href="#" id="btn-product-gallery" class="btn-product-gallery">
+                  <!-- <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                               <i class="icon-arrows"></i>
                           </a> -->
-                              </figure><!-- End .product-main-image -->
+                </figure>
+                <!-- End .product-main-image -->
 
-                              <div id="product-zoom-gallery" class="product-image-gallery">
-                                  <a class="product-gallery-item active" href="#"
-                                      data-image="/public/products/images/<%= product.images.image1 %>"
-                                      data-zoom-image="/public/products/images/<%= product.images.image1 %>">
-                                      <img src="/public/products/images/<%= product.images.image1 %>"
-                                          alt="product side">
-                                  </a>
+                <div id="product-zoom-gallery" class="product-image-gallery">
+                  <a
+                    class="product-gallery-item active"
+                    href="#"
+                    data-image="/public/products/images/<%= product.images.image1 %>"
+                    data-zoom-image="/public/products/images/<%= product.images.image1 %>"
+                  >
+                    <img
+                      src="/public/products/images/<%= product.images.image1 %>"
+                      alt="product side"
+                    />
+                  </a>
 
-                                  <a class="product-gallery-item" href="#"
-                                      data-image="/public/products/images/<%= product.images.image2 %>"
-                                      data-zoom-image="/public/products/images/<%= product.images.image2 %>">
-                                      <img src="/public/products/images/<%= product.images.image2 %>"
-                                          alt="product cross">
-                                  </a>
+                  <a
+                    class="product-gallery-item"
+                    href="#"
+                    data-image="/public/products/images/<%= product.images.image2 %>"
+                    data-zoom-image="/public/products/images/<%= product.images.image2 %>"
+                  >
+                    <img
+                      src="/public/products/images/<%= product.images.image2 %>"
+                      alt="product cross"
+                    />
+                  </a>
 
-                                  <a class="product-gallery-item" href="#"
-                                      data-image="/public/products/images/<%= product.images.image3 %>"
-                                      data-zoom-image="/public/products/images/<%= product.images.image3 %>">
-                                      <img src="/public/products/images/<%= product.images.image3 %>"
-                                          alt="product with model">
-                                  </a>
+                  <a
+                    class="product-gallery-item"
+                    href="#"
+                    data-image="/public/products/images/<%= product.images.image3 %>"
+                    data-zoom-image="/public/products/images/<%= product.images.image3 %>"
+                  >
+                    <img
+                      src="/public/products/images/<%= product.images.image3 %>"
+                      alt="product with model"
+                    />
+                  </a>
 
-                                  <a class="product-gallery-item" href="#"
-                                      data-image="/public/products/images/<%= product.images.image4 %>"
-                                      data-zoom-image="/public/products/images/<%= product.images.image4 %>">
-                                      <img src="/public/products/images/<%= product.images.image4 %>"
-                                          alt="product back">
-                                  </a>
-                              </div><!-- End .product-image-gallery -->
-                          </div><!-- End .row -->
-                      </div><!-- End .product-gallery -->
-                  </div><!-- End .col-md-6 -->
+                  <a
+                    class="product-gallery-item"
+                    href="#"
+                    data-image="/public/products/images/<%= product.images.image4 %>"
+                    data-zoom-image="/public/products/images/<%= product.images.image4 %>"
+                  >
+                    <img
+                      src="/public/products/images/<%= product.images.image4 %>"
+                      alt="product back"
+                    />
+                  </a>
+                </div>
+                <!-- End .product-image-gallery -->
+              </div>
+              <!-- End .row -->
+            </div>
+            <!-- End .product-gallery -->
+          </div>
+          <!-- End .col-md-6 -->
 
-                  <div class="col-md-6">
-                      <div class="product-details">
-                          <h1 class="product-title">
-                              <%= product.product_name %>
-                          </h1><!-- End .product-title -->
+          <div class="col-md-6">
+            <div class="product-details">
+              <h1 class="product-title"><%= product.product_name %></h1>
+              <!-- End .product-title -->
 
-                          <div class="ratings-container">
-                              <div class="ratings">
-                                  <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
-                              </div><!-- End .ratings -->
-                              <a class="ratings-text" href="#product-review-link" id="review-link"></a>
-                          </div><!-- End .rating-container -->
+              <div class="ratings-container">
+                <div class="ratings">
+                  <div class="ratings-val" style="width: 80%"></div>
+                  <!-- End .ratings-val -->
+                </div>
+                <!-- End .ratings -->
+                <a
+                  class="ratings-text"
+                  href="#product-review-link"
+                  id="review-link"
+                ></a>
+              </div>
+              <!-- End .rating-container -->
 
-                          <div class="product-price">
-                              ₹<%= product.product_price%>
-                          </div><!-- End .product-price -->
+              <div class="product-price">₹<%= product.product_price%></div>
+              <!-- End .product-price -->
 
-                          <div class="product-content">
-                              <p>
-                                  <%= product.product_description%>
-                              </p>
-                          </div><!-- End .product-content -->
+              <div class="product-content">
+                <p><%= product.product_description%></p>
+              </div>
+              <!-- End .product-content -->
 
-                          <div class="details-filter-row details-row-size">
-                              <span>Category : <b>
-                                      <%= product.category %> 
-                                  </b></span>
-                               
-                              <div class="product-nav product-nav-thumbs">
-                                  <p></p>
-                                  
-                                
-                              </div><!-- End .product-nav -->
-                              
-                          </div><!-- End .details-filter-row -->
-                          <% if (product.stock < 10 && product.stock>1) { %>
-                            <p class="mb-2 text-danger">Only <%= product.stock %> pieces left</p>
-                        <% } %> 
-                        
+              <div class="details-filter-row details-row-size">
+                <span>Category : <b> <%= product.category %> </b></span>
 
+                <div class="product-nav product-nav-thumbs">
+                  <p></p>
+                </div>
+                <!-- End .product-nav -->
+              </div>
+              <!-- End .details-filter-row -->
+              <% if (product.stock < 10 && product.stock>1) { %>
+              <p class="mb-2 text-danger">
+                Only <%= product.stock %> pieces left
+              </p>
+              <% } %>
 
+              <div class="product-details-action">
+                <% if (product.stock===0) { %>
 
-                          <div class="product-details-action">
-                            <% if (product.stock===0) { %>
-                                
-                                <button disabled class="btn-product btn-cart">
-                                    <span>Out of Stock</span>
-                                </button>
-                            <% } else { %>
-                                <button onclick="addCart('<%= product._id %>','<%= user %>')" class="btn-product btn-cart">
-                                    <span>Add to Cart</span>
-                                </button>
-                            <% } %>
-                              <div class="details-action-wrapper">
-                                  <a href="#" class="btn-product btn-wishlist" onclick="addtoWishList('<%= product._id %>','<%= user %>')" title="Wishlist"><span>Add to
-                                          Wishlist</span></a>
-                              </div><!-- End .details-action-wrapper -->
-                          </div><!-- End .product-details-action -->
+                <button disabled class="btn-product btn-cart">
+                  <span>Out of Stock</span>
+                </button>
+                <% } else { %>
+                <button
+                  onclick="addCart('<%= product._id %>','<%= user %>')"
+                  class="btn-product btn-cart"
+                >
+                  <span>Add to Cart</span>
+                </button>
+                <% } %>
+                <div class="details-action-wrapper">
+                  <a
+                    href="#"
+                    class="btn-product btn-wishlist"
+                    onclick="addtoWishList('<%= product._id %>','<%= user %>')"
+                    title="Wishlist"
+                    ><span>Add to Wishlist</span></a
+                  >
+                </div>
+                <!-- End .details-action-wrapper -->
+              </div>
+              <!-- End .product-details-action -->
 
-                          <div class="product-details-footer">
-                              <div class="product-cat">
-                                  <span>Gender:</span>
-                                  <a><%= product.gender %></a>
-                              </div><!-- End .product-cat -->
+              <div class="product-details-footer">
+                <div class="product-cat">
+                  <span>Gender:</span>
+                  <a><%= product.gender %></a>
+                </div>
+                <!-- End .product-cat -->
 
-                              <div class="social-icons social-icons-sm">
-                                  <span class="social-label">Share:</span>
-                                  <a href="#" class="social-icon" title="Facebook" target="_blank"><i
-                                          class="icon-facebook-f"></i></a>
-                                  <a href="#" class="social-icon" title="Twitter" target="_blank"><i
-                                          class="icon-twitter"></i></a>
-                                  <a href="#" class="social-icon" title="Instagram" target="_blank"><i
-                                          class="icon-instagram"></i></a>
-                                  <a href="#" class="social-icon" title="Pinterest" target="_blank"><i
-                                          class="icon-pinterest"></i></a>
-                              </div>
-                          </div><!-- End .product-details-footer -->
-                      </div><!-- End .product-details -->
-                  </div><!-- End .col-md-6 -->
-              </div><!-- End .row -->
-          </div><!-- End .product-details-top -->
-
-
-          <div class="product-details-tab">
-            <ul class="nav nav-pills justify-content-center" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="product-desc-link" data-toggle="tab" href="#product-desc-tab" role="tab" aria-controls="product-desc-tab" aria-selected="true">Description</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="product-shipping-link" data-toggle="tab" href="#product-shipping-tab" role="tab" aria-controls="product-shipping-tab" aria-selected="false">Shipping & Returns</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="product-review-link" data-toggle="tab" href="#product-review-tab" role="tab" aria-controls="product-review-tab" aria-selected="false">Reviews (<%=reviews.length%>)</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-            <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel" aria-labelledby="product-desc-link">
-                <div class="product-desc-content">
-                    <h3>Product Information</h3>
-                    <p><%= product.product_description%></p>
-                    
-
-                    
-                </div><!-- End .product-desc-content -->
-            </div><!-- .End .tab-pane -->
-            
-            <div class="tab-pane fade" id="product-shipping-tab" role="tabpanel" aria-labelledby="product-shipping-link">
-                <div class="product-desc-content">
-                    <h3>Delivery & returns</h3>
-                    <p>We deliver to over 100 countries around the world. For full details of the delivery options we offer, please view our <a href="#">Delivery information</a><br>
-                    We hope you’ll love every purchase, but if you ever need to return an item you can do so within a month of receipt. For full details of how to make a return, please view our <a href="#">Returns information</a></p>
-                </div><!-- End .product-desc-content -->
-            </div><!-- .End .tab-pane -->
-
-
-                <div class="tab-pane fade" id="product-review-tab" role="tabpanel" aria-labelledby="product-review-link">
-                    <div class="reviews">
-                        <h3>Reviews (<%=reviews.length%>)</h3>
-                        
-
-                        <% if (reviews.length > 0) { %>
-                            <% for (let i = 0; i < reviews.length; i++) { %>
-                                <div class="review">
-                                    <div class="row no-gutters">
-                                        <div class="col-auto">
-                                            <h4><a href="#"><%= reviews[i].user.firstName %> <%= reviews[i].user.secondName %></a></h4>
-                                            <div class="ratings-container">
-                                                <div class="ratings">
-                                                    <div class="ratings-val" style="width: <%= reviews[i].rating %>820% "></div>
-                                                </div>
-                                            </div>
-                                            <span class="review-date"></span>
-                                        </div>
-                                        <div class="col">
-                                            
-                                            <div class="review-content">
-                                                <p><%= reviews[i].comment %></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div><!-- End .review -->
-                            <% } %>
-                        <% } else { %>
-                            <p>No reviews available.</p>
-                        <% } %>
-                            <% if (user) {%>
-                        <form class="w-full" id="reviewForm">
-                            <h5 class="mtext-108 cl2 p-b-7">
-                                Add a review
-                            </h5>
-                            <input type="hidden" id="productId" name="productId" value="<%= product._id %>">
-                            <input type="hidden" id="userId" name="userId" value="<%= user %>">
-                            <p class="stext-102 cl6">
-                                Your email address will not be published. Required fields are marked *
-                            </p>
-                                <div class="flex-w flex-m pt-3 pb-23">
-                                    <span class="stext-102 cl3 mr1">
-                                        Your Rating
-                                    </span>
-                                    
-                                    <span class="wrap-rating fs-18 cl11 pointer" id="starRating" >
-                                        <i class="item-rating pointer far fa-star"></i>
-                                        <i class="item-rating pointer far fa-star"></i>
-                                        <i class="item-rating pointer far fa-star"></i>
-                                        <i class="item-rating pointer far fa-star"></i>
-                                        <i class="item-rating pointer far fa-star"></i>
-                                        <input style="display: none;" type="number" name="rating">
-                                    </span>
-                            </div>
-
-                            <div class="row p-b-25">
-                                <div class="col-12 p-b-5">
-                                    <label class="stext-102 cl3" for="review">Your review</label>
-                                    <textarea class="form-control" id="review" name="review"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <button class="btn btn-outline-dark">
-                                    Submit
-                                </button>
-                            </div>
-                        </form>
-                        <% } else { %>
-                             <a href="/login">Login For adding Reviews</a>
-
-                            <% } %>
-   
-
-                    </div><!-- End .reviews -->
-                </div><!-- .End .tab-pane -->
-            </div><!-- End .tab-content -->
-        </div><!-- End .product-details-tab -->
+                <div class="social-icons social-icons-sm">
+                  <span class="social-label">Share:</span>
+                  <a
+                    href="#"
+                    class="social-icon"
+                    title="Facebook"
+                    target="_blank"
+                    ><i class="icon-facebook-f"></i
+                  ></a>
+                  <a
+                    href="#"
+                    class="social-icon"
+                    title="Twitter"
+                    target="_blank"
+                    ><i class="icon-twitter"></i
+                  ></a>
+                  <a
+                    href="#"
+                    class="social-icon"
+                    title="Instagram"
+                    target="_blank"
+                    ><i class="icon-instagram"></i
+                  ></a>
+                  <a
+                    href="#"
+                    class="social-icon"
+                    title="Pinterest"
+                    target="_blank"
+                    ><i class="icon-pinterest"></i
+                  ></a>
+                </div>
+              </div>
+              <!-- End .product-details-footer -->
+            </div>
+            <!-- End .product-details -->
+          </div>
+          <!-- End .col-md-6 -->
+        </div>
+        <!-- End .row -->
       </div>
-      
+      <!-- End .product-details-top -->
+
+      <div class="product-details-tab">
+        <ul class="nav nav-pills justify-content-center" role="tablist">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              id="product-desc-link"
+              data-toggle="tab"
+              href="#product-desc-tab"
+              role="tab"
+              aria-controls="product-desc-tab"
+              aria-selected="true"
+              >Description</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="product-shipping-link"
+              data-toggle="tab"
+              href="#product-shipping-tab"
+              role="tab"
+              aria-controls="product-shipping-tab"
+              aria-selected="false"
+              >Shipping & Returns</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="product-review-link"
+              data-toggle="tab"
+              href="#product-review-tab"
+              role="tab"
+              aria-controls="product-review-tab"
+              aria-selected="false"
+              >Reviews (<%=reviews.length%>)</a
+            >
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div
+            class="tab-pane fade show active"
+            id="product-desc-tab"
+            role="tabpanel"
+            aria-labelledby="product-desc-link"
+          >
+            <div class="product-desc-content">
+              <h3>Product Information</h3>
+              <p><%= product.product_description%></p>
+            </div>
+            <!-- End .product-desc-content -->
+          </div>
+          <!-- .End .tab-pane -->
+
+          <div
+            class="tab-pane fade"
+            id="product-shipping-tab"
+            role="tabpanel"
+            aria-labelledby="product-shipping-link"
+          >
+            <div class="product-desc-content">
+              <h3>Delivery & returns</h3>
+              <p>
+                We deliver to over 100 countries around the world. For full
+                details of the delivery options we offer, please view our
+                <a href="#">Delivery information</a><br />
+                We hope you’ll love every purchase, but if you ever need to
+                return an item you can do so within a month of receipt. For full
+                details of how to make a return, please view our
+                <a href="#">Returns information</a>
+              </p>
+            </div>
+            <!-- End .product-desc-content -->
+          </div>
+          <!-- .End .tab-pane -->
+
+          <div
+            class="tab-pane fade"
+            id="product-review-tab"
+            role="tabpanel"
+            aria-labelledby="product-review-link"
+          >
+            <div class="reviews">
+              <h3>Reviews (<%=reviews.length%>)</h3>
+              <%if(user){%> <% if (userReviews && userReviews.length > 0) { %>
+              <div class="tab01">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item p-b-10">
+                    <a
+                      class="nav-link"
+                      data-toggle="tab1"
+                      href="#reviews"
+                      role="tab"
+                    >
+                      My Review
+                    </a>
+                  </li>
+                </ul>
+
+                <ul>
+                  <% userReviews.forEach(userReview => { %>
+                  <li>
+                    <div class="flex-w flex-t p-b-68">
+                      <div class="size-207">
+                        <div class="flex-w flex-sb-m p-b-17">
+                          <!-- Display user name -->
+                          <!-- <span class="mtext-107 cl2 p-r-20">
+                                                <%= userReview.user.firstName %>&nbsp;<%= userReview.user.secondName %>
+                                            </span> -->
+
+                          <!-- Display star rating -->
+                          <div class="ratings">
+                            <div
+                              class="ratings-val"
+                              style="width: <%= userReview.rating %>820%"
+                            ></div>
+                          </div>
+                        </div>
+
+                        <!-- Display review text -->
+                        <p class="stext-102 cl6"><%= userReview.comment %></p>
+                      </div>
+                      <a
+                        href="javascript:void(0);"
+                        class="edit-link"
+                        onclick="openEditReviewModal('<%= userReview._id %>', '<%= userReview.rating %>', '<%= userReview.comment %>')"
+                        >Edit</a
+                      >
+                    </div>
+                  </li>
+                  <% }) %>
+                </ul>
+              </div>
+              <% } else { %>
+              <p>No reviews submitted by you Add a Review.</p>
+              <hr />
+              <form class="w-full" id="reviewForm">
+                <h5 class="mtext-108 cl2 p-b-7">Add a review</h5>
+                <input
+                  type="hidden"
+                  id="productId"
+                  name="productId"
+                  value="<%= product._id %>"
+                />
+                <input
+                  type="hidden"
+                  id="userId"
+                  name="userId"
+                  value="<%= user %>"
+                />
+                <p class="stext-102 cl6">
+                  Your email address will not be published. Required fields are
+                  marked *
+                </p>
+                <div class="flex-w flex-m pt-3 pb-23">
+                  <span class="stext-102 cl3 mr1"> Your Rating </span>
+
+                  <span class="wrap-rating fs-18 cl11 pointer" id="starRating">
+                    <i class="item-rating pointer far fa-star"></i>
+                    <i class="item-rating pointer far fa-star"></i>
+                    <i class="item-rating pointer far fa-star"></i>
+                    <i class="item-rating pointer far fa-star"></i>
+                    <i class="item-rating pointer far fa-star"></i>
+                    <input style="display: none" type="number" name="rating" />
+                  </span>
+                </div>
+
+                <div class="row p-b-25">
+                  <div class="col-12 p-b-5">
+                    <label class="stext-102 cl3" for="review"
+                      >Your review</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="review"
+                      name="review"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <button class="btn btn-outline-dark">Submit</button>
+                </div>
+              </form>
+              <% } %> <% } else { %>
+              <a href="/login">Login For adding Reviews</a>
+
+              <% } %>
+
+              <hr />
+
+              <h6 class="nav-link">Customer Reviews</h6>
+             
+
+              <% if (reviews.length > 0) { %> <% for (let i = 0; i <
+              reviews.length; i++) { %>
+              <div class="review">
+                <div class="row no-gutters">
+                  <div class="col-auto">
+                    <h4>
+                      <a href="#"
+                        ><%= reviews[i].user.firstName %> <%=
+                        reviews[i].user.secondName %></a
+                      >
+                    </h4>
+                    <div class="ratings-container">
+                      <div class="ratings">
+                        <div
+                          class="ratings-val"
+                          style="width:<%=reviews[i].rating* 20%>%"
+                        ></div>
+                      </div>
+                    </div>
+                    <span class="review-date"></span>
+                  </div>
+                  <div class="col">
+                    <div class="review-content">
+                      <p><%= reviews[i].comment %></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End .review -->
+              <% } %> <% } else { %>
+              <p>No reviews available.</p>
+              <% } %>
+            </div>
+            <!-- End .reviews -->
+          </div>
+          <!-- .End .tab-pane -->
+        </div>
+        <!-- End .tab-content -->
+      </div>
+      <!-- End .product-details-tab -->
     </div>
+  </div>
+  <div class="modal fade" id="editReviewModal" tabindex="-1" role="dialog" aria-labelledby="editReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content modal-content-centered">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editReviewModalLabel">Edit Review</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-5">
+                <form class="w-full" id="editReviewForm">
+                    <!-- Add hidden input fields for review ID and product ID -->
+                    <input type="hidden" id="editReviewId" name="reviewId">
+                    <input type="hidden" id="editProductId" name="productId" value="<%= product._id %>">
+                    <input type="hidden" id="editUserId" name="userId" value="<%= user %>">
+                    
+                    <!-- Rating -->
+                    <div class="flex-w flex-m p-t-5 p-b-23">
+                        <span class="stext-102 cl3 m-r-16">
+                            Your Rating
+                        </span>
+                        <span class="wrap-rating fs-18 cl11 pointer " id="starRating">
+                          <i class="item-rating pointer far fa-star"></i>
+                          <i class="item-rating pointer far fa-star"></i>
+                          <i class="item-rating pointer far fa-star"></i>
+                          <i class="item-rating pointer far fa-star"></i>
+                          <i class="item-rating pointer far fa-star"></i>
+                          <input style="display: none" type="number" name="rating" />
+                        </span>
+                        
+                            <!-- Rating stars will be dynamically generated here -->
+                        </span>
+                        <input style="display: none;" type="number" name="rating" id="editRatingInput">
+                    </div>
+
+                    <!-- Review Textarea -->
+                    <div class="row p-b-25">
+                        <div class="col-12 p-b-5">
+                            <label class="stext-102 cl3" for="editReview">Your review</label>
+                            <textarea class="form-control" id="editReview" name="editReview"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12">
+                        <button type="button" class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10 btn btn-outline-dark submit-review-button" onclick="submitEditReview()">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </main>
 <%- include('../layouts/user/footer.ejs') -%>
 
 <script>
-    // Wait for the DOM to be ready
-    $(document).ready(function () {
-        // Variable to store the selected rating
-        let selectedRating;
+  // Wait for the DOM to be ready
+  $(document).ready(function () {
+    // Variable to store the selected rating
+    let selectedRating;
 
-        // Add click event listeners to the star icons
-        $('.item-rating').click(function () {
-            // Remove existing star classes
-            $('.item-rating').removeClass('fas fa-star').addClass('far fa-star');
+    // Add click event listeners to the star icons
+    $(".item-rating").click(function () {
+      // Remove existing star classes
+      $(".item-rating").removeClass("fas fa-star").addClass("far fa-star");
 
-            // Set the value of the selected rating variable
-            selectedRating = $(this).index() + 1;
+      // Set the value of the selected rating variable
+      selectedRating = $(this).index() + 1;
 
-            // Log the selected rating to the console for debugging
-            console.log('Selected Rating: ' + selectedRating);
+      // Log the selected rating to the console for debugging
+      console.log("Selected Rating: " + selectedRating);
 
-            // Add the filled star class to the selected stars
-            $('.item-rating:lt(' + selectedRating + ')').addClass('fas fa-star');
-        });
-
-        // Add an event listener to the form submission
-        $('#reviewForm').submit(function (event) {
-            // Prevent the default form submission
-            event.preventDefault();
-
-            // Validate the rating
-            if (!selectedRating) {
-                Swal.fire('Please select a rating.');
-                return;
-            }
-
-            // Get other form data
-            const reviewText = $('#review').val();
-          
-            // Validate other fields if needed
-            const userId = $('#userId').val();
-            // Get the product ID dynamically (replace this with the actual way you retrieve the product ID)
-            const productId = $('#productId').val(); // Assuming you have an input with id "productId"
-
-            // Prepare data for submission
-            const formData = {
-                productId: productId,
-                rating: selectedRating,
-                comment: reviewText,
-                userId: userId,
-            };
-
-            // Log the form data to the console for debugging
-            console.log(formData);
-
-            // Uncomment the following line to make sure the rating is being set correctly
-            // alert('Selected Rating: ' + selectedRating);
-
-            // Send the data to the server using AJAX (Assuming you have included jQuery)
-            $.ajax({
-                type: 'POST',
-                url: '/submitReview', // Replace with your actual endpoint
-                data: formData,
-                success: function (response) {
-                    // Handle the success response
-                    if (response.success) {
-                        Swal.fire('Success', response.message, 'success');
-                    } else {
-                        Swal.fire('Error', response.message, 'error');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    // Handle the error response
-                    console.error(xhr.responseText);
-                    Swal.fire('Error', 'Internal server error', 'error');
-                },
-            });
-        });
+      // Add the filled star class to the selected stars
+      $(".item-rating:lt(" + selectedRating + ")").addClass("fas fa-star");
     });
+
+    // Add an event listener to the form submission
+    $("#reviewForm").submit(function (event) {
+      // Prevent the default form submission
+      event.preventDefault();
+
+      // Validate the rating
+      if (!selectedRating) {
+        Swal.fire("Please select a rating.");
+        return;
+      }
+
+      // Get other form data
+      const reviewText = $("#review").val();
+
+      // Validate other fields if needed
+      const userId = $("#userId").val();
+      // Get the product ID dynamically (replace this with the actual way you retrieve the product ID)
+      const productId = $("#productId").val(); // Assuming you have an input with id "productId"
+
+      // Prepare data for submission
+      const formData = {
+        productId: productId,
+        rating: selectedRating,
+        comment: reviewText,
+        userId: userId,
+      };
+
+      // Log the form data to the console for debugging
+      console.log(formData);
+
+      // Uncomment the following line to make sure the rating is being set correctly
+      // alert('Selected Rating: ' + selectedRating);
+
+      // Send the data to the server using AJAX (Assuming you have included jQuery)
+      $.ajax({
+        type: "POST",
+        url: "/submitReview", // Replace with your actual endpoint
+        data: formData,
+        success: function (response) {
+          // Handle the success response
+          if (response.success) {
+            Swal.fire("Success", response.message, "success");
+          } else {
+            Swal.fire("Error", response.message, "error");
+          }
+        },
+        error: function (xhr, status, error) {
+          // Handle the error response
+          console.error(xhr.responseText);
+          Swal.fire("Error", "Internal server error", "error");
+        },
+      });
+    });
+  });
+
+
+
+
+</script>
+
+
+<script>
+  function openEditReviewModal(reviewId, rating, comment) {
+      // Populate modal fields with existing review data
+      $('#editReviewId').val(reviewId);
+      $('#editRatingInput').val(rating);
+
+      const starsContainer = $('#editRatingStars');
+      starsContainer.html('');
+
+      for (let i = 1; i <= 5; i++) {
+          const star = $(`<i class="item-rating pointer zmdi ${i <= rating ? 'zmdi-star' : 'zmdi-star-outline'}"></i>`);
+
+          // Add a click event listener to each star
+          star.click(() => {
+              $('#editRatingInput').val(i);
+              updateStars(i, starsContainer);
+          });
+
+          starsContainer.append(star);
+      }
+
+      // Variable to store the selected rating
+    let Rating;
+
+// Add click event listeners to the star icons
+$(".item-rating").click(function () {
+  // Remove existing star classes
+  $(".item-rating").removeClass("fas fa-star").addClass("far fa-star");
+
+  // Set the value of the selected rating variable
+  Rating = $(this).index() + 1;
+
+  // Log the selected rating to the console for debugging
+  console.log("Selected Rating: " + Rating);
+
+  // Add the filled star class to the selected stars
+  $(".item-rating:lt(" + Rating + ")").addClass("fas fa-star");
+});
+
+      $('#editReview').val(comment);
+
+      $('#editReviewModal').modal('show');
+  }
+
+  function updateStars(Rating, starsContainer) {
+      starsContainer.children().each((index, starIcon) => {
+          starIcon = $(starIcon);
+          starIcon.removeClass('zmdi-star-outline zmdi-star');
+
+          if (index + 1 <= selectedRating) {
+              starIcon.addClass('zmdi-star');
+          } else {
+              starIcon.addClass('zmdi-star-outline');
+          }
+      });
+  }
+
+
+  window.submitEditReview = function () {
+    console.log("submit edit");
+    const reviewId = $('#editReviewId').val();
+    const rating = $('#editRatingInput').val();
+    const comment = $('#editReview').val();
+    const userId = $('#editUserId').val();
+    const productId = $('#editProductId').val();
+    console.log("dvar",{reviewId,productId,rating,comment,userId});
+
+    const formData = {
+        reviewId: reviewId,
+        productId: productId,
+        rating: rating,
+        comment: comment,
+        userId: userId,
+    };
+    console.log('formdate',formData);
+
+    $.ajax({
+        type: 'POST',
+        url: '/edit-review',
+        data: formData,
+        success: function (response) {
+            if (response.success) {
+                Swal.fire('Success', response.message, 'success');
+                
+                // Update the review in the DOM
+                const reviewContainer = $(`#reviews .product-reviews`);
+                const editedReview = reviewContainer.find(`[data-review-id="${reviewId}"]`);
+
+                if (editedReview.length > 0) {
+                    // Update the rating and comment in the existing review
+                    editedReview.find('.fs-18.cl11').html(generateStarIcons(rating));
+                    editedReview.find('.stext-102.cl6').html(comment);
+                }
+                
+                // Close the modal
+                $('#editReviewModal').modal('hide');
+                window.location.reload()
+            } else {
+                Swal.fire('Error', response.message, 'error');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+            Swal.fire('Error', 'Internal server error', 'error');
+        },
+    });
+};
 </script>

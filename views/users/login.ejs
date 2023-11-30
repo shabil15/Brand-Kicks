@@ -59,7 +59,7 @@
                         <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
                             <form action="/login" method="post" id="form" onsubmit="return validateForm()" novalidate>
                                 
-                                <% if (typeof message !== 'undefined') { %>
+                                <%if (typeof message !== 'undefined') { %>
                                     <p style="color: red; font-size: 19px; font-weight: 300;">
                                       <%= message %>
                                     </p>

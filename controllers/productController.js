@@ -150,10 +150,10 @@ const productPageLoad = async (req,res)=>{
   try {
     const product = await getProductDetails(req.query.id)
     // let relatedProducts = await getProductDetails({'$and':[{category:product.category},{_id:{"$ne":product._id}}]})
-
+    const userId  = req.session.user_id
     const reviews = product.reviews
 
-    const userReviews = reviews.filter(review=> review.user.user_id=== req.session.user_id)
+    const userReviews = reviews.filter(review=> review.user.userId=== userId)
     
     
     res.render('product',{
