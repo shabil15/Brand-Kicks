@@ -220,7 +220,11 @@
                                               <%= orders[i].orderDetails.trackId %>
                                           </td>
                                           <td>
+                                              <%if(orders[i].user){%>
+
                                               <%= orders[i].user.email %>
+
+                                              <%}%>
                                           </td>
                                           <td>
                                               <span style="font-weight: 100;" class="pl-2 ">

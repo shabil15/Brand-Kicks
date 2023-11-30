@@ -150,6 +150,7 @@
                 <div class="preview-list">
 
                   <%for(i=0;i<=orders.length-1;i++){%>
+                    
                   <div class="preview-item border-bottom">
                     <div class="preview-thumbnail">
                       <div class="preview-icon bg-primary">
@@ -165,10 +166,14 @@
                       </div>
                       <div class="mr-auto text-sm-right pt-2 pt-sm-0">
                         <p class="text-muted"><%= orders[i].orderDetails.orderDate %></p>
+                        <%if(orders[i].user){%>
                         <p class="text-muted mb-0"> <%= orders[i].user.firstName %> <span class="mdi mdi-account-box-outline"></span></p>
+                        <%}%>
                       </div>
                     </div>
                   </div>
+                  
+
                   <%}%>
 
 

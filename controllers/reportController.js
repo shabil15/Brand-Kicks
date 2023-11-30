@@ -192,7 +192,7 @@ const getMostSellingProducts = async () => {
 
 const getorders = async () => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().populate('userId')
 
     const productWiseOrdersArray = [];
 

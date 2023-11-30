@@ -79,7 +79,7 @@ const dashboardLoad = async (req, res) => {
 
     const paymentChart = { countOfCod,countOfOnline,countOfWallet};
 
-    const orders = await recentOrder();
+    const orders = await recentOrder()
 
     const result = await createSalesReport("year")
 
@@ -107,6 +107,7 @@ const dashboardLoad = async (req, res) => {
 const recentOrder = async () =>{
   try {
     const orders = await Order.find()
+    .populate('userId')
     .sort({ orderDate: -1 })
     .limit(10);
 
