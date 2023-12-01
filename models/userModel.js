@@ -6,11 +6,11 @@ const UserSchema = new mongoose.Schema({
  
   firstName: {
      type: String,
-     required: true 
+      
     },
   secondName: { 
     type: String,
-    required:true 
+     
     },
   email: { 
     type: String, 
@@ -18,11 +18,11 @@ const UserSchema = new mongoose.Schema({
   }, 
   mobile:{
      type: String, 
-     required: true 
+     
     },
   password: { 
     type: String, 
-    required: true 
+    
   },
   isVerified: {
     type: Boolean,

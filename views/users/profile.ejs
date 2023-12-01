@@ -705,3 +705,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
 </script>
+<script>
+    // When a tab is clicked, store its ID in session storage0.
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        const tabs = document.querySelectorAll('[data-toggle="tab"]');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener("click", function (event) {
+                const tabId = event.target.getAttribute("href");
+                sessionStorage.setItem("activeTab", tabId);
+            });
+        });
+
+        // Check if there's a previously active tab in session storage
+        const activeTab = sessionStorage.getItem("activeTab");
+
+        if (activeTab) {
+            // Show the previously active tab
+            const tab = document.querySelector(`[href="${activeTab}"]`); // Fix here
+            tab && tab.click();
+        }
+    });
+</script>

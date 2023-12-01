@@ -1,0 +1,109 @@
+<%- include('../layouts/admin/header.ejs') %>
+<% var sdate = new Date(offer.startingDate).toISOString().split('T')[0] %>
+<% var edate = new Date(offer.expiryDate).toISOString().split('T')[0] %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Edit Offer</h4>
+            <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
+
+            
+  
+            <form id="offer-form" class="forms-sample" action="/admin/editOffer" method="POST" >
+              <div class="form-group">
+                <label >Offer name</label>
+                <input type="text" class="form-control" id="offer-name" name="name" value="<%= offer.name %>" placeholder="offer name" required>
+              </div>
+              <div class="form-group">
+                <label >Starting date</label>
+                <input type="date" class="form-control" id="Starting-date" name="startingDate" value="<%= sdate %>" placeholder="Starting date" required>
+              </div>
+              <div class="form-group">
+                <label >Expiry date</label>
+                <input type="date" class="form-control" id="expiry-date" name="expiryDate" value="<%= edate %>" placeholder="Expiry date" required>
+              </div>
+
+              <div class="form-group">
+                <label >Discount</label>
+                <input type="number" class="form-control" id="percentage" name="percentage" value="<%= offer.percentage %>" placeholder="Percentage" required>
+              </div>
+              <input type="hidden" name="id" value="<%= offer._id %>" id="">
+  
+              <button type="submit" class="btn btn-primary mr-2">Submit</button>
+              <a href="/admin/offers"><button type="button" class="btn  mr-2">Cancel</button></a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+</div>
+
+<script>
+  const formOffer = document.getElementById('offer-form')
+  formOffer.addEventListener('submit', ( event ) => {
+  const errorContainer = document.getElementById('errorContainer')
+  const name = document.getElementById('offer-name').value.trim()
+  const startingDate = document.getElementById('Starting-date').value.trim()
+  const expiryDate = document.getElementById('expiry-date').value.trim()
+  const percentage= document.getElementById('percentage').value.trim()
+  errorContainer.innerHTML = ""
+  errorContainer.style.display = 'none'
+  console.log(name);
+  const now = new Date()
+  if( !name || !startingDate || !expiryDate || !percentage ) {
+    console.log(1);
+    event.preventDefault()
+    errorContainer.innerHTML = "All fields should be filled"
+    errorContainer.style.display = 'block'
+  }
+  
+  if( name.length < 5 ) {
+    console.log(2);
+    event.preventDefault()
+    errorContainer.innerHTML = "Name should contains atleast 4 letters"
+    errorContainer.style.display = 'block'
+  }
+  
+  const pattern = /^[a-zA-Z0-9]+$/
+  if( !pattern.test(name)){
+    console.log(3);
+    event.preventDefault()
+    errorContainer.innerHTML = "Name should not contains symbols or spaces"
+    errorContainer.style.display = 'block'
+  }
+  
+  if( startingDate > expiryDate || expiryDate < now  ) {
+    console.log(4);
+    event.preventDefault()
+    errorContainer.innerHTML = "Enter a valid date"
+    errorContainer.style.display = 'block'
+  }
+ 
+  
+  if(  percentage > 100 || percentage < 0 )   {
+    console.log(6);
+    event.preventDefault()
+    errorContainer.innerHTML = "Percentage cannot be greater than 100 or less than zero"
+    errorContainer.style.display = 'block'
+  }
+  console.log(7);
+  
+  
+})
+
+
+
+
+</script>
+
+
+
+
+
+<%- include('../layouts/admin/footer.ejs') %>

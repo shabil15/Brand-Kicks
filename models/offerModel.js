@@ -3,25 +3,28 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const offerSchema = Schema({
-  name: {
-    type: String,
-    required: true
+  name : {
+      type : String,
+      required : true
   },
+
   startingDate : {
-    type: Date,
-    required: true
+      type : Date,
+      required : true
   },
+
   expiryDate : {
-    type: Date,
-    required : true
+      type : Date,
+      required : true
   },
+
   percentage : {
-    type: Date,
-    required:true
+      type : Number,
+      required : true
   },
   status : {
-    type:Boolean,
-    default:true
+      type : Boolean, 
+      default : true
   }
 
 })

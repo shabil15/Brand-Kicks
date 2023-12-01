@@ -5,6 +5,7 @@ const app= express();
 const session = require("express-session");
 const config= require("./config/config");
 const flash= require('express-flash')
+const passport = require('passport');
 
 app.use(session({
   secret:config.sessionKey,
@@ -12,6 +13,10 @@ app.use(session({
   resave: false,
   saveUninitialized:true,
 }))
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.use(flash())
 

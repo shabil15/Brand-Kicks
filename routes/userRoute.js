@@ -5,7 +5,11 @@ const orderController = require('../controllers/orderController')
 const wishListController =require('../controllers/wishListController')
 const couponsController = require('../controllers/couponsController')
 const walletController = require('../controllers/walletController')
+const User = require("../models/userModel").User;
 const session = require("express-session")
+const shortid = require('shortid');
+const googleStrategy = require('passport-google-oauth20').Strategy;
+const passport =require('passport')
 
 const config = require("../config/config")
 
@@ -20,6 +24,74 @@ user_route.use(express.json())
 user_route.use(express.urlencoded({extended:true}))
 
 const userAuth =require('../middlewares/user')
+
+
+passport.use(new googleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret:process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL:"/auth/google/callback"
+},async (accessToken,refreshToken,profile,done) => {
+  console.log(accessToken);
+  console.log(refreshToken);
+  console.log(profile);
+  try {
+    const user = await User.findOne({email: profile.emails[0].value});
+    const referralCode = shortid.generate();
+    
+    console.log(profile.emails)
+    if(user) {
+      done(null,user);
+    } else {
+      const newUser = new User({
+        email: profile.emails[0].value,
+        firstName: profile.displayName,
+        isVerified:1,
+        referralCode:referralCode,
+      });
+
+      await newUser.save();
+      done(null,newUser);
+    }
+  } catch (error) {
+    done(error,false);
+  }
+}
+))
+
+passport.serializeUser((user,done) => {
+  done(null,user.id); //Searialize user's id instead of profile
+})
+
+
+passport.deserializeUser(async(id,done)=> {
+  try {
+    const user= await User.findById(id);
+    done(null,user);
+  } catch (error) {
+    done(error,false);
+  }
+})
+
+
+user_route.get('/auth/google',passport.authenticate('google',{
+  scope:["profile","email"]
+}));
+
+user_route.get('/auth/google/callback',passport.authenticate('google',{
+  failureRedirect:'/login'
+}), async function (req,res) {
+  console.log(req.user.email);
+  const userEmail = req.user.email;
+  const user = await User.findOne({email:userEmail});
+
+  if(user){
+    req.session.user_id = user._id;
+    res.redirect('/')
+  } else {
+    res.redirect('/login')
+  }
+
+})
 
 // user_route.use(session({
 //     secret:config.sessionSecret,

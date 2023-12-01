@@ -18,6 +18,7 @@ const bannerController= require('../controllers/bannersController')
 const orderController =require('../controllers/orderController')
 const couponController = require('../controllers/couponsController');
 const reportController = require('../controllers/reportController')
+const offerController = require('../controllers/offerController')
 
 //=============================== authentication ============================================//
 
@@ -85,5 +86,19 @@ admin_route.get('/coupon/delete',couponController.deleteCoupon);
 admin_route.post('/report/genarate',adminAuth.isLogin,adminController.genarateSalesReports);
 admin_route.get('/report',adminAuth.isLogin,reportController.loadSalesReport);
 admin_route.post('/sales-report/portfolio',adminAuth.isLogin,reportController.portfolioFiltering);
+
+//================== offer Related =============================================================//
+
+admin_route.get('/addOffer',adminAuth.isLogin,offerController.loadAddOffer)
+
+admin_route.post('/addOffer',adminAuth.isLogin,offerController.addOffer)
+
+admin_route.get('/offers',adminAuth.isLogin,offerController.loadOffers);
+
+admin_route.get('/editOffer/:id',adminAuth.isLogin,offerController.loadEditOffer);
+
+admin_route.post('/editOffer/',adminAuth.isLogin,offerController.editOffer)
+
+admin_route.patch('/cancelOffer',adminAuth.isLogin,offerController.cancelOffer);
 
 module.exports=admin_route
