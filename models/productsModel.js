@@ -33,6 +33,14 @@ const productSchema = mongoose.Schema({
   },
   is_listed:{
     type:Boolean,
+    default: true, 
+  },
+  offer : {
+    type : mongoose.Schema.Types.ObjectId,
+    ref : 'offer'
+  },
+  discountedPrice:{
+    type:Number
   },
   images:{
     image1:{
@@ -91,6 +99,10 @@ const categorySchema = mongoose.Schema({
   category_description:{
     type:String,
     required:true
+  },
+  offer : {
+    type : mongoose.Schema.Types.ObjectId,
+    ref : 'offer'
   },
   is_listed:{
     type:Boolean,

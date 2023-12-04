@@ -1,5 +1,7 @@
 const Category = require("../models/productsModel").category;
 const Product = require("../models/productsModel").product;
+const Offer = require('../models/offerModel')
+
 const path = require("path");
 const sharp =require("sharp");
 
@@ -29,9 +31,9 @@ const productsLoad = async (req, res) => {
 
     
 
-    let products = await Product.find({}).populate('category').skip(skip)
+    let products = await Product.find({}).populate('category').populate('offer').skip(skip)
     .limit(pageSize);
-
+    const availableOffers = await Offer.find({ status : true, expiryDate : { $gte : new Date() }})
     const totalProducts = await Product.countDocuments();
     const totalPages = Math.ceil(totalProducts/pageSize);
 
@@ -42,7 +44,8 @@ const productsLoad = async (req, res) => {
     {products:products,
     category:categories,
     currentPage:page,
-    totalPages:totalPages
+    totalPages:totalPages,
+    availableOffers:availableOffers
     }
     )
   } catch (error) {
@@ -346,18 +349,27 @@ const queryFilter = async (req,res) =>{
 
     const products = key !== ""
     ? await Product.find({
+      $and:[
+        {
       $or: [
         { product_name : {$regex:key,$options:"i"}},
         {category:{$regex:key,$options:"i"}}
       ]
-    }).skip(pageDB * productPerPage)
+    },{is_listed:true},
+  ],
+})
+    .populate('category')
+    .populate('offer')
+    .skip(pageDB * productPerPage)
     .limit(productPerPage)
     :await Product.find(query)
+    .populate('category')
+    .populate('offer')
     .skip(pageDB * productPerPage)
     .limit(productPerPage);
-    console.log(query);
+    console.log(products);
     const totalProducts = await Product.countDocuments();
-
+    
 
     res.render("shop", {
       products,
@@ -374,68 +386,77 @@ const queryFilter = async (req,res) =>{
 }
 
 
+//============================================ to apply the product Offer  ===================================================//
 
-// const queryFilter = async (req, res) => {
-//   try {
-//     const categories = await Category.find();
-//     const page = req.query.page || 1;
-//     const pageDB = Number(page) - 1;
-//     const productPerPage = 9;
-//     const key = req.query.key || "";
+const applyProductOffer = async (req,res) => {
+  try {
+    const productId = req.body.productId;
+    const offerId = req.body.offerId;
 
-//     let query = {};
+    const offer = await Offer.findOne({_id:offerId});
 
-//     // Check if there's a general search key
-//     if (key !== "") {
-//       query.$or = [
-//         { product_name: { $regex: key, $options: "i" } },
-//         { category: { $regex: key, $options: "i" } },
-//       ];
-//     } else {
-//       // Check for other filters (category, gender, price range)
-//       if (req.query.category) {
-//         const categories = req.query.category.split("%2C").map((cat) => cat.charAt(0).toUpperCase() + cat.slice(1));
-//         query.category = { $in: categories };
-//       }
+    if(!offer) {
+      return res.json({ success: false,message:'Offer not found '})
+    } 
 
-//       if (req.query.gender) {
-//         const genders = req.query.gender.split(",").map((gen) => gen.charAt(0).toUpperCase() + gen.slice(1));
-//         query.gender = { $in: genders };
-//       }
+    const product = await Product.findOne({_id:productId}).populate('category')
 
-//       if (req.query.minPrice && req.query.maxPrice) {
-//         const minPrice = parseFloat(req.query.minPrice);
-//         const maxPrice = parseFloat(req.query.maxPrice);
-//         query.price = { $gte: minPrice, $lte: maxPrice };
-//       }
-//     }
+    if(!product) {
+      return res.json({success:false,message:'Product not found'});
+    }
 
-//     // Count total matching products and calculate total pages
-//     const totalProduct = await Product.countDocuments(query);
-//     const totalPage = Math.ceil(totalProduct / productPerPage);
+    const categoryDiscount = product.category && product.category.offer
+    ? await Offer.findOne({_id:product.category.offer})
+    :0;
+    console.log('categoryDiscount',categoryDiscount);
 
-//     // Retrieve products based on the constructed query
-//     const products = key !== ""
-//       ? await Product.find(query).skip(pageDB * productPerPage).limit(productPerPage)
-//       : await Product.find(query).skip(pageDB * productPerPage).limit(productPerPage);
+    const discountPercentage = offer.percentage;
+    const originalPrice = parseFloat(product.product_price);
+    const discountedPrice = originalPrice - (originalPrice * discountPercentage)/100;
 
-//       const totalProducts = await Product.countDocuments();
-//     // Render the shop page with the filtered products
-//     res.render("shop", {
-//       products,
-//       user: req.session.user_id,
-//       totalPage,
-//       curentPage: Number(page),
-//       currentPage: 'shop',
-//       categories,
-//       totalProducts,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// };
+    if(categoryDiscount && categoryDiscount.percentage>discountPercentage) {
+      return res.json({success:false,message:'Category offer has greate Discount'})
+    }
 
+    await Product.updateOne(
+      {_id:productId},
+      {
+        $set: {
+          offer: offerId,
+          discountedPrice: discountedPrice
+        }
+      }
+    ) 
+
+    const updatedProduct = await Product.findOne({_id: productId}).populate('offer');
+    res.json({success: true,data: updatedProduct});
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+const removeProductOffer = async (req,res,next) => {
+  try {
+    const { productId } = req.body;
+    console.log(req.body);
+
+    const remove = await Product.updateOne(
+      { _id: productId },
+      {
+        $unset: {
+          offer: '',
+          discountedPrice: '',
+        },
+      }
+    );
+      console.log(remove);
+    res.json({ success: true ,data:remove });
+  } catch (error) {
+    next(error)
+  }
+}
 
 module.exports = {
   addProductLoad,
@@ -447,5 +468,7 @@ module.exports = {
   productPageLoad,
   searchProducts,
   shopPageLoad,
-  queryFilter
+  queryFilter,
+  applyProductOffer,
+  removeProductOffer
 };

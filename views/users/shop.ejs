@@ -1,4 +1,6 @@
 <%- include('../layouts/user/header.ejs') -%>
+
+
 <main class="main">
   <div class="page-header text-center" style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
     <div class="container">
@@ -39,12 +41,23 @@
                             <% for(i=0;i<products.length;i++) {%>
                               <div class="col-6 col-md-4 col-lg-4">
                                   <div class="product product-7 text-center">
-                                      <figure class="product-media">
+                                      <figure class="product-media" style="position: relative;">
                                           <a href="/product?id=<%= products[i]._id%>">
                                               <img src="/public/products/croped/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
                                               <img src="/public/products/croped/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
-                                          </a>
-  
+                                          
+                                          <%if (products[i].offer ){%>
+                                          <div class="product-lable-badge" style=" position: absolute;
+                                          top: 10px; /* Adjust top position as needed */
+                                          left: 10px; /* Adjust left position as needed */
+                                          background-color: red;
+                                          color: white;
+                                          padding: 3px;
+                                          >">
+                                            <span class="product-lable" style="font-size: 12px;"><%= products[i].offer.percentage%>% OFF</span>
+                                          </div>
+                                          <%}%>
+                                        </a>
                                           <div class="product-action-vertical">
                                               <a href="#"  style="cursor: pointer;" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
                                           </div><!-- End .product-action-vertical -->
@@ -63,9 +76,18 @@
                                         <a  rel="tag" style="font-size: 14px;"><%= products[i].category %></a>
                                         </div>
                                           <h3 class="product-title"><a><%= products[i].product_name %></a></h3><!-- End .product-title -->
+                                          <%if (products[i].offer ){%>
                                           <div class="product-price">
-                                              ₹<%= products[i].product_price %>
+                                             <del> ₹<%= products[i].product_price%>></del> 
+                                             <span class="mx-3">₹<%= Math.floor(products[i].discountedPrice) %></span>
+                                            
                                           </div><!-- End .product-price -->
+                                          <%} else {%>
+                                            <div class="product-price">
+                                                 ₹<%= products[i].product_price %>
+                                                
+                                             </div><!-- End .product-price -->
+                                          <%}%>
                                       </div><!-- End .product-body -->
                                       
                                   </div><!-- End .product -->

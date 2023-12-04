@@ -59,7 +59,7 @@ admin_route.post('/editCategory',adminAuth.isLogin,adminController.updateCategor
 admin_route.get('/banners',adminAuth.isLogin,bannerController.bannersLoad)
 admin_route.get('/addbanner',adminAuth.isLogin,bannerController.addbannersLoad)
 admin_route.post('/addbanner',adminAuth.isLogin,fileUpload.uploadBanner.single('banner'),bannerController.addBanner)
-admin_route.get('/deletebanner',adminAuth.isLogin,bannerController.deleteBanner)
+admin_route.delete('/deletebanner',adminAuth.isLogin,bannerController.deleteBanner)
 admin_route.get('/visible',adminAuth.isLogin,bannerController.visibilityBanner);
 
 
@@ -90,15 +90,14 @@ admin_route.post('/sales-report/portfolio',adminAuth.isLogin,reportController.po
 //================== offer Related =============================================================//
 
 admin_route.get('/addOffer',adminAuth.isLogin,offerController.loadAddOffer)
-
 admin_route.post('/addOffer',adminAuth.isLogin,offerController.addOffer)
-
 admin_route.get('/offers',adminAuth.isLogin,offerController.loadOffers);
-
-admin_route.get('/editOffer/:id',adminAuth.isLogin,offerController.loadEditOffer);
-
+admin_route.get('/editOffer/:id',adminAuth.isLogin,offerController.loadEditOffer)
 admin_route.post('/editOffer/',adminAuth.isLogin,offerController.editOffer)
-
 admin_route.patch('/cancelOffer',adminAuth.isLogin,offerController.cancelOffer);
+admin_route.patch('/applyOffer',adminAuth.isLogin,productController.applyProductOffer);
+admin_route.patch('/removeOffer',adminAuth.isLogin,productController.removeProductOffer);
+admin_route.patch('/applyOffer_category',adminAuth.isLogin,adminController.applyCategoryOffer);
+admin_route.patch('/removeOffer_category',adminAuth.isLogin,adminController.removeCategoryOffer);
 
 module.exports=admin_route

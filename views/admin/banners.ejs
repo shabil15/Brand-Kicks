@@ -57,12 +57,12 @@
                                             <% } %>
                                           </td>
                                           <td>
-                                              
+                                              <a href="/admin/deletebanner?<%= banners[i]._id %>">
                                               <button type="button" class="btn btn-inverse-danger"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#mod<%= banners[i]._id %>">
+                                                  >
                                                   Delete Item
                                               </button>
+                                            </a>
 
                                               <!-- Modal -->
                                               <div class="modal fade" id="mod<%= banners[i]._id %>"

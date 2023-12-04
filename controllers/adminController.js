@@ -3,6 +3,7 @@ const user = require("../models/userModel").User;
 const Category = require("../models/productsModel").category;
 const Product = require('../models/productsModel').product
 const Order = require('../models/orderModel').Order
+const Offer = require('../models/offerModel')
 const bcrypt = require("bcrypt");
 const { category } = require("../models/productsModel");
 
@@ -322,7 +323,12 @@ const getAllUserData = async (req, res) => {
 const categoryLoad = async (req, res) => {
   try {
     let categories = await getAllCategoriesData();
-    res.render("categories", { categories: categories });
+    const availableOffers = await Offer.find({ status : true, expiryDate : { $gte : new Date() }});
+    res.render("categories", {
+       categories: categories,
+       availableOffers: availableOffers
+      
+      });
   } catch (error) {
     console.log(error);
   }
@@ -333,7 +339,7 @@ const categoryLoad = async (req, res) => {
 
 const getAllCategoriesData = async (req, res) => {
   return new Promise(async (resolve, reject) => {
-    let categoryData = await Category.find({});
+    let categoryData = await Category.find({}).find().populate('offer'); 
     resolve(categoryData);
   });
 };
@@ -475,7 +481,7 @@ const takeOneUserData = async (categoryId) => {
   }
 };
 
-
+//=================================== Update Category data==============================================//
 
 const updateCategoryData = async (req, res) => {
   try {
@@ -518,6 +524,98 @@ const updateCategoryData = async (req, res) => {
   }
 };
 
+//=============================== to apply category offer================================================================//
+
+const applyCategoryOffer = async (req,res,next) => {
+  try {
+     const {offerId,categoryId} = req.body;
+     console.log("rb:",req.body);
+     
+     const categoryOffer = await Offer.findOne({_id:offerId});
+     console.log('cO',categoryOffer);
+     if(!categoryOffer) {
+      return res.json({success:false,message:'Category Offer not found'})
+     }
+
+
+     await Category.updateOne({_id:categoryId},{$set:
+        {offer:offerId}
+    })
+    const selectedCategory = await Category.find({_id:categoryId})
+    console.log(selectedCategory.category_name);
+    const productsInCategory = await Product.find({category: selectedCategory})
+console.log("po",productsInCategory);
+    for (const product of productsInCategory) {
+      const productOffer = product.offer ? await Offer.findOne({ _id: product.offer }) : null;
+      console.log("po",productOffer);
+
+      if(!product.offer || (productOffer && productOffer.percentage < categoryOffer.percentage)) {
+        const originalPrice = parseFloat(product.product_price);
+        const discountedPrice = originalPrice - (originalPrice*categoryOffer.percentage)/100;
+        console.log(discountedPrice);
+       const result =  await Product.updateOne(
+          {_id:product._id},
+          {
+            $set: {
+              offer:offerId,
+              discountedPrice:discountedPrice,
+            }
+          }
+        )
+        console.log(result);
+
+      }
+      }
+      res.json({ success: true })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+//================================== remove Category Offer ================================================//
+
+const removeCategoryOffer = async (req,res,next)=> {
+  try {
+    const {categoryId} = req.body;
+
+    const category = await Category.findById(categoryId).populate('offer');
+
+    if(!category) {
+      return res.json({success:false,message: 'Category not found'});
+    }
+
+    await Category.updateOne({_id:categoryId},{$unset:{offer:''}});
+
+    const productsInCategory = await Product.find({category:categoryId});
+
+    for (const product of productsInCategory) {
+      if(product.offer) {
+        const productOffer = await Offer.findById(product.offer);
+      
+
+      if(productOffer&& productOffer.percentage > category.offer.percentage) {
+        continue;
+      }
+
+    }
+
+    await Product.updateOne(
+      {_id:product._id},
+      {
+        $unset: {
+          offer:'',
+          discountedPrice:'',
+        }
+      }
+    )
+  }
+
+  } catch (error) {
+    next(error)
+  }
+}
+
 
 //=========================to admin Logout==============================================================================//
 
@@ -545,4 +643,6 @@ module.exports = {
   editCategoryLoad,
   updateCategoryData,
   logout,
+  applyCategoryOffer,
+  removeCategoryOffer,
 };

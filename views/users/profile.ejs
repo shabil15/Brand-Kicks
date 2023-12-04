@@ -105,7 +105,7 @@
               
 
                     <hr>
-
+              <%if(users.password){%>
                     <h4>Change Password</h4>
               
                     <form id="changePasswordForm" action="/changepassword" method="post" novalidate>
@@ -140,6 +140,7 @@
                       </div>
 
                     </form>
+                    <%}%>
             </div><!-- .End .tab-pane -->
 
             <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
@@ -707,7 +708,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>
     // When a tab is clicked, store its ID in session storage0.
-    
+
     document.addEventListener("DOMContentLoaded", function () {
         const tabs = document.querySelectorAll('[data-toggle="tab"]');
         

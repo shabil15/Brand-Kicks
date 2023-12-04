@@ -21325,6 +21325,8 @@ img {
     font-size: 1rem
   }
 }
-.table-responsive {
-  overflow-x: hidden;
+
+
+.swal2-modal .swal2-title {
+  color:black;
 }

@@ -1,6 +1,7 @@
 //=========================  dependecies=====================================//
 
 const User = require("../models/userModel").User;
+const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const randomstring = require("randomstring");
@@ -113,7 +114,7 @@ const loginLoad = async (req, res) => {
 //=========================to load the Home Page============================================================//
 const loadHome = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({}).populate('offer')
     const banners = await Banner.find({ visibility: true });
 
 
@@ -303,7 +304,11 @@ const verifyLogin = async (req, res, next) => {
 
     const userData = await User.findOne({ email: Email });
     if (userData) {
+
       if (userData.isBlock == false) {
+        if(!userData.password){
+          res.render("login", { message: "Please Sign In With Google" });
+        }
         const passwordMatch = await bcrypt.compare(Password, userData.password);
 
         if (passwordMatch) {
@@ -412,22 +417,9 @@ const resetPassword = async (req, res) => {
   }
 };
 
-//==================================== to load the shop page =================================================//
 
-const loadShop = async (req, res) => {
-  try {
-    const categories = await Category.find({});
-    const products = await Product.find({});
-    res.render("shop", {
-      currentPage: "shop",
-      products: products,
-      user: req.session.user_id,
-      categories
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+
+
 
 //======================================= to logout for user =====================================================//
 
@@ -1054,7 +1046,6 @@ module.exports = {
   forgetVerify,
   forgetPasswordLoad,
   resetPassword,
-  loadShop,
   logout,
   profilePageLoad,
   addAddressFromProfile,

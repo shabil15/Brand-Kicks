@@ -113,5 +113,6 @@ module.exports = {
   loadOffers,
   loadEditOffer,
   editOffer,
-  cancelOffer
+  cancelOffer,
+  
 }
