@@ -398,7 +398,7 @@ const queryFilter = async (req, res, next) => {
     const pageDB = Number(page) - 1;
     const productPerPage = 9;
     const key = req.query.key || "";
-    let query = {};
+    let query = {}; 
 
     if (key !== "") {
       query.$or = [
