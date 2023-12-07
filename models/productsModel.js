@@ -94,11 +94,11 @@ const productSchema = mongoose.Schema({
 const categorySchema = mongoose.Schema({
   category_name:{
     type:String,
-    required:true
+    
   },
   category_description:{
     type:String,
-    required:true
+    
   },
   offer : {
     type : mongoose.Schema.Types.ObjectId,

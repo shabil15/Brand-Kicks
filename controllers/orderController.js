@@ -4,6 +4,8 @@ const Address= require('../models/userModel').UserAddress;
 const Product = require("../models/productsModel").product;
 const Order = require('../models/orderModel').Order;
 const Coupon = require('../models/couponModel').Coupon;
+const ejs = require("ejs");
+const mongoose = require('mongoose');
 const { log } = require("console");
 const path = require("path");
 const Razorpay = require('razorpay');
@@ -52,7 +54,7 @@ const generateUniqueTrackId = async () => {
 
 //========================= to Load the Checkout Page ======================================================//
 
-const checkoutLoad = async (req,res)=>{
+const checkoutLoad = async (req,res,next)=>{
   try {
     const cartDetails = await Cart.findOne({ user:req.session.user_id})
     .populate({
@@ -92,7 +94,7 @@ const checkoutLoad = async (req,res)=>{
       return res.redirect('/cart')
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 
@@ -110,8 +112,13 @@ const calculateTotalPrice= async (userId) =>{
     let totalPrice = 0;
     for(const cartProduct of cart.products) {
       const {product,quantity }=cartProduct;
-      const productSubtotal = product.product_price *quantity;
+      if(product.discountedPrice>0){
+        const productSubtotal = Math.floor(product.discountedPrice) *quantity;
+        totalPrice +=productSubtotal;
+      }else{
+        const productSubtotal = product.product_price *quantity;
       totalPrice +=productSubtotal;
+      }
     }
 
     return totalPrice;
@@ -124,7 +131,7 @@ const calculateTotalPrice= async (userId) =>{
 //======================================= to recieve address from the Checkout Page =========================================//
 
 
-const reciveShippingAddress =async(req,res)=>{
+const reciveShippingAddress =async(req,res,next)=>{
   try {
     const userAddress = await Address.findOne({ userId: req.session.user_id})
 
@@ -152,7 +159,7 @@ const reciveShippingAddress =async(req,res)=>{
     
     
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 
@@ -196,7 +203,7 @@ const daliveryDateCalculate = async () => {
 
 //===================================== to  Load the Payment Page in the Checkout ===================================//
 
-const paymenetPageLoad = async (req, res) => {
+const paymenetPageLoad = async (req, res, next) => {
   try {
     console.log(req.body);
     let addressId = req.body.address;
@@ -231,13 +238,13 @@ const paymenetPageLoad = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 
 //============================================= to select the Payment Methode ==========================================//
 
-const paymentSelectionManage = async (req, res) => {
+const paymentSelectionManage = async (req, res,next) => {
   try {
     console.log(req.body);
     let addressId = req.body.address;
@@ -272,14 +279,14 @@ const paymentSelectionManage = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 
 //===================================== to Load the Order Status Page ==============================================//
 
 
-const orderStatusPageLoad = async(req,res)=>{
+const orderStatusPageLoad = async(req,res,next)=>{
   try {
     // console.log('stttttttt');
     // res.render('orderStatus',{
@@ -303,116 +310,21 @@ const orderStatusPageLoad = async(req,res)=>{
       })
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 
 
 //====================================== function to Place the Order ======================================================//
 
-// const placeOrderManage = async (req, res) => {
-//   try {
-    
-   
-//     let addressId = req.body.address;
 
-//     let paymentType = req.body.payment;
-
-//     const cartDetails = await Cart.findOne({ user: req.session.user_id });
-
-//     const products = cartDetails.products;
-
-//     let userAddrs = await Address.findOne({ userId: req.session.user_id });
-//     const shipAddress = userAddrs.addresses.find((address) => {
-//       return address._id.toString() === addressId.toString();
-//     });
-
-    
-//     console.log("collected:", shipAddress);
-
-
-//     if (paymentType !== "Online") {
-//     if (!shipAddress) {
-//       return res.status(400).json({ error: "Address not found" });
-//     }
-//     // console.log("collected :" + shipAddress);
-//     const { country, fullName, mobileNumber, pincode, city, state } =
-//       shipAddress;
-//     // console.log(state);
-
-//     const cartProducts = cartDetails.products.map((productItem) => ({
-//       productId: productItem.product,
-//       quantity: productItem.quantity,
-//       OrderStatus: "pending",
-//       StatusLevel: 1,
-//     }));
-//     let total = await calculateTotalPrice(req.session.user_id);
-
-//     // console.log(cartProducts);
-//     const order = new Order({
-//       userId: req.session.user_id,
-//       "shippingAddress.country": country,
-//       "shippingAddress.fullName": fullName,
-//       "shippingAddress.mobileNumber": mobileNumber,
-//       "shippingAddress.pincode": pincode,
-//       "shippingAddress.city": city,
-//       "shippingAddress.state": state,
-//       products: cartProducts,
-//       totalAmount: total,
-//       paymentMethod: paymentType,
-//       paymentStatus: "success",
-//     });
-
-//     const placeorder = await order.save();
-//     console.log(placeorder._id);
-
-
-   
-//       console.log(placeorder._id);
-
-//       let changeOrderStatus = await Order.updateOne(
-//         { _id: placeorder._id },
-//         { $set: { OrderStatus: "success" } }
-//       );
-
-//       await Cart.deleteOne({ user: req.session.user_id });
-
-//       for (const productItem of cartDetails.products) {
-//         const productId = productItem.product;
-//         const purchasedQuantity = productItem.quantity;
-  
-
-//         const product = await Product.findById(productId);
-  
-//         if (product) {
-         
-//           if (product.stock >= purchasedQuantity) {
-            
-//             product.stock -= purchasedQuantity;
-  
-//             await product.save();
-
-//           }else{
-//             return res.status(400).json({ error: `Insufficient stock for product: ${product.product_name}` });
-//           }
-//         }
-//       }
-
-//       return res.json({ cod: true,orderId:placeorder._id });
-//       }
-
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
-const placeOrderManage = async (req, res) => {
+const placeOrderManage = async (req, res,next) => {
   let discountDetails = {
     codeId: 0,
     amount: 0,
   };
   try {
-    // console.log(req.body.address);
+    
     let addressId = req.body.address;
     
     let paymentType = req.body.payment;
@@ -441,12 +353,43 @@ const placeOrderManage = async (req, res) => {
     const { country, fullName, mobileNumber, pincode, city, state } =
       shipAddress;
     // console.log(state);
+    const productIDs = cartDetails.products.map(
+      (productItem)=> productItem.product
+    )
 
-    const cartProducts = cartDetails.products.map((productItem) => ({
+    const productPrices = [];
+
+    const productData = await Cart.find({
+      "products.product": {$in : productIDs},
+    })
+    .populate({
+      path:"products.product",
+      select:'product_price discountedPrice'
+    })
+    .exec();
+
+   if(productData && productData.length>0) {
+    productData.forEach((order)=> {
+      if(order.products && order.products.length>0) {
+        order.products.forEach((product)=> {
+          const price=
+              product.product.discountedPrice || product.product.product_price;
+            productPrices.push(price);
+        })
+      }else {
+        console.log("products array is empty in order");
+      }
+    })
+   } else {
+    console.log("No matching orders found");
+   }
+   
+    const cartProducts = cartDetails.products.map((productItem,index) => ({
       productId: productItem.product,
       quantity: productItem.quantity,
       OrderStatus: "pending",
       StatusLevel: 1,
+      price: productPrices[index],
       paymentStatus: "pending",
       "returnOrderStatus.status": "none",
       "returnOrderStatus.reason": "none",
@@ -454,23 +397,22 @@ const placeOrderManage = async (req, res) => {
     let total = await calculateTotalPrice(req.session.user_id);
     //coupon checking
     // ===================
-    console.log("cou",req.body.coupon);
+    
     if (req.body.coupon != "") {
       const couponDetails = await Coupon.findById(req.body.coupon);
-      console.log(couponDetails);
-      console.log(req.body.coupon);
+      
       total -=couponDetails.discountAmount;
-      console.log(total);
+      
       discountDetails.codeId = couponDetails._id;
-      console.log(discountDetails.codeId);
-      console.log(total);
+      
+      
       discountDetails.amount = couponDetails.discountAmount;
-      console.log(discountDetails.amount);
+      
       couponDetails.usedUsers.push(req.session.user_id);
       await couponDetails.save();
     }
 
-    // console.log(cartProducts);
+    
     const trackId = await generateUniqueTrackId();
     const order = new Order({
       userId: req.session.user_id,
@@ -490,13 +432,12 @@ const placeOrderManage = async (req, res) => {
     
 
     const placeorder = await order.save();
-    // let analaticResult = await CreateOrderAnalatic();
-    // console.log(analaticResult);
-    console.log(placeorder._id);
+    
+    
     if (paymentType == "Cash on Delivery" || paymentType=="wallet") {
-      console.log(placeorder._id);
+      
       if(paymentType== 'wallet'){
-        console.log("entered wallet");
+        
         let changeOrderStatus = await Order.updateOne(
           { _id: placeorder._id },
           {
@@ -512,7 +453,7 @@ const placeOrderManage = async (req, res) => {
           transactionAmount: order.totalAmount,
           
          }
-         console.log(walletHistory);
+         
          await User.findByIdAndUpdate(
           {_id: userId },
           {
@@ -541,7 +482,7 @@ const placeOrderManage = async (req, res) => {
         }
       );
     }
-        // console.log(changeOrderStatus);
+       
       await Cart.deleteOne({ user: req.session.user_id });
      for (const productItem of cartDetails.products) {
         const productId = productItem.product;
@@ -577,13 +518,33 @@ const placeOrderManage = async (req, res) => {
       });
     } else if(paymentType === "Online") {
       //here manage when the order is online
-      console.log(total);
+      
       let order = await genarateRazorpay(placeorder._id, total);
 
       let userData = await User.findById(req.session.user_id);
 
       // payment history create
+      for (const productItem of cartDetails.products) {
+        const productId = productItem.product;
+        const purchasedQuantity = productItem.quantity;
       
+      const product = await Product.findById(productId);
+  
+      if (product) {
+       
+        if (product.stock >= purchasedQuantity) {
+          
+          product.stock -= purchasedQuantity;
+
+          await product.save();
+
+        }else{
+          console.log("no stock");
+          return res.status(400).json({ error: `Insufficient stock for product`});
+          
+        }
+      }
+    }
       
       let user = {
         name: fullName,
@@ -594,7 +555,7 @@ const placeOrderManage = async (req, res) => {
       
     }
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 //====================== decrease the stock ======================================================//
@@ -617,10 +578,9 @@ function formatDate(date) {
 }
 //================================ verify the payment ==================================================================//
 
-const verifyPayment = async (req,res)=>{
+const verifyPayment = async (req,res,next)=>{
   try {
-    console.log("verify fn called");
-    console.log("req.body",req.body);
+    
     const paymentDetails = req.body.payment;
     const cartDetails = await Cart.findOne({ user: req.session.user_id });
     paymentSignatureMatching(paymentDetails)
@@ -641,13 +601,11 @@ const verifyPayment = async (req,res)=>{
           }
         }
       );
-      console.log(changeOrderStatus,changePaymentStatus);
+      
       let userCartDelete = await Cart.deleteOne({
         user:req.session.user_id,
       })
-      console.log(userCartDelete);
       
-      console.log("payment Success");
       for (const productItem of cartDetails.products) {
         const productId = productItem.product;
         const purchasedQuantity = productItem.quantity;
@@ -674,7 +632,7 @@ const verifyPayment = async (req,res)=>{
       res.json({status:"fail"});
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 //================================= payment signature matching ========================================================//
@@ -698,7 +656,7 @@ const paymentSignatureMatching = (payment) =>{
 
 //============================== to Load the All Orders Page Load on the user Side ====================================//
 
-const allOrdersPageLoad = async (req,res)=>{
+const allOrdersPageLoad = async (req,res,next)=>{
   try {
 
     const userId = req.session.user_id;
@@ -706,7 +664,7 @@ const allOrdersPageLoad = async (req,res)=>{
     const userOrders = await Order.find({userId:userId});
 
     if(userOrders.length ===0){
-      console.log("No orders found for the users.");
+      
       return res.render('orders',{
         user:userId,
         products:false,
@@ -725,6 +683,8 @@ const allOrdersPageLoad = async (req,res)=>{
         const placeDate = formatDate(order.orderDate);
         const OrderStatus = product.OrderStatus;
         const StatusLevel = product.StatusLevel;
+        const price = product.price;
+        
         
 
 
@@ -743,6 +703,7 @@ const allOrdersPageLoad = async (req,res)=>{
           placeOrderDate:placeDate,
           paymentMethod:order.paymentMethod,
           productDetails,
+          price,
           quantity,
           address:order.shippingAddress,
           deliveryDate:deliveryDate,
@@ -764,65 +725,64 @@ const allOrdersPageLoad = async (req,res)=>{
 
   
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 
 
 //=============================== to cancel the order from the admin and user ===================================//
 
-const cancelOrder = async (req, res) => {
+const cancelOrder = async (req, res,next) => {
   try {
     const { orderId, productId } = req.body;
-    console.log('Cancel Order Request Received');
-    console.log('Order ID:', orderId);
-    console.log('Product ID:', productId);
+    
 
     const order = await Order.findById(orderId);
+    
 
     if (!order) {
       console.log('Order not found');
       return res.status(404).json({ message: "Order not found" });
     }
 
-    console.log('Order found:', order);
+    
 
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
-    const user = req.session.user_id;
+    const user = order.userId
+    const total = Math.floor(productInfo.price)* productInfo.quantity;
 
     if (!productInfo) {
-      console.log('Product not found in the order');
+      
       return res.status(404).json({ message: "Product not found in the order" });
     }
 
-    console.log('Product found in the order:', productInfo);
+    
 
     productInfo.OrderStatus = "canceled";
-    console.log('Order Status set to "canceled"');
-    console.log('Quantity to Increase:', productInfo.quantity);
+    
 
     const quantityToIncrease = productInfo.quantity;
 
     const product = await Product.findById(productId);
 
     if (!product) {
-      console.log('Product not found in the database');
+      
       return res.status(404).json({ message: "Product not found in the database" });
     }
 
-    console.log('Product found in the database:', product);
+    
 
     product.stock += quantityToIncrease;
-    console.log('Updated product stock:', product.stock);
+    
 
     await product.save();
-    console.log('Product saved with updated stock');
+    
 
     //========= wallet money= ==================//
     if(productInfo.paymentStatus==='success'){
-      const totalAmount = order.totalAmount
+      const totalAmount = total
       const walletHistory = {
         transactionDate: new Date(),
         transactionDetails: 'Refund',
@@ -846,12 +806,12 @@ const cancelOrder = async (req, res) => {
 
       
     await order.save();
-    console.log('Order saved with updated status');
+    
 
     res.json({ cancel: 1 });
-    console.log('Order cancellation successful');
+    
   } catch (error) {
-    console.log('Error:', error);
+    next(error);
   }
 };
 
@@ -859,7 +819,7 @@ const cancelOrder = async (req, res) => {
 //=================orders list page load in admin side==========================//
 
 
-const ordersListPageLoad = async (req,res)=>{
+const ordersListPageLoad = async (req,res,next)=>{
   try {
     
     const orders = await Order.find({})
@@ -887,7 +847,7 @@ const ordersListPageLoad = async (req,res)=>{
               userId: order.userId,
               shippingAddress:order.shippingAddress,
               orderDate:orderDate,
-              totalAmount: productInfo.quantity * product.product_price,
+              totalAmount: Math.floor(productInfo.price)* productInfo.quantity,
               OrderStatus:productInfo.OrderStatus,
               StatusLevel:productInfo.StatusLevel,
               paymentMethod:order.paymentMethod,
@@ -906,13 +866,13 @@ const ordersListPageLoad = async (req,res)=>{
 
 
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 
 //==============order management page Load  in admin side=========================//
 
-const orderManagePageLoad = async (req, res) => {
+const orderManagePageLoad = async (req, res,next) => {
   try {
     const { orderId, productId } = req.query;
 
@@ -921,7 +881,7 @@ const orderManagePageLoad = async (req, res) => {
     const order = await Order.findById(orderId);
 
     if (!order) {
-      console.log('Order not found:', orderId);
+      
       return res.status(404).sendFile(path.dirname(__dirname, 'views', '404.html'));
     }
 
@@ -958,14 +918,14 @@ const orderManagePageLoad = async (req, res) => {
       productId,
     });
   } catch (error) {
-    console.log('Error:', error);
+    next(error);
   }
 }
 
 //================================================= to change the Order Status from Admin ================================================//
 
 
-const changeOrderStatus = async (req, res)=>{
+const changeOrderStatus = async (req, res,next)=>{
   try {
     const { status,orderId,productId} =req.body;
     const order = await Order.findById(orderId)
@@ -1003,20 +963,57 @@ const changeOrderStatus = async (req, res)=>{
       `/admin/orders/manage?orderId=${orderId}&productId=${productId}`
     )
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 
 //================ to verify the total amount when applying coupon ============================================//
 
-  const amountVerify = async(req,res)=>{
+  const amountVerify = async(req,res,next)=>{
     try {
       const total = await calculateTotalPrice(req.session.user_id);
       res.json(total);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   } 
+
+  //====================================== to download Order Invoice ============================================//
+
+  const invoiceDownload = async (req, res, next) => {
+    try {
+      const orderId = req.query.id;
+      const productName = req.query.productName;
+      
+      
+      
+      const orderData = await Order.findById(orderId)
+      .populate("userId")
+      
+      
+      if (!orderData) {
+        return res.status(404).send("Order not found");
+      }
+  
+      const userId = req.session.user_id;
+      const userData = await User.findById(userId);
+  
+      const date = new Date();
+      const data = {
+        orderData: orderData,
+        userData: userData,
+        
+        date,
+      };
+  
+      res.render('invoice',{orderData,userData,productName,date})
+    } catch (error) {
+      
+      next(error);
+    }
+  };
+  
+  
 
 module.exports={
   checkoutLoad,
@@ -1031,6 +1028,6 @@ module.exports={
   ordersListPageLoad,
   orderManagePageLoad,
   changeOrderStatus,
-  amountVerify
-  
+  amountVerify,
+  invoiceDownload,
 }

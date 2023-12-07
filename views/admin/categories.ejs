@@ -28,8 +28,8 @@
               <tr>
                 <th>Category Name</th>
                 <th>Category Description</th>
-                <th> Offer </th>
-                <th></th>
+                <!-- <th> Offer </th>
+                <th></th> -->
                 <th>Status</th>
                 <th>Edit </th>
               </tr>
@@ -40,7 +40,7 @@
                   <tr>
                     <td><%=categories[i].category_name%></td>
                     <td class="category-description"><%=categories[i].category_description%></td>
-                    <td><% if( categories[i].offer ){%><%= categories[i].offer.name %>( <%= categories[i].offer.percentage %>% )<%} else { %>No offers<% }%></td>
+                    <!-- <td><% if( categories[i].offer ){%><%= categories[i].offer.name %>( <%= categories[i].offer.percentage %>% )<%} else { %>No offers<% }%></td>
                                 <td>
                                     <% if (categories[i].offer ){%>
                             
@@ -48,7 +48,7 @@
                                       <% } else {%>
                                         <button class="btn btn-info" onclick="showModal('<%= categories[i]._id %>')"> Apply offer </button>
                                       <% }%>
-                                </td>
+                                </td> -->
                     <td>
                       <% if (categories[i].is_listed === false) { %>
                         <a href="/admin/unlistCategory?id=<%= categories[i]._id %>">

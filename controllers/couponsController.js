@@ -1,60 +1,63 @@
+const User = require("../models/userModel").User;
+const Product = require("../models/productsModel").product;
+const Cart = require("../models/userModel").Cart;
+const Coupon = require("../models/couponModel").Coupon;
+const Address = require("../models/userModel").UserAddress;
+const Order = require("../models/orderModel").Order;
 
-const User = require('../models/userModel').User;
-const Product = require('../models/productsModel').product;
-const Cart = require('../models/userModel').Cart;
-const Coupon = require('../models/couponModel').Coupon;
-const Address= require('../models/userModel').UserAddress;
-const Order  = require('../models/orderModel').Order;
-
-
-
-const calculateTotalPrice = async (userId) =>{
+const calculateTotalPrice = async (userId) => {
   try {
-   const cart= await Cart.findOne({user:userId}).populate(
-    "products.product"
-   );
-   if(!cart) {
-    console.log("User does not have a cart");
-   }
-   let totalPrice= 0;
-   for (const cartProduct of cart.products) {
-    const {product,quantity}=cartProduct;
-    const productSubtotal =product.product_price * quantity;
-    totalPrice +=productSubtotal;
-   }
-   return totalPrice;
+    const cart = await Cart.findOne({ user: userId }).populate(
+      "products.product"
+    );
+    if (!cart) {
+      console.log("User does not have a cart");
+    }
+    let totalPrice = 0;
+    for (const cartProduct of cart.products) {
+      const { product, quantity } = cartProduct;
+      if (product.discountedPrice > 0) {
+        const productSubtotal = Math.floor(product.discountedPrice) * quantity;
+        totalPrice += productSubtotal;
+      } else {
+        const productSubtotal = product.product_price * quantity;
+        totalPrice += productSubtotal;
+      }
+    }
+    return totalPrice;
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 //============================= Load the page for Add Coupon =========================================================//
 
-
-const addCouponPageLoad = async (req,res)=>{
+const addCouponPageLoad = async (req, res,next) => {
   try {
-    res.render('addcoupon',{
-      codeErr:req.session.couponErr
-    },(err,html)=>{
-      if(!err){
-        req.session.couponErr = false;
-        res.send(html);
-      }else{
-        console.log(err);
+    res.render(
+      "addcoupon",
+      {
+        codeErr: req.session.couponErr,
+      },
+      (err, html) => {
+        if (!err) {
+          req.session.couponErr = false;
+          res.send(html);
+        } else {
+          console.log(err);
+        }
       }
-    })
+    );
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //========================================== to add the coupon ===============================================//
 
-
-const addcoupon = async (req,res)=>{
+const addcoupon = async (req, res,next) => {
   try {
-    console.log("reqbody",req.body);
+    console.log("reqbody", req.body);
     const {
       code,
       discountAmount,
@@ -63,13 +66,13 @@ const addcoupon = async (req,res)=>{
       description,
       criteriaAmount,
       maxUser,
-    }= req.body;
+    } = req.body;
 
-    const couponvalidation = await Coupon.findOne({code:code})
+    const couponvalidation = await Coupon.findOne({ code: code });
     console.log(couponvalidation);
 
-    if(!couponvalidation){
-      const coupon= new Coupon({
+    if (!couponvalidation) {
+      const coupon = new Coupon({
         code,
         discountAmount,
         activationDate,
@@ -77,53 +80,50 @@ const addcoupon = async (req,res)=>{
         description,
         criteriaAmount,
         maxUser,
-
-      })
+      });
       await coupon.save();
 
-      req.flash('success','The coupon added Successfully');
-      return res.redirect('/admin/coupons');
-    }else {
-      
-      req.flash('error','Coupon code already exist,Try another Code');
-      return res.redirect('/admin/addcoupon')
+      req.flash("success", "The coupon added Successfully");
+      return res.redirect("/admin/coupons");
+    } else {
+      req.flash("error", "Coupon code already exist,Try another Code");
+      return res.redirect("/admin/addcoupon");
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //================================ to Load the coupons Page ==========================================//
 
-const couponsPageLoad = async (req,res)=>{
+const couponsPageLoad = async (req, res,next) => {
   try {
-    const Coupons = await Coupon.find()
-    res.render('coupons',{
-      Coupons
-    })
+    const Coupons = await Coupon.find();
+    res.render("coupons", {
+      Coupons,
+    });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
-
+};
 
 //================================= to Load the page for the edit coupon ======================================//
 
-const editCouponPageLoad = async (req,res) =>{
+const editCouponPageLoad = async (req, res,next) => {
   try {
     console.log(req.query.id);
-    const coupon = await Coupon.findOne({_id:req.query.id});
-    res.render("editCoupon",{coupon,coupon})
+    const coupon = await Coupon.findOne({ _id: req.query.id });
+    res.render("editCoupon", { coupon, coupon });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //============================================= to edit the coupon ===============================================//
 
-const editCoupon= async (req,res) =>{
+const editCoupon = async (req, res,next) => {
   try {
-    console.log("reqbodyLL",req.body);
+    console.log("reqbodyLL", req.body);
     const {
       code,
       discountAmount,
@@ -132,73 +132,71 @@ const editCoupon= async (req,res) =>{
       description,
       criteriaAmount,
       maxUser,
-    }=req.body;
+    } = req.body;
 
-   const couponvalidation = await Coupon.findOne({code:code})
-   console.log(couponvalidation);
-   
-   const editCoupon = await Coupon.updateOne(
-    {_id: req.query.id},
-    {
-      $set:{
-        code:code,
-        discountAmount:discountAmount,
-        activationDate:activationDate,
-        expiryDate:expiryDate,
-        description:description,
-        criteriaAmount:criteriaAmount,
-        maxUser:maxUser
+    const couponvalidation = await Coupon.findOne({ code: code });
+    console.log(couponvalidation);
+
+    const editCoupon = await Coupon.updateOne(
+      { _id: req.query.id },
+      {
+        $set: {
+          code: code,
+          discountAmount: discountAmount,
+          activationDate: activationDate,
+          expiryDate: expiryDate,
+          description: description,
+          criteriaAmount: criteriaAmount,
+          maxUser: maxUser,
+        },
       }
-    }
-   );
-   console.log(editCoupon);
-   req.flash('success','The coupon updated Successfully');
-   return res.redirect('/admin/coupons');
-  
-
+    );
+    console.log(editCoupon);
+    req.flash("success", "The coupon updated Successfully");
+    return res.redirect("/admin/coupons");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 //========================= delete the coupon ======================================//
 
-const deleteCoupon = async (req,res)=>{
+const deleteCoupon = async (req, res,next) => {
   try {
-    console.log(req.query.id)
-    const deletecoupon = await Coupon.deleteOne({_id:req.query.id})
+    console.log(req.query.id);
+    const deletecoupon = await Coupon.deleteOne({ _id: req.query.id });
     console.log(deletecoupon);
-    req.flash('success','the Coupon deleted successfully')
-    res.redirect('/admin/coupons');
+    req.flash("success", "the Coupon deleted successfully");
+    res.redirect("/admin/coupons");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //============================= to apply the coupon from checkout =================================//
 
-const applyCoupon = async (req,res)=>{
+const applyCoupon = async (req, res,next) => {
   try {
     const couponCode = req.body.code;
     const userId = req.session.user_id;
-    const cartTotalAmount =await calculateTotalPrice(userId);
+    const cartTotalAmount = await calculateTotalPrice(userId);
     console.log(cartTotalAmount);
 
-    const coupon = await Coupon.findOne({code:couponCode});
-    console.log("coup",coupon);
-    if(coupon == null ){
+    const coupon = await Coupon.findOne({ code: couponCode });
+    console.log("coup", coupon);
+    if (coupon == null) {
       console.log("null");
       return res.json({
-        valid:false,
-        message:"coupon not valid"
-      })
+        valid: false,
+        message: "coupon not valid",
+      });
     }
 
-    if(coupon.usedUsers.includes(userId)) {
+    if (coupon.usedUsers.includes(userId)) {
       console.log("used");
       return res.json({
-        valid:false,
-        message:"You have already claimed this coupon",
-      })
+        valid: false,
+        message: "You have already claimed this coupon",
+      });
     }
 
     const currentDate = new Date();
@@ -206,7 +204,7 @@ const applyCoupon = async (req,res)=>{
     // if(currentDate < coupon.activationDate || currentDate > coupon.expiryDate) {
     //   console.log(coupon.activationDate);
     //   console.log(coupon.expiryDate);
-     
+
     //   console.log("expire");
     //   return res.json({
     //     valid:false,
@@ -214,48 +212,45 @@ const applyCoupon = async (req,res)=>{
     //   })
     // }
 
-    if(cartTotalAmount<coupon.criteriaAmount) {
+    if (cartTotalAmount < coupon.criteriaAmount) {
       console.log("criteria");
       return res.json({
-        valid:false,
-        message:"The minimum criteria amount has not been met"
-      })
+        valid: false,
+        message: "The minimum criteria amount has not been met",
+      });
     }
 
-    if(coupon.usedUsers.length>=coupon.maxUser){
+    if (coupon.usedUsers.length >= coupon.maxUser) {
       console.log("maxUser");
       return res.json({
-        valid:false,
-        message:"Coupon has reached the maximum usage Limit"
-      })
+        valid: false,
+        message: "Coupon has reached the maximum usage Limit",
+      });
     }
 
     await coupon.save();
     let redeem = {
-      code:coupon.code,
-      discount:coupon.discountAmount,
-      total:cartTotalAmount - coupon.discountAmount,
-      _id:coupon._id
-    }
+      code: coupon.code,
+      discount: coupon.discountAmount,
+      total: cartTotalAmount - coupon.discountAmount,
+      _id: coupon._id,
+    };
 
     return res.json({
-      valid:true,
-      redeem
-    })
+      valid: true,
+      redeem,
+    });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
-
-module.exports= {
+module.exports = {
   addCouponPageLoad,
   addcoupon,
   couponsPageLoad,
   editCouponPageLoad,
   editCoupon,
   deleteCoupon,
-  applyCoupon
-
-
-}
+  applyCoupon,
+};

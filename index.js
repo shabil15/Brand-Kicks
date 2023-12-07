@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGODB_URI).then(()=>{
 const path = require('path')
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-const nocache= require('nocache')
+
 const disable = (req, res, next) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
@@ -38,17 +38,17 @@ const disable = (req, res, next) => {
   next();
 }
 
-app.use(nocache());
+app.use(disable);
 
-const user_route= require ("./routes/userRoute")
-app.use('/',disable,user_route);
 
 const admin_route = require("./routes/adminRoute")
-app.use('/admin',disable,admin_route);
+app.use('/admin',admin_route);
 
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'views', '404.html'))
-})
+
+const user_route= require ("./routes/userRoute")
+app.use('/',user_route);
+
+
 
 app.listen(PORT,()=>{
   console.log(`The Brand Kicks server Running on ${PORT}`);

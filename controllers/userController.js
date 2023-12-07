@@ -8,13 +8,13 @@ const randomstring = require("randomstring");
 const path = require("path");
 const otpGenerator = require("otp-generator");
 const Product = require("../models/productsModel").product;
-const Category = require('../models/productsModel').category;
+const Category = require("../models/productsModel").category;
 const Banner = require("../models/bannerModel");
 const Cart = require("../models/userModel").Cart;
 const Address = require("../models/userModel").UserAddress;
 const Coupon = require("../models/couponModel").Coupon;
-const Order = require('../models/orderModel').Order
-const shortid = require('shortid');
+const Order = require("../models/orderModel").Order;
+const shortid = require("shortid");
 const { reject } = require("promise");
 const { response } = require("../routes/userRoute");
 const Swal = require("sweetalert2");
@@ -39,7 +39,7 @@ const generateOTP = () => {
 };
 
 //===================code for sending the verification Email===========================================//
-const sendVerificationEmail = async (email, otp) => {
+const sendVerificationEmail = async (email, otp, next) => {
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -63,7 +63,7 @@ const sendVerificationEmail = async (email, otp) => {
 
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -103,20 +103,20 @@ const resetPasswordMail = async (firstName, secondName, email, token) => {
 
 //==================to load the Login Page=================================================================//
 
-const loginLoad = async (req, res) => {
+const loginLoad = async (req, res, next) => {
   try {
     res.render("login");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //=========================to load the Home Page============================================================//
-const loadHome = async (req, res) => {
+const loadHome = async (req, res, next) => {
   try {
-    const products = await Product.find({}).populate('offer')
+    const products = await Product.find({}).populate("offer");
     const banners = await Banner.find({ visibility: true });
-
+    const reviews = products.reviews
 
     res.render("home", {
       currentPage: "home",
@@ -125,33 +125,33 @@ const loadHome = async (req, res) => {
       user: req.session.user_id,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //===================to load the signup page================================================================//
 
-const loadRegister = async (req, res) => {
+const loadRegister = async (req, res, next) => {
   try {
     res.render("signup");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //=================to load the verify Otp Page===================================================================//
 
-const showverifyOTPPage = async (req, res) => {
+const showverifyOTPPage = async (req, res, next) => {
   try {
     res.render("otpPage");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //==================code for inserting the User Data to session ==================================================================>
 
-const insertUser = async (req, res) => {
+const insertUser = async (req, res, next) => {
   try {
     // Generate OTP
     const otpCode = generateOTP();
@@ -168,21 +168,24 @@ const insertUser = async (req, res) => {
       req.session.mobile = req.body.mobile;
       req.session.email = req.body.email;
 
-      // === referral ===========//
+      // =========================== referral ===============================//
 
-      if(req.body.referralCode){
-        const referringUser = await User.findOne({ referralCode: req.body.referralCode});
+      if (req.body.referralCode) {
+        const referringUser = await User.findOne({
+          referralCode: req.body.referralCode,
+        });
 
-        if(referringUser) {
+        if (referringUser) {
           req.session.referralUserId = referringUser._id;
-        }else {
-          res.render('signup',{message:'invalid referal code,Please Use valid code'})
+        } else {
+          res.render("signup", {
+            message: "invalid referal code,Please Use valid code",
+          });
         }
       }
 
       const referralCode = shortid.generate();
       req.session.referralCode = referralCode;
-
 
       if (
         req.body.firstName &&
@@ -205,13 +208,13 @@ const insertUser = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //==================code for verifying the otp=========================================================================//
 
-const verifyOTP = async (req, res) => {
+const verifyOTP = async (req, res, next) => {
   try {
     if (req.body.otp === req.session.otp.code) {
       const user = new User({
@@ -226,17 +229,17 @@ const verifyOTP = async (req, res) => {
 
       const result = await user.save();
 
-      if(req.session.referralUserId) {
+      if (req.session.referralUserId) {
         const referringUser = await User.findById(req.session.referralUserId);
 
         const reward = 100;
 
         referringUser.wallet += reward;
         referringUser.walletHistory.push({
-          transactionDate:new Date(),
-          transactionAmount:reward,
-          transactionDetails:'Referal Reward',
-          transactionType:'Credit'
+          transactionDate: new Date(),
+          transactionAmount: reward,
+          transactionDetails: "Referal Reward",
+          transactionType: "Credit",
         });
 
         await referringUser.save();
@@ -245,29 +248,30 @@ const verifyOTP = async (req, res) => {
         result.walletHistory.push({
           transactionDate: new Date(),
           transactionAmount: reward,
-          transactionDetails:'Referal Reward',
-          transactionType:'Credit',
-        })
+          transactionDetails: "Referal Reward",
+          transactionType: "Credit",
+        });
         await result.save();
       }
-      
-      res.render('login',{message:"User Created Successfully,Plese Sign In"});
+
+      res.render("login", {
+        message: "User Created Successfully,Plese Sign In",
+      });
     } else {
       res.render("otpPage", { message: "invalid OTP" });
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //============================ to resend the OTP ======================================================================//
 
-const resendOTP = async (req, res) => {
+const resendOTP = async (req, res, next) => {
   try {
     const currentTime = Date.now() / 1000;
     if (req.session.otp.expiry != null) {
       if (currentTime > req.session.otp.expiry) {
-        console.log(expired, req.session.otp.expiry);
         const newDigit = otpGenerator.generate(6, {
           digits: true,
           alphabets: false,
@@ -291,7 +295,7 @@ const resendOTP = async (req, res) => {
       res.send("please Register again");
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -304,9 +308,8 @@ const verifyLogin = async (req, res, next) => {
 
     const userData = await User.findOne({ email: Email });
     if (userData) {
-
       if (userData.isBlock == false) {
-        if(!userData.password){
+        if (!userData.password) {
           res.render("login", { message: "Please Sign In With Google" });
         }
         const passwordMatch = await bcrypt.compare(Password, userData.password);
@@ -336,17 +339,17 @@ const verifyLogin = async (req, res, next) => {
 
 //====================== to Load the Forget Page Load ===================================================================//
 
-const forgetLoad = async (req, res) => {
+const forgetLoad = async (req, res, next) => {
   try {
     res.render("forget");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //========================= to verify the forget mail=====================================================================//
 
-const forgetVerify = async (req, res) => {
+const forgetVerify = async (req, res, next) => {
   try {
     const email = req.body.email;
     const userData = await User.findOne({ email: email });
@@ -375,13 +378,13 @@ const forgetVerify = async (req, res) => {
       res.render("forget", { message: "User email is Incorrect" });
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //============================to Load the forget password Load ====================================================//
 
-const forgetPasswordLoad = async (req, res) => {
+const forgetPasswordLoad = async (req, res, next) => {
   try {
     const token = req.query.token;
 
@@ -393,13 +396,13 @@ const forgetPasswordLoad = async (req, res) => {
       res.render("404", { message: "Token is Invalid" });
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //=============================== to reset the password ===============================================//
 
-const resetPassword = async (req, res) => {
+const resetPassword = async (req, res, next) => {
   try {
     const password = req.body.password;
     const user_id = req.body.user_id;
@@ -413,22 +416,18 @@ const resetPassword = async (req, res) => {
 
     res.redirect("/login");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-
-
-
-
 //======================================= to logout for user =====================================================//
 
-const logout = async (req, res) => {
+const logout = async (req, res, next) => {
   try {
     req.session.user_id = null;
     res.redirect("/");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -442,13 +441,13 @@ const takeUserData = async (userId) => {
       });
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
 
 //===================================  to load the profile Page ===================================================//
 
-const profilePageLoad = async (req, res) => {
+const profilePageLoad = async (req, res, next) => {
   try {
     const takeUserData = async (userId) => {
       try {
@@ -457,15 +456,13 @@ const profilePageLoad = async (req, res) => {
             resolve(response);
           });
         });
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
 
     const userData = await takeUserData(req.session.user_id);
     const address = await Address.findOne({ userId: req.session.user_id });
     const coupons = await Coupon.find();
-    
+
     if (address) {
       res.render(
         "profile",
@@ -485,7 +482,6 @@ const profilePageLoad = async (req, res) => {
             req.session.updatePass = false;
             res.send(html);
           } else {
-            console.log(err.message);
             // Handle rendering error here, if necessary
             res.status(500).send("Internal Server Error");
           }
@@ -510,7 +506,6 @@ const profilePageLoad = async (req, res) => {
             req.session.updatePass = false;
             res.send(html);
           } else {
-            console.log(err.message);
             // Handle rendering error here, if necessary
             res.status(500).send("Internal Server Error");
           }
@@ -518,13 +513,13 @@ const profilePageLoad = async (req, res) => {
       );
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //======================================== to update the User Data =======================================//
 
-const updateUserData = async (req, res) => {
+const updateUserData = async (req, res, next) => {
   try {
     let userData = req.body;
 
@@ -535,7 +530,6 @@ const updateUserData = async (req, res) => {
           firstName: userData.firstName,
           secondName: userData.secondName,
           mobile: userData.mobile,
-          email: userData.email,
         },
       }
     );
@@ -551,16 +545,14 @@ const updateUserData = async (req, res) => {
 
     res.json({ success: true }); // Send a JSON response to indicate success
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, error: "Failed to update profile" }); // Send an error response
+    next(error);
   }
 };
 
 //=================================== function to change the user Password===================================//
 
-const changePassword = async (req, res) => {
+const changePassword = async (req, res, next) => {
   try {
-    console.log("gettingggggg");
     let userDetails = await User.findOne({ _id: req.session.user_id });
     bcrypt
       .compare(req.body.oldPassword, userDetails.password)
@@ -571,18 +563,16 @@ const changePassword = async (req, res) => {
             { _id: userDetails._id },
             { $set: { password: newSecurePassword } }
           );
-          console.log(change);
+
           req.session.updatePass = 1;
           res.redirect("/profile");
-          console.log("password changed...");
         } else {
-          console.log("wrong old password");
           req.session.updatePassErr = 1;
           res.redirect("/profile");
         }
       });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -622,15 +612,14 @@ const addAddressFromProfile = async (req, res) => {
     const total = await calculateTotalPrice(req.session.user_id);
     res.redirect("/profile");
   } catch (error) {
-    console.log(error);
+    
   }
 };
 
 //=============================== to update the Address of the user from the Profile ========================================================//
 
-const updateAddress = async (req, res) => {
+const updateAddress = async (req, res, next) => {
   try {
-    // console.log(req.body);
     let Addres = req.body;
     let userAddress = await Address.findOne({ userId: req.session.user_id });
     const selectedAddress = userAddress.addresses.find(
@@ -646,15 +635,14 @@ const updateAddress = async (req, res) => {
     await userAddress.save();
 
     res.redirect("/profile");
-    // console.log(selectedAddress);
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 
 //================================ to add address from the checkout Page in the user side ============================//
 
-const addShippingAddress = async (req, res) => {
+const addShippingAddress = async (req, res, next) => {
   try {
     const addrData = req.body;
     const userAddress = await Address.findOne({ userId: req.session.user_id });
@@ -688,13 +676,13 @@ const addShippingAddress = async (req, res) => {
 
     res.redirect("/checkout");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //============================= to delete the address of the user from user Profile ====================================//
 
-const deleteAddress = async (req, res) => {
+const deleteAddress = async (req, res, next) => {
   try {
     const userAddress = await Address.findOne({ userId: req.session.user_id });
     const addressToDelete = userAddress.addresses.findIndex(
@@ -707,7 +695,7 @@ const deleteAddress = async (req, res) => {
     await userAddress.save();
     return res.json({ remove: 1 });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -725,8 +713,13 @@ const calculateTotalPrice = async (userId) => {
     let totalPrice = 0;
     for (const cartProduct of cart.products) {
       const { product, quantity } = cartProduct;
-      const productSubtotal = product.product_price * quantity;
-      totalPrice += productSubtotal;
+      if (product.discountedPrice > 0) {
+        const productSubtotal = Math.floor(product.discountedPrice) * quantity;
+        totalPrice += productSubtotal;
+      } else {
+        const productSubtotal = product.product_price * quantity;
+        totalPrice += productSubtotal;
+      }
     }
 
     return totalPrice;
@@ -737,9 +730,8 @@ const calculateTotalPrice = async (userId) => {
 
 //================================== to update the cart items quantity ================================================//
 
-const updateCart = async (req, res) => {
+const updateCart = async (req, res, next) => {
   try {
-    console.log("updateCart");
     const user = req.session.user_id;
     const productID = req.body.productID;
     const quantity = req.body.quantity;
@@ -755,38 +747,37 @@ const updateCart = async (req, res) => {
       { new: true }
     );
 
-    console.log(updatedCartItem);
-
     res.json(updatedCartItem);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 //=============================== get the stock count ===================================//
 
-const getProductStock = async (req,res) => {
+const getProductStock = async (req, res, next) => {
   const productID = req.query.productID;
   try {
     const product = await Product.findById(productID);
 
-        if (product) {
-            res.json({ stock: product.stock });
-        } else {
-            res.status(404).json({ error: "Product not found" });
-        }
+    if (product) {
+      res.json({ stock: product.stock });
+    } else {
+      res.status(404).json({ error: "Product not found" });
+    }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 //======================================== to load the Cart Page ================================================//
 
-const cartPageLoad = async (req, res) => {
+const cartPageLoad = async (req, res, next) => {
   try {
     const userData = await takeUserData(req.session.user_id);
     const cartDetails = await Cart.findOne({ user: req.session.user_id })
       .populate({
         path: "products.product",
-        select: "product_name product_price category images.image1",
+        select:
+          "product_name product_price discountedPrice category images.image1",
       })
       .exec();
 
@@ -809,13 +800,13 @@ const cartPageLoad = async (req, res) => {
     }
     res.render("cart", { user: req.session.user_id });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //================================== to add a product to Cart ================================================//
 
-const addToCart = async (req, res) => {
+const addToCart = async (req, res, next) => {
   try {
     const existingCart = await Cart.findOne({ user: req.body.user });
     const user = req.session.user_id;
@@ -842,7 +833,7 @@ const addToCart = async (req, res) => {
         const updatedCart = await Cart.findOne({ user: user });
         let updatedCount = updatedCart ? updatedCart.products.length : 0;
         updatedCount = updatedCount + 1;
-        console.log("count", updatedCount);
+
         existingCart.products.push({
           product: req.body.id,
           quantity: 1,
@@ -852,13 +843,13 @@ const addToCart = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //==================================== to remove  a product from Cart =====================================================//
 
-const removeCartItem = async (req, res) => {
+const removeCartItem = async (req, res, next) => {
   try {
     const { user, product, qty } = req.body;
     const cart = await Cart.findOne({ user: user });
@@ -874,162 +865,166 @@ const removeCartItem = async (req, res) => {
     let remove = await cart.save();
 
     res.json({ remove: 1 });
-    console.log("product removed");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //======================================= to load the about Us page ====================================================//
 
-const aboutusLoad = async (req, res) => {
+const aboutusLoad = async (req, res, next) => {
   try {
     res.render("aboutus", {
       currentPage: "aboutus",
       user: req.session.user_id,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //======================================= to Load the Contact Us Page ====================================================//
 
-const contactLoad = async (req, res) => {
+const contactLoad = async (req, res, next) => {
   try {
     res.render("contact", {
       currentPage: "contact",
       user: req.session.user_id,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 //================================== TO SUBMIT REVIEW OF THE USER =======================================================//
 
-const submitReview = async (req,res) => {
+const submitReview = async (req, res, next) => {
   try {
-    
-    const {productId , rating , comment , userId} = req.body;
-    console.log("Destructured variables:", { productId, rating, comment, userId });
+    const { productId, rating, comment, userId } = req.body;
 
-    console.log("Validating rating");
-        if (rating < 1 || rating > 5) {
-            return res.json({ success: false, message: 'Invalid rating. Please select a rating between 1 and 5.' });
-        }
+    if (rating < 1 || rating > 5) {
+      return res.json({
+        success: false,
+        message: "Invalid rating. Please select a rating between 1 and 5.",
+      });
+    }
 
-        // Find the product by ID
-        console.log("Finding product by ID");
-        const product = await Product.findById(productId);
+    // Find the product by ID
+    console.log("Finding product by ID");
+    const product = await Product.findById(productId);
 
-        if (!product) {
-          console.log("Product not found");
-          return res.json({ success: false, message: 'Product not found.' });
-      }
+    if (!product) {
+      console.log("Product not found");
+      return res.json({ success: false, message: "Product not found." });
+    }
 
-      
-        // Check if the user with the provided userId exists
-        const user = await User.findById(userId);
+    // Check if the user with the provided userId exists
+    const user = await User.findById(userId);
 
-        if (!user) {
-            console.log("User not found");
-            return res.json({ success: false, message: 'User not found, Please Login' });
-        }
+    if (!user) {
+      console.log("User not found");
+      return res.json({
+        success: false,
+        message: "User not found, Please Login",
+      });
+    }
 
-        const existingReview = product.reviews.find(review => review.user.userId === userId);
-        
-        if (existingReview) {
-          console.log("User has already reviewed the product");
-          return res.json({ success: false, message: 'You have already reviewed this product.' });
-      }
-      console.log("user,pro",userId,productId );
+    const existingReview = product.reviews.find(
+      (review) => review.user.userId === userId
+    );
 
-       // Check if the user has a delivered order for the product
-       const deliveredOrder = await Order.findOne({
-        userId      : userId,
-        'products.productId': productId,
-        'products.OrderStatus': 'Delivered',
+    if (existingReview) {
+      console.log("User has already reviewed the product");
+      return res.json({
+        success: false,
+        message: "You have already reviewed this product.",
+      });
+    }
+
+    // Check if the user has a delivered order for the product
+    const deliveredOrder = await Order.findOne({
+      userId: userId,
+      "products.productId": productId,
+      "products.OrderStatus": "Delivered",
     });
 
-    
     if (!deliveredOrder) {
-        console.log("User has not purchased the product yet");
-        return res.json({ success: false, message: 'You can only review or rate a product after receiving it.' });
+      console.log("User has not purchased the product yet");
+      return res.json({
+        success: false,
+        message: "You can only review or rate a product after receiving it.",
+      });
     }
-    console.log(deliveredOrder)
 
-    console.log("Adding review to product's reviews array");
-        product.reviews.push({
-            
-            user: {
-                userId: userId,
-                firstName: user.firstName,
-                lastName: user.lastName,
-            },
-            rating,
-            comment,
-            date: new Date(),
-        });
-        console.log("Updated product with review:", product);
+    product.reviews.push({
+      user: {
+        userId: userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+      rating,
+      comment,
+      date: new Date(),
+    });
 
-        await product.save();
+    await product.save();
 
-        res.json({ success: true, message: 'Review submitted successfully!' });
-
+    res.json({ success: true, message: "Review submitted successfully!" });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //===========================edit review =====================================================================//
 
-const editReview = async (req,res)=> {
+const editReview = async (req, res, next) => {
   try {
     console.log("Start of edit Review");
 
-    const {reviewId,productId,rating,comment,userId} = req.body;
-    console.log("dvar:",{reviewId,productId,rating,comment,userId} );
+    const { reviewId, productId, rating, comment, userId } = req.body;
 
-
-    if(rating<1 || rating >5 ){
-      return res.json({success:false,message:'Invalid rating, Please select a valid rating'})
+    if (rating < 1 || rating > 5) {
+      return res.json({
+        success: false,
+        message: "Invalid rating, Please select a valid rating",
+      });
     }
-
-    console.log("findign proid");
 
     const product = await Product.findById(productId);
 
-    if(!product) {
-      res.json({success:false,message:'Product Not found'})
+    if (!product) {
+      res.json({ success: false, message: "Product Not found" });
     }
 
     const user = await User.findById(userId);
 
-    if(!user) {
+    if (!user) {
       console.log("User Not found ");
-      return res.json({success:false,message:'User Not found, Please login'})
+      return res.json({
+        success: false,
+        message: "User Not found, Please login",
+      });
+    }
 
-    } 
+    const existingReviewIndex = product.reviews.findIndex(
+      (review) => review._id.toString() === reviewId
+    );
 
-    const existingReviewIndex = product.reviews.findIndex(review=> review._id.toString()=== reviewId);
-
-    if(existingReviewIndex=== -1) {
-      return res.json({success:false,message:'Review Not Found'});
+    if (existingReviewIndex === -1) {
+      return res.json({ success: false, message: "Review Not Found" });
     }
 
     const existingReview = product.reviews[existingReviewIndex];
     existingReview.rating = rating;
     existingReview.comment = comment;
-    existingReview.date= new Date();
+    existingReview.date = new Date();
 
-    await product.save()
+    await product.save();
 
-    res.json({success:true,message: 'Review edited succesfully'})
-
+    res.json({ success: true, message: "Review edited succesfully" });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //============================== to export the modules ==========================================================//
 
@@ -1062,5 +1057,5 @@ module.exports = {
   changePassword,
   getProductStock,
   submitReview,
-  editReview
+  editReview,
 };

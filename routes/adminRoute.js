@@ -6,7 +6,7 @@ admin_route.set('view engine','ejs')
 admin_route.set('views','./views/admin') 
 const adminAuth = require('../middlewares/admin')
 
-
+const errorHandler = require('../middlewares/errorHandler')
 admin_route.use(express.json())
 admin_route.use(express.urlencoded({extended:true}));
 
@@ -59,7 +59,7 @@ admin_route.post('/editCategory',adminAuth.isLogin,adminController.updateCategor
 admin_route.get('/banners',adminAuth.isLogin,bannerController.bannersLoad)
 admin_route.get('/addbanner',adminAuth.isLogin,bannerController.addbannersLoad)
 admin_route.post('/addbanner',adminAuth.isLogin,fileUpload.uploadBanner.single('banner'),bannerController.addBanner)
-admin_route.delete('/deletebanner',adminAuth.isLogin,bannerController.deleteBanner)
+admin_route.get('/deletebanner',adminAuth.isLogin,bannerController.deletebanner)
 admin_route.get('/visible',adminAuth.isLogin,bannerController.visibilityBanner);
 
 
@@ -68,17 +68,17 @@ admin_route.get('/visible',adminAuth.isLogin,bannerController.visibilityBanner);
 admin_route.get('/orders',adminAuth.isLogin,orderController.ordersListPageLoad)
 admin_route.get('/orders/manage',adminAuth.isLogin,orderController.orderManagePageLoad);
 admin_route.post('/orders/manage/changestatus',adminAuth.isLogin,orderController.changeOrderStatus)
-admin_route.post('/orders/manage/cancel',orderController.cancelOrder);
+admin_route.post('/orders/manage/cancel',adminAuth.isLogin,orderController.cancelOrder);
 
 
 //====================================== coupon related ================================================//
 
-admin_route.get('/addcoupon',couponController.addCouponPageLoad);
-admin_route.post('/addcoupon',couponController.addcoupon);
-admin_route.get('/coupons',couponController.couponsPageLoad)
-admin_route.get('/coupon/edit',couponController.editCouponPageLoad)
-admin_route.post('/coupon/edit',couponController.editCoupon)
-admin_route.get('/coupon/delete',couponController.deleteCoupon);
+admin_route.get('/addcoupon',adminAuth.isLogin,couponController.addCouponPageLoad);
+admin_route.post('/addcoupon',adminAuth.isLogin,couponController.addcoupon);
+admin_route.get('/coupons',adminAuth.isLogin,couponController.couponsPageLoad)
+admin_route.get('/coupon/edit',adminAuth.isLogin,couponController.editCouponPageLoad)
+admin_route.post('/coupon/edit',adminAuth.isLogin,couponController.editCoupon)
+admin_route.get('/coupon/delete',adminAuth.isLogin,couponController.deleteCoupon);
 
 
 //============================= dashboard related =============================================//
@@ -86,6 +86,8 @@ admin_route.get('/coupon/delete',couponController.deleteCoupon);
 admin_route.post('/report/genarate',adminAuth.isLogin,adminController.genarateSalesReports);
 admin_route.get('/report',adminAuth.isLogin,reportController.loadSalesReport);
 admin_route.post('/sales-report/portfolio',adminAuth.isLogin,reportController.portfolioFiltering);
+admin_route.get('/report/export-report',adminAuth.isLogin,reportController.generateExcelReport);
+
 
 //================== offer Related =============================================================//
 
@@ -99,5 +101,12 @@ admin_route.patch('/applyOffer',adminAuth.isLogin,productController.applyProduct
 admin_route.patch('/removeOffer',adminAuth.isLogin,productController.removeProductOffer);
 admin_route.patch('/applyOffer_category',adminAuth.isLogin,adminController.applyCategoryOffer);
 admin_route.patch('/removeOffer_category',adminAuth.isLogin,adminController.removeCategoryOffer);
+
+admin_route.use(errorHandler)
+
+admin_route.get('*', (req, res) => {
+  console.log(req.url)
+  res.render('404');
+});
 
 module.exports=admin_route

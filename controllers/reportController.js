@@ -1,13 +1,12 @@
-const mongoose = require('mongoose');
-const Product = require('../models/productsModel').product
-const User = require('../models/userModel').User;
-const Order = require('../models/orderModel').Order
-
+const mongoose = require("mongoose");
+const Product = require("../models/productsModel").product;
+const User = require("../models/userModel").User;
+const Order = require("../models/orderModel").Order;
+const ExcelJS = require("exceljs");
 
 // ============================loading sales report page =========================================//
 
-
-const loadSalesReport = async (req, res) => {
+const loadSalesReport = async (req, res, next) => {
   try {
     let start, end;
 
@@ -30,33 +29,27 @@ const loadSalesReport = async (req, res) => {
       getMostSellingProducts(),
     ]);
 
-    const allOrders = await getorders ()
+    const allOrders = await getorders();
 
-    
-    console.log("mp,",SoldProducts);
-    if(sales === 0 ||SoldProducts==0 ){
+    console.log("mp,", SoldProducts);
+    if (sales === 0 || SoldProducts == 0) {
       res.render("salesReport", {
-       
         Mproducts: 0,
-        sales:0,
+        sales: 0,
       });
     }
-   
+
     res.render("salesReport", {
-      
       Mproducts: SoldProducts,
       sales,
-      orders:allOrders
+      orders: allOrders,
     });
   } catch (error) {
-    console.error(error.message);
+    next(error);
   }
 };
 
-
-
 // =================================== creating sales report ===================================================//
-
 
 const createSalesReport = async (startDate, endDate) => {
   try {
@@ -67,8 +60,8 @@ const createSalesReport = async (startDate, endDate) => {
       },
     });
 
-    if(!orders){
-      return 0
+    if (!orders) {
+      return 0;
     }
 
     const transformedTotalStockSold = {};
@@ -94,7 +87,6 @@ const createSalesReport = async (startDate, endDate) => {
             name: productName,
             quantity: 0,
             image: image,
-            
           };
         }
         transformedTotalStockSold[productId].quantity += quantity;
@@ -111,17 +103,17 @@ const createSalesReport = async (startDate, endDate) => {
         const productPrice = product.product_price;
         const productCost = productPrice * 0.7;
         const productProfit = (productPrice - productCost) * quantity;
-        transformedProductProfits[productId].profit += Math.floor(productProfit);
+        transformedProductProfits[productId].profit +=
+          Math.floor(productProfit);
       }
     }
 
     const totalStockSoldArray = Object.values(transformedTotalStockSold);
     const productProfitsArray = Object.values(transformedProductProfits);
 
-    const totalSales =Math.floor( productProfitsArray.reduce(
-      (total, product) => total + product.profit,
-      0
-    ));
+    const totalSales = Math.floor(
+      productProfitsArray.reduce((total, product) => total + product.profit, 0)
+    );
 
     const salesReport = {
       totalSales,
@@ -135,51 +127,46 @@ const createSalesReport = async (startDate, endDate) => {
   }
 };
 
-
-
-
 // ================================================= finding most selling products ==========================================//
-
 
 const getMostSellingProducts = async () => {
   try {
     const pipeline = [
-  
-    {
-      $unwind: "$products",
-    },
-    {
-      $match: {
-        "products.OrderStatus": { $ne: "cancelled" } // Use "OrderStatus" instead of "orderStatus"
-      }
-    },
-    {
-      $group: {
-        _id: "$products.productId",
-        count: { $sum: "$products.quantity" },
+      {
+        $unwind: "$products",
       },
-    },
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productData",
+      {
+        $match: {
+          "products.OrderStatus": { $ne: "cancelled" }, // Use "OrderStatus" instead of "orderStatus"
+        },
       },
-    },
-    {
-      $sort: { count: -1 },
-    },
-    {
-      $limit: 5, // Limit to the top 6 products
-    },
-  ];
+      {
+        $group: {
+          _id: "$products.productId",
+          count: { $sum: "$products.quantity" },
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productData",
+        },
+      },
+      {
+        $sort: { count: -1 },
+      },
+      {
+        $limit: 5, // Limit to the top 6 products
+      },
+    ];
 
     const mostSellingProducts = await Order.aggregate(pipeline);
-    if(!mostSellingProducts){
-      return 0
+    if (!mostSellingProducts) {
+      return 0;
     }
-    
+
     return mostSellingProducts;
   } catch (error) {
     console.error("Error fetching most selling products:", error);
@@ -187,12 +174,9 @@ const getMostSellingProducts = async () => {
   }
 };
 
-
-
-
 const getorders = async () => {
   try {
-    const orders = await Order.find().populate('userId')
+    const orders = await Order.find().populate("userId");
 
     const productWiseOrdersArray = [];
 
@@ -217,189 +201,242 @@ const getorders = async () => {
               orderDate: order.orderDate,
               totalAmount: productInfo.quantity * product.product_price,
               OrderStatus: productInfo.OrderStatus,
+              price: productInfo.price,
               StatusLevel: productInfo.StatusLevel,
               paymentStatus: productInfo.paymentStatus,
               paymentMethod: order.paymentMethod,
               quantity: productInfo.quantity,
-              trackId:order.trackId
+              trackId: order.trackId,
             },
           });
         }
       }
     }
 
-   return productWiseOrdersArray;
-
+    return productWiseOrdersArray;
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
-
 //=====================================portfolio chart data filltering========================================//
 
+const portfolioFiltering = async (req, res, next) => {
+  try {
+    let datePriad = req.body.date;
+    // console.log(datePriad);
 
+    if (datePriad == "week") {
+      let data = await generateWeeklySalesCount();
+      // console.log(data);
+      res.json({ data });
+    } else if (datePriad == "month") {
+      let data = await generateMonthlySalesCount();
+      data = data.reverse();
+      // console.log(data);
 
-const portfolioFiltering = async (req, res) => {
-try {
-  let datePriad = req.body.date;
-  // console.log(datePriad);
-
-  if (datePriad == "week") {
-    let data = await generateWeeklySalesCount();
-    // console.log(data);
-    res.json({ data });
-  } else if (datePriad == "month") {
-    let data = await generateMonthlySalesCount();
-    data = data.reverse();
-    // console.log(data);
-
-    res.json({ data });
-  } else if (datePriad == "year") {
-    let data = await generateYearlySalesCount();
-    // console.log(data);
-    res.json({ data });
+      res.json({ data });
+    } else if (datePriad == "year") {
+      let data = await generateYearlySalesCount();
+      // console.log(data);
+      res.json({ data });
+    }
+  } catch (error) {
+    console.log(error.message);
   }
-} catch (error) {
-  console.log(error.message);
-}
 };
-
 
 const generateWeeklySalesCount = async () => {
-try {
-  const weeklySalesCounts = [];
+  try {
+    const weeklySalesCounts = [];
 
-  const today = new Date();
-  today.setHours(today.getHours() - 5);
+    const today = new Date();
+    today.setHours(today.getHours() - 5);
 
-  for (let i = 0; i < 7; i++) {
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - i);
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 1);
+    for (let i = 0; i < 7; i++) {
+      const startDate = new Date(today);
+      startDate.setDate(today.getDate() - i);
+      const endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 1);
 
-    const orders = await Order.find({
-      orderDate: {
-        $gte: startDate,
-        $lt: endDate,
-      },
-    });
+      const orders = await Order.find({
+        orderDate: {
+          $gte: startDate,
+          $lt: endDate,
+        },
+      });
 
-    const salesCount = orders.length;
+      const salesCount = orders.length;
 
-    weeklySalesCounts.push({
-      date: startDate.toISOString().split("T")[0], // Format the date
-      sales: salesCount,
-    });
+      weeklySalesCounts.push({
+        date: startDate.toISOString().split("T")[0], // Format the date
+        sales: salesCount,
+      });
+    }
+
+    return weeklySalesCounts;
+  } catch (error) {
+    console.error("Error generating the weekly sales counts:", error.message);
   }
-
-  return weeklySalesCounts;
-} catch (error) {
-  console.error("Error generating the weekly sales counts:", error.message);
-}
 };
 
-
-
 const generateMonthlySalesCount = async () => {
-try {
-  const monthlySalesCounts = [];
+  try {
+    const monthlySalesCounts = [];
 
-  const today = new Date();
-  today.setHours(today.getHours() - 5);
+    const today = new Date();
+    today.setHours(today.getHours() - 5);
 
-  // Calculate the earliest and latest months
-  const latestMonth = new Date(today);
-  const earliestMonth = new Date(today);
-  earliestMonth.setMonth(earliestMonth.getMonth() - 7); // 7 months ago
+    // Calculate the earliest and latest months
+    const latestMonth = new Date(today);
+    const earliestMonth = new Date(today);
+    earliestMonth.setMonth(earliestMonth.getMonth() - 7); // 7 months ago
 
-  // Create a map to store sales data for each month
-  const salesData = new Map();
+    // Create a map to store sales data for each month
+    const salesData = new Map();
 
-  // Iterate through the complete date range
-  while (earliestMonth <= latestMonth) {
-    const monthString = earliestMonth.toLocaleString("default", {
-      month: "long",
-    });
-    salesData.set(monthString, 0);
-    earliestMonth.setMonth(earliestMonth.getMonth() + 1);
+    // Iterate through the complete date range
+    while (earliestMonth <= latestMonth) {
+      const monthString = earliestMonth.toLocaleString("default", {
+        month: "long",
+      });
+      salesData.set(monthString, 0);
+      earliestMonth.setMonth(earliestMonth.getMonth() + 1);
+    }
+
+    // Populate sales data for existing months
+    for (let i = 0; i < 7; i++) {
+      const startDate = new Date(today);
+      startDate.setMonth(today.getMonth() - i);
+      startDate.setDate(1);
+      const endDate = new Date(startDate);
+      endDate.setMonth(startDate.getMonth() + 1);
+      endDate.setDate(endDate.getDate() - 1);
+
+      const orders = await Order.find({
+        orderDate: {
+          $gte: startDate,
+          $lt: endDate,
+        },
+      });
+
+      const salesCount = orders.length;
+      const monthString = startDate.toLocaleString("default", {
+        month: "long",
+      });
+
+      salesData.set(monthString, salesCount);
+    }
+
+    // Convert the map to an array for the final result
+    for (const [date, sales] of salesData) {
+      monthlySalesCounts.push({ date, sales });
+    }
+
+    return monthlySalesCounts;
+  } catch (error) {
+    next(error);
   }
-
-  // Populate sales data for existing months
-  for (let i = 0; i < 7; i++) {
-    const startDate = new Date(today);
-    startDate.setMonth(today.getMonth() - i);
-    startDate.setDate(1);
-    const endDate = new Date(startDate);
-    endDate.setMonth(startDate.getMonth() + 1);
-    endDate.setDate(endDate.getDate() - 1);
-
-    const orders = await Order.find({
-      orderDate: {
-        $gte: startDate,
-        $lt: endDate,
-      },
-    });
-
-    const salesCount = orders.length;
-    const monthString = startDate.toLocaleString("default", {
-      month: "long",
-    });
-
-    salesData.set(monthString, salesCount);
-  }
-
-  // Convert the map to an array for the final result
-  for (const [date, sales] of salesData) {
-    monthlySalesCounts.push({ date, sales });
-  }
-
-  return monthlySalesCounts;
-} catch (error) {
-  console.error("Error generating the monthly sales counts:", error.message);
-}
 };
 
 const generateYearlySalesCount = async () => {
-try {
-  const yearlySalesCounts = [];
+  try {
+    const yearlySalesCounts = [];
 
-  const today = new Date();
-  today.setHours(today.getHours() - 5);
+    const today = new Date();
+    today.setHours(today.getHours() - 5);
 
-  for (let i = 0; i < 7; i++) {
-    const startDate = new Date(today);
-    startDate.setFullYear(today.getFullYear() - i);
-    startDate.setMonth(0); // Set the start month to January
-    startDate.setDate(1); // Set the start day to the first day of the year
-    const endDate = new Date(startDate);
-    endDate.setFullYear(startDate.getFullYear() + 1);
+    for (let i = 0; i < 7; i++) {
+      const startDate = new Date(today);
+      startDate.setFullYear(today.getFullYear() - i);
+      startDate.setMonth(0); // Set the start month to January
+      startDate.setDate(1); // Set the start day to the first day of the year
+      const endDate = new Date(startDate);
+      endDate.setFullYear(startDate.getFullYear() + 1);
 
-    const orders = await Order.find({
-      orderDate: {
-        $gte: startDate,
-        $lt: endDate,
-      },
-    });
+      const orders = await Order.find({
+        orderDate: {
+          $gte: startDate,
+          $lt: endDate,
+        },
+      });
 
-    const salesCount = orders.length;
+      const salesCount = orders.length;
 
-    yearlySalesCounts.push({
-      date: startDate.getFullYear(),
-      sales: salesCount,
-    });
+      yearlySalesCounts.push({
+        date: startDate.getFullYear(),
+        sales: salesCount,
+      });
+    }
+
+    return yearlySalesCounts;
+  } catch (error) {
+    console.error("Error generating the yearly sales counts:", error.message);
   }
-
-  return yearlySalesCounts;
-} catch (error) {
-  console.error("Error generating the yearly sales counts:", error.message);
-}
 };
 
+const generateExcelReport = async (req, res, next) => {
+  try {
+    const { end, start } = req.query;
 
-module.exports ={
+    // Create a sales report or fetch it from your data source
+    const sales = await getorders(start, end);
+
+    // Create a new Excel workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Sales Report");
+
+    // Define the columns for the worksheet
+    worksheet.columns = [
+      { header: "Product Name", key: "productName", width: 25 },
+      { header: "Order Id", key: "OrderId", width: 15 },
+      { header: "User", key: "User", width: 25 },
+      { header: "Order Date", key: "OrderDate", width: 15 },
+      { header: "Quantity", key: "Quantity", width: 15 },
+      { header: "Price", key: "Price", width: 15 },
+      { header: "Payment Status", key: "PaymentStatus", width: 15 },
+      { header: "Order Status", key: "OrderStatus", width: 15 },
+    ];
+
+    // Add data to the worksheet
+    sales.forEach((orders) => {
+      worksheet.addRow({
+        productName: orders.product.product_name,
+        OrderId: orders.orderDetails.trackId,
+        User: orders.user.email,
+        OrderDate: orders.orderDetails.orderDate
+          .toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+          })
+          .replace(/\//g, "-"),
+        Quantity: orders.orderDetails.quantity,
+        Price: orders.orderDetails.totalAmount,
+        PyamentStatus: orders.orderDetails.paymentStatus,
+        OrderStatus: orders.orderDetails.OrderStatus,
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=sales_report.xlsx"
+    );
+
+    workbook.xlsx.write(res).then(() => {
+      res.end();
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
   loadSalesReport,
   portfolioFiltering,
-}
+  generateExcelReport,
+};

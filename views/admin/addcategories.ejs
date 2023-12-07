@@ -35,17 +35,19 @@
           <% } %>
           <!-- <p class="card-description"> Basic form elements </p> -->
           <hr class="white-line">
-          <form class="forms-sample" action="/admin/addCategory" method="post">
+          <form class="forms-sample" action="/admin/addCategory" novalidate method="post">
             <h3 class="card-title">Add New Category</h3>
               <div class="form-group  row">
                   <div class="col-12 col-md-9 mt-2">
                       <label for="exampleInputName1">Category Name</label>
                       <input type="text" class="form-control  text-light mb-3 " name="category_name"
                           id="exampleInputName1" placeholder="name" required>
+                          <p id="categoryNameError" class="text-danger"></p>
                         <label for="exampleInputName1">Category Description</label>
                       <input type="text" class="form-control  text-light " name="category_description"
                           id="exampleInputDescription" placeholder="Description" required style="height: 100px;">
-                      <button type="submit" class="btn btn-lg btn-inverse-primary mr-2 mt-5">Add
+                          <p id="categoryDescriptionError" class="text-danger"></p>
+                      <button type="submit" onclick="return validateCategoryForm()" class="btn btn-lg btn-inverse-primary mr-2 mt-5">Add
                           Category</button>
                   </div>
 
@@ -62,9 +64,35 @@
 <!-- content-wrapper ends -->
 <!-- partial:partials/_footer.html -->
 <footer class="footer">
-
+  
+  
 </footer>
 <!-- partial -->
 </div>
 <%- include('../layouts/admin/footer.ejs') %>
+<script>
+function validateCategoryForm() {
+  const categoryName = document.getElementById("exampleInputName1").value;
+  const categoryDescription = document.getElementById("exampleInputDescription").value;
 
+  // Reset previous error messages
+  document.getElementById("categoryNameError").textContent = "";
+  document.getElementById("categoryDescriptionError").textContent = "";
+
+  // Validate Category Name
+  if (categoryName.trim() === "") {
+    document.getElementById("categoryNameError").textContent = "Category Name is required.";
+    return false;
+  }
+
+  // Validate Category Description
+  if (categoryDescription.trim() === "") {
+    document.getElementById("categoryDescriptionError").textContent = "Category Description is required.";
+    return false;
+  }
+
+  // Additional validations can be added as needed
+
+  return true;
+}
+</script>

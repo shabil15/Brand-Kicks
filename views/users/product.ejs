@@ -119,10 +119,12 @@
               <!-- End .product-title -->
 
               <div class="ratings-container">
+               
                 <div class="ratings">
-                  <div class="ratings-val" style="width: 80%"></div>
+                  <div class="ratings-val" style="width: <%=averageRating*20%>%"></div>
                   <!-- End .ratings-val -->
                 </div>
+                
                 <!-- End .ratings -->
                 <a
                   class="ratings-text"
@@ -131,8 +133,22 @@
                 ></a>
               </div>
               <!-- End .rating-container -->
-
+              <%if(product.offer){%>
+                <div class="product-lable-badge" style="
+                                          width: 70px;
+                                          margin-bottom: 10px  ;
+                                          background-color: red;
+                                          color: white;
+                                          padding-left: 10px;
+                                          padding-right: 10px;
+                                          ">
+                                            <span class="product-lable" style="font-size: 12px;"><%= product.offer.percentage%>% OFF</span>
+                                          </div>
+                <div class="product-price"><del>₹<%= product.product_price%></del>&nbsp;&nbsp;₹<%= Math.floor(product.discountedPrice)%></div>
+               
+              <%}else{%>
               <div class="product-price">₹<%= product.product_price%></div>
+              <%}%>
               <!-- End .product-price -->
 
               <div class="product-content">
@@ -245,18 +261,7 @@
               >Description</a
             >
           </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              id="product-shipping-link"
-              data-toggle="tab"
-              href="#product-shipping-tab"
-              role="tab"
-              aria-controls="product-shipping-tab"
-              aria-selected="false"
-              >Shipping & Returns</a
-            >
-          </li>
+          
           <li class="nav-item">
             <a
               class="nav-link"
@@ -267,6 +272,18 @@
               aria-controls="product-review-tab"
               aria-selected="false"
               >Reviews (<%=reviews.length%>)</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="product-shipping-link"
+              data-toggle="tab"
+              href="#product-shipping-tab"
+              role="tab"
+              aria-controls="product-shipping-tab"
+              aria-selected="false"
+              >Shipping & Returns</a
             >
           </li>
         </ul>
@@ -346,7 +363,7 @@
                           <div class="ratings">
                             <div
                               class="ratings-val"
-                              style="width: <%= userReview.rating %>820%"
+                              style="width: <%= userReview.rating*20 %>%"
                             ></div>
                           </div>
                         </div>

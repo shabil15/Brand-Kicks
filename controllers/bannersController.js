@@ -1,37 +1,40 @@
-const Banner = require('../models/bannerModel')
-const fs = require('fs').promises;
-const path = require('path');
+const Banner = require("../models/bannerModel");
+const fs = require("fs").promises;
+const path = require("path");
 
 //============================== to Load the banners Load ===================================================================//
 
-const bannersLoad = async (req,res)=>{
+const bannersLoad = async (req, res, next) => {
   try {
-    let banners = await Banner.find({})
-    res.render('banners',{banners:banners})
+    let banners = await Banner.find({});
+    res.render("banners", { banners: banners });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //================================= to load the add banners page =============================================================//
 
-const addbannersLoad= async(req,res) => {
+const addbannersLoad = async (req, res, next) => {
   try {
-    res.render('addbanner')
+    res.render("addbanner");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //=================================== to add the banner from the admin side=======================================================//
 
-const addBanner = async (req, res) => {
+const addBanner = async (req, res, next) => {
   try {
     // Assuming that req.body.croppedImageData contains the cropped image data
     let croppedImageData = req.body.croppedImageData;
 
     // Convert data URI to Buffer
-    let imageBuffer = Buffer.from(croppedImageData.replace(/^data:image\/jpeg;base64,/, ''), 'base64');
+    let imageBuffer = Buffer.from(
+      croppedImageData.replace(/^data:image\/jpeg;base64,/, ""),
+      "base64"
+    );
 
     // Use the existing multer storage to handle the file upload
     let filename;
@@ -44,7 +47,10 @@ const addBanner = async (req, res) => {
       filename = `cropped_${Date.now()}.jpg`;
 
       // Save the buffer as a JPEG file
-      await fs.writeFile(path.join(__dirname, '../public/products/banners', filename), imageBuffer);
+      await fs.writeFile(
+        path.join(__dirname, "../public/products/banners", filename),
+        imageBuffer
+      );
     }
 
     let banner = new Banner({
@@ -58,56 +64,66 @@ const addBanner = async (req, res) => {
     let result = await banner.save();
     console.log(result);
 
-    req.flash('success', 'The Banner Added Successfully');
-    res.redirect('/admin/banners');
+    req.flash("success", "The Banner Added Successfully");
+    res.redirect("/admin/banners");
   } catch (error) {
-    console.log(error);
-    req.flash('error', 'An error occurred while adding the banner.');
-    res.redirect('/admin/addbanner'); // Redirect back to the form with an error flash message
+    next(error);
+    req.flash("error", "An error occurred while adding the banner.");
+    res.redirect("/admin/addbanner"); // Redirect back to the form with an error flash message
   }
 };
 
-
 //=================================== to delete the banner ======================================================//
 
-const deleteBanner= async(req,res)=>{
+// const deleteBanner= async(req,res)=>{
+//   try {
+//     let deleteItem= await Banner.deleteOne({_id:req.query.id})
+//     console.log(deleteItem);
+
+//     req.flash('success','the item Deleted Successfully')
+//     res.redirect('/admin/banners')
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+const deletebanner = async (req, res, next) => {
   try {
-    let deleteItem= await Banner.deleteOne({_id:req.query.id})
-    console.log(deleteItem);
-    
-    req.flash('success','the item Deleted Successfully')
-    res.redirect('/admin/banners')
+    console.log(req.query.id);
+    const deletebanner = await Banner.deleteOne({ _id: req.query.id });
+    console.log(deletebanner);
+    req.flash("success", "the Banner deleted successfully");
+    res.redirect("/admin/banners");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //=================================== to change the visibility of the Banner ==========================================//
 
-const visibilityBanner= async(req,res) =>{
+const visibilityBanner = async (req, res, next) => {
   try {
     const id = req.query.id;
     const banner = await Banner.findById(id);
 
-    if(banner) {
-      banner.visibility =! banner.visibility;
+    if (banner) {
+      banner.visibility = !banner.visibility;
       await banner.save();
     }
 
     const banners = await Banner.find({});
-    res.redirect('/admin/banners')
+    res.redirect("/admin/banners");
   } catch (error) {
-    console.log(error);
+    next(error);
   }
-}
+};
 
 //=========================================== exporting the modules ============================================//
 
-module.exports={
-
+module.exports = {
   bannersLoad,
   addBanner,
   addbannersLoad,
-  deleteBanner,
-  visibilityBanner
-}
+  deletebanner,
+  visibilityBanner,
+};

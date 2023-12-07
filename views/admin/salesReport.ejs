@@ -66,6 +66,7 @@
       <div class="row">
           <div class="col-md-4 grid-margin stretch-card">
               <div class="card">
+                
                   <div class="card-body">
                       <h4 class="card-title">Sold Stocks</h4>
                       <% if (sales !== 0) { %>
@@ -85,8 +86,9 @@
                   </div>
               </div>
           </div>
-
+          
           <div class="col-md-8 grid-margin stretch-card">
+            
               <div class="card">
                   <div class="card-body">
                       <div class="d-flex flex-row justify-content-between">
@@ -154,7 +156,9 @@
                   </form>
               </div> -->
               <div class="card">
+                
                   <div class="dropdown mt-2 text-right">
+                    
                       <button type="button" class="btn btn-inverse-info dropdown-toggle mx-3" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <i class="mdi mdi-download"></i>
                       </button>
@@ -172,7 +176,8 @@
                           
                       </div>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body p-5">
+                   
                       <div >
                           <ul class="navbar-nav w-100">
                               <li class="nav-item w-100">
@@ -187,15 +192,16 @@
                           <!-- <button type="submit" class="btn-inverse-info mb-1">search</button> -->
                       </form>
   
-                      <div class="table-responsive">
-                          <table class="table" id="user-table">
+                      <div class="table-responsive" id="Print" >
+                          <table class="table" id="sales-table">
                               <thead>
                                   <tr>
 
                                       <th> No </th>
-                                      <th> Product </th>
+                                     <th>product</th>
                                       <th> Order Id </th>
                                       <th> User </th>
+
                                       <th> Order Date</th>
                                       <th> Quantity</th>
                                       <th> Price</th>
@@ -213,7 +219,7 @@
                                           <td>
                       
                                               <span>
-                                                  <%= orders[i].product.productName %>
+                                                  <%= orders[i].product.product_name %>
                                               </span>
                                           </td>
                                           <td>
@@ -237,7 +243,7 @@
                                               <%= orders[i].orderDetails.quantity %>
                                           </td>
                                           <td>
-                                              ₹<%= orders[i].orderDetails.totalAmount %>
+                                              ₹<%= Math.floor(orders[i].orderDetails.price)*orders[i].orderDetails.quantity  %>
                                           </td>
   
                                           <td>
@@ -536,5 +542,93 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 </script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+
+
+function excelDownload() {
+    // Get the table data
+    var table = document.getElementById("sales-table");
+    var wb = XLSX.utils.table_to_book(table, { sheet: "SheetJS" });
+
+    // Convert the workbook to an array buffer
+    var wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+    // Create a Blob object to store the workbook data
+    var blob = new Blob([wbout], { type: "application/octet-stream" });
+
+    // Generate a temporary anchor element and trigger the download
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    var url = window.URL.createObjectURL(blob);
+    var today = formatDateToString( new Date() )
+    a.href = url;
+    a.download = "MF-"+today+".xlsx";
+    a.click();
+
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+
+
+    function printDiv( divName ) {
+        const printContents = document.getElementById( divName ).innerHTML
+        const originalContents = document.body.innerHTML
+        document.body.innerHTML = printContents;
+        window.print()
+        document.body.innerHTML = originalContents
+        return
+    }
+
+    function showModal(title,message) {
+
+    const modalTitle = document.getElementById('modalHead')
+    const modalBody = document.getElementById('modalContent')
+
+    modalTitle.innerText = title;
+    modalBody.innerText = message;
+
+
+    // Show the popup message modal
+    $('#popupModal').modal('show');
+
+    // Hide the popup message modal when clicking outside of it
+    $(document).on('click', function(event) {
+    if (!$(event.target).closest('.modal-content').length) {
+      $('#popupModal').modal('hide');
+    }
+    });
+
+    }
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+<script>
+    function formatDateToString(date) {
+    // Ensure we have a valid date object
+    if (!(date instanceof Date) || isNaN(date)) {
+      return "Invalid Date";
+    }
+  
+    // Get the day, month, and year components from the date
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear());
+  
+    // Concatenate the components with hyphens and return the formatted string
+    return `${day}-${month}-${year}`;
+  }
+  
+  // Example usage:
+  const date = new Date(); // Replace this with your date object
+  const formattedDate = formatDateToString(date);
+  
+  </script>
 
 <%- include('../layouts/admin/footer.ejs') %>

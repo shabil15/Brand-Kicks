@@ -11,7 +11,7 @@ var instance = new Razorpay({
 
 //===================== wallet page Load ===============================//
 
-const walletPageLoad = async (req, res) => {
+const walletPageLoad = async (req, res, next) => {
   try {
     const userData = await User.findOne({ _id: req.session.user_id });
     res.render("wallet", {
@@ -20,24 +20,23 @@ const walletPageLoad = async (req, res) => {
       userData,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //=============================== to add money to wallet ===========================//
-const addToWallet = async (req, res) => {
+const addToWallet = async (req, res, next) => {
   try {
     const { amount } = req.body;
-    console.log(req.body);
-    console.log(amount);
+    
     const id = crypto.randomBytes(8).toString("hex");
-    console.log(id);
+    
     var options = {
       amount: amount * 100,
       currency: "INR",
       receipt: "" + id,
     };
-    console.log(options);
+    
 
     instance.orders.create(options, (err, order) => {
       if (err) {
@@ -47,20 +46,20 @@ const addToWallet = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 //================================= to verify payment ===============================================//
 
-const verifyWalletPayment = async (req, res) => {
+const verifyWalletPayment = async (req, res, next) => {
   try {
     const userId = req.session.user_id;
 
     const details = req.body;
-    console.log("body",req.body);
+    
 
-    const amount = parseInt(details.order.amount)/100;
+    const amount = parseInt(details.order.amount) / 100;
     let hmac = crypto.createHmac("sha256", instance.key_secret);
 
     hmac.update(
@@ -94,12 +93,12 @@ const verifyWalletPayment = async (req, res) => {
       res.json({ status: false });
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 module.exports = {
   walletPageLoad,
   addToWallet,
-  verifyWalletPayment
+  verifyWalletPayment,
 };

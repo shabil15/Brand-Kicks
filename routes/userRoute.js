@@ -5,6 +5,7 @@ const orderController = require('../controllers/orderController')
 const wishListController =require('../controllers/wishListController')
 const couponsController = require('../controllers/couponsController')
 const walletController = require('../controllers/walletController')
+const errorHandler = require('../middlewares/errorHandler')
 const User = require("../models/userModel").User;
 const session = require("express-session")
 const shortid = require('shortid');
@@ -26,6 +27,7 @@ user_route.use(express.urlencoded({extended:true}))
 const userAuth =require('../middlewares/user')
 
 
+
 passport.use(new googleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret:process.env.GOOGLE_CLIENT_SECRET,
@@ -38,7 +40,7 @@ passport.use(new googleStrategy({
     const user = await User.findOne({email: profile.emails[0].value});
     const referralCode = shortid.generate();
     
-    console.log(profile.emails)
+    
     if(user) {
       done(null,user);
     } else {
@@ -59,7 +61,7 @@ passport.use(new googleStrategy({
 ))
 
 passport.serializeUser((user,done) => {
-  done(null,user.id); //Searialize user's id instead of profile
+  done(null,user.id);
 })
 
 
@@ -79,7 +81,7 @@ user_route.get('/auth/google',passport.authenticate('google',{
 
 user_route.get('/auth/google/callback',passport.authenticate('google',{
   failureRedirect:'/login'
-}), async function (req,res) {
+}),async function (req,res) {
   console.log(req.user.email);
   const userEmail = req.user.email;
   const user = await User.findOne({email:userEmail});
@@ -107,14 +109,13 @@ user_route.get('/signup',userController.loadRegister)
 
 user_route.post('/signup',userController.insertUser)
 
-
 user_route.get('/',userController.loadHome)
 
 user_route.get('/aboutus',userController.aboutusLoad)
 
 user_route.get('/contact',userController.contactLoad)
 
-user_route.get('/login',userController.loginLoad)
+user_route.get('/login',userAuth.isLogout,userController.loginLoad)
 
 user_route.get('/submit-otp', userController.showverifyOTPPage)
 
@@ -142,9 +143,9 @@ user_route.get('/product',productController.productPageLoad);
 
 user_route.get('/shop',productController.queryFilter);
 
-user_route.post ('/submitReview',userController.submitReview);
+user_route.post ('/submitReview',userAuth.isLogin,userController.submitReview);
 
-user_route.post('/edit-review',userController.editReview)
+user_route.post('/edit-review',userAuth.isLogin,userController.editReview)
 
 
 //========================profile related===============================//
@@ -212,6 +213,8 @@ user_route.post('/checkout/placeorder/verify-payment',userAuth.isLogin,orderCont
 
 user_route.get('/checkout/placeorder/amountverify',userAuth.isLogin,orderController.amountVerify)
 
+user_route.get('/downloadInvoice',userAuth.isLogin,orderController.invoiceDownload);
+
 //======================================== coupon related ================================================//
 
  user_route.post('/checkout/placeorder/coupon',userAuth.isLogin,couponsController.applyCoupon)
@@ -225,5 +228,11 @@ user_route.post('/profile/addtoWallet',userAuth.isLogin,walletController.addToWa
 
 user_route.post('/verifyWalletpayment',userAuth.isLogin,walletController.verifyWalletPayment)
 
+user_route.use(errorHandler); 
+
+user_route.get('*',(req,res)=>{
+  console.log(req.url)
+  res.render('404')
+})
 
 module.exports = user_route 

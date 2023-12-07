@@ -1,126 +1,73 @@
 <%- include('../layouts/user/header.ejs') -%>
+<style>
+    #carouselExampleIndicators {
+      max-width: 1200px; /* Set your desired max-width */
+      margin: auto; /* Center the carousel */
+    }
+    
+  </style>
 <main class="main">
-    <div class="intro-section bg-lighter pt-5 pb-6">
-        <div class="container">
-            <div class="row">
-                <% if (banners.length>3){%>
-                <div class="col-lg-8">
-                    <div class="intro-slider-container slider-container-ratio slider-container-1 mb-2 mb-lg-0">
-                        <div class="intro-slider intro-slider-1 owl-carousel owl-simple owl-light owl-nav-inside" data-toggle="owl" data-owl-options='{
-                            "nav": false, 
-                            "responsive": {
-                                "768": {
-                                    "nav": false
-                                }
-                            }
-                        }'>
-                            <div class="intro-slide">
-                                <figure class="slide-image">
-                                    <picture>
-                                        <source media="(max-width: 480px)" srcset="/products/banner/mobile/<%= banners[0].image %>">
-                                        <img src="/public/products/banners/<%=banners[1].banner%>" alt="Image Desc">
-                                    </picture>
-                                </figure><!-- End .slide-image -->
-                                
-                                <div class="intro-content">
-                                    <h3 class="intro-subtitle"><%= banners[0].subtext %></h3>
-                                    <!-- <h1 class="intro-title"><%= banners[0].mainHead %></h1> -->
-                                    <!-- <h3 class="intro-subtitle">Topsale Collection</h3> -->
-                                    <h1 class="intro-title text-dark"><%= banners[1].title %></h1>
-
-                                    <a href="/shop" class="btn btn-outline-white">
-                                        <span>SHOP NOW</span>
-                                        <i class="icon-long-arrow-right"></i>
-                                    </a>
-                                </div><!-- End .intro-content -->
-                            </div><!-- End .intro-slide -->
-
-                            <div class="intro-slide">
-                                <figure class="slide-image">
-                                    <picture>
-                                        <source media="(max-width: 480px)" srcset="/products/banner/mobile/<%= banners[1].image %>">
-                                        <img src="/public/userAssets/assets/images/banners/3cols/banner-2.jpg" alt="Image Desc">
-                                    </picture>
-                                </figure><!-- End .slide-image -->
-
-                                <div class="intro-content">
-                                    <h3 class="intro-subtitle"><%= banners[1].subtext %></h3>
-                                    <h1 class="intro-title"><%= banners[1].mainHead %></h1>
-                                    <!-- <h3 class="intro-subtitle">News and Inspiration</h3>
-                                    <h1 class="intro-title">New Arrivals</h1> -->
-
-                                    <a href="/shop" class="btn btn-outline-white">
-                                        <span>SHOP NOW</span>
-                                        <i class="icon-long-arrow-right"></i>
-                                    </a>
-                                </div><!-- End .intro-content -->
-                            </div><!-- End .intro-slide -->
-
-                            <div class="intro-slide">
-                                <figure class="slide-image">
-                                    <picture>
-                                        <source media="(max-width: 480px)" srcset="/products/banner/mobile/<%= banners[2].image %>">
-                                        <img src="/public/userAssets/assets/images/banners/3cols/banner-1.jpg" alt="Image Desc">
-                                    </picture>
-                                </figure><!-- End .slide-image -->
-
-                                <div class="intro-content">
-                                    <h3 class="intro-subtitle">Fashion Meets Function</h3><!-- End .h3 intro-subtitle -->
-                                    <h1 class="intro-title">Explore Clearer <br>Views</h1><!-- End .intro-title -->
-                                    
-
-                                    <a href="/shop" class="btn btn-outline-white">
-                                        <span>SHOP NOW</span>
-                                        <i class="icon-long-arrow-right"></i>
-                                    </a>
-                                </div><!-- End .intro-content -->
-                            </div><!-- End .intro-slide -->
-                        </div><!-- End .intro-slider owl-carousel owl-simple -->
-                        <%}%>
-                        
-                            <span class="slider-loader"></span><!-- End .slider-loader -->
-                        
-                    </div><!-- End .intro-slider-container -->
-                </div><!-- End .col-lg-8 -->
+    <div id="carouselExampleIndicators" class="carousel slide " data-ride="carousel">
+        <ol class="carousel-indicators">
+        
+          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <% if (banners.length>=3){%>
+        <div class="carousel-inner  ">
+          <div class="carousel-item  active">
+            <img class="d-block w-100" src="/public/products/banners/<%=banners[0].banner%>" alt="First slide">
+            <div class="intro-content animated fadeIn">
+                <h3 class="intro-subtitle text-white"><%= banners[0].subtext %></h3>
                 
-                <div class="col-lg-4">
-                    <div class="intro-banners">
-                        <div class="row row-sm">
-                            <div class="col-md-6 col-lg-12">
-                                <div class="banner banner-display">
-                                    <a href="/shop">
-                                        <img src="/public/userAssets/assets/images/banners/banner-1.jpg" alt="Banner">
-                                    </a>
+                <h1 class="intro-title text-white"><%= banners[0].title %></h1>
 
-                                    <div class="banner-content">
-                                        <h4 class="banner-subtitle text-darkwhite"><a href="#">Clearence</a></h4><!-- End .banner-subtitle -->
-                                        <h3 class="banner-title text-white"><a href="#">Specs & Style<br>Up to 40% off</a></h3><!-- End .banner-title -->
-                                        <a href="#" class="btn btn-outline-white banner-link">Shop Now<i class="icon-long-arrow-right"></i></a>
-                                    </div><!-- End .banner-content -->
-                                </div><!-- End .banner -->
-                            </div><!-- End .col-md-6 col-lg-12 -->
+                <a href="<%=banners[0].bannerURL%>" class="btn btn-outline-white">
+                    <span>SHOP NOW</span>
+                    <i class="icon-long-arrow-right"></i>
+                </a>
+            </div><!-- End .intro-content -->
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="/public/products/banners/<%=banners[1].banner%>" alt="Second slide">
+            <div class="intro-content">
+                <h3 class="intro-subtitle text-white"><%= banners[1].subtext %></h3>
+                
+                <h1 class="intro-title text-white"><%= banners[1].title %></h1>
 
-                            <div class="col-md-6 col-lg-12">
-                                <div class="banner banner-display mb-0">
-                                    <a href="/shop">
-                                        <img src="/public/userAssets/assets/images/banners/banner-1.jpg" alt="Banner">
-                                    </a>
+                <a href=<%=banners[1].bannerURL%> class="btn btn-outline-white">
+                    <span>SHOP NOW</span>
+                    <i class="icon-long-arrow-right"></i>
+                </a>
+            </div><!-- End .intro-content -->
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="/public/products/banners/<%=banners[2].banner%>" alt="Third slide">
+            <div class="intro-content">
+                <h3 class="intro-subtitle text-white"><%= banners[2].subtext %></h3>
+                
+                <h1 class="intro-title text-white"><%= banners[2].title %></h1>
 
-                                    <div class="banner-content">
-                                        <h4 class="banner-subtitle text-darkwhite"><a href="#">New in</a></h4><!-- End .banner-subtitle -->
-                                        <h3 class="banner-title text-white"><a href="#">Visionary Eyewear <br>Collection</a></h3><!-- End .banner-title -->
-                                        <a href="/shop" class="btn btn-outline-white banner-link">Discover Now<i class="icon-long-arrow-right"></i></a>
-                                    </div><!-- End .banner-content -->
-                                </div><!-- End .banner -->
-                            </div><!-- End .col-md-6 col-lg-12 -->
-                        </div><!-- End .row row-sm -->
-                    </div><!-- End .intro-banners -->
-                </div><!-- End .col-lg-4 -->
-            </div><!-- End .row -->
+                <a href="<%=banners[2].bannerURL%>" class="btn btn-outline-white">
+                    <span>SHOP NOW</span>
+                    <i class="icon-long-arrow-right"></i>
+                </a>
+            </div><!-- End .intro-content -->
+          </div>
+        </div>
+        <%}%>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
 
-            <div class="mb-6"></div><!-- End .mb-6 -->
-
-            <div class="owl-carousel owl-simple" data-toggle="owl" 
+            <div class="owl-carousel owl-simple mt-4 mb-4" data-toggle="owl" 
                 data-owl-options='{
                     "nav": false, 
                     "dots": false,
@@ -144,32 +91,31 @@
                         }
                     }
                 }'>
-                <a href="#" class="brand">
+                <a href="/shop?category=&gender=&brand=Nike&minPrice=&maxPrice=" class="brand">
                     <img src="/public/userAssets/assets/images/brands/nike-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
                 </a>
 
-                <a href="#" class="brand">
+                <a href="/shop?category=&gender=&brand=Newbalance&minPrice=&maxPrice=" class="brand">
                     <img src="/public/userAssets/assets/images/brands/nb-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
                 </a>
 
-                <a href="#" class="brand">
+                <a href="/shop?category=&gender=&brand=Jordan&minPrice=&maxPrice=" class="brand">
                     <img src="/public/userAssets/assets/images/brands/jordan-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
                 </a>
 
-                <a href="#" class="brand">
+                <a href="/shop?category=&gender=&brand=Converse&minPrice=&maxPrice=" class="brand">
                     <img src="/public/userAssets/assets/images/brands/convers-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
                 </a>
 
-                <a href="#" class="brand">
+                <a href="/shop?category=&gender=&brand=Puma&minPrice=&maxPrice=" class="brand">
                     <img src="/public/userAssets/assets/images/brands/puma-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
                 </a>
 
-                <a href="#" class="brand">
+                <a href="/shop?category=&gender=&brand=Adidas&minPrice=&maxPrice=" class="brand">
                     <img src="/public/userAssets/assets/images/brands/adidas-PhotoRoom.png-PhotoRoom.png" alt="Brand Name">
                 </a>
             </div><!-- End .owl-carousel -->
-        </div><!-- End .container -->
-    </div><!-- End .bg-lighter -->
+        
 
  
 
@@ -279,78 +225,6 @@
       </div><!-- End .row -->
   </div><!-- End .container -->
 
-  <div class="bg-light pt-5 pb-10 mb-3">
-    <div class="container">
-        <div class="heading heading-center mb-3">
-            <h2 class="title-lg">New Arrivals</h2><!-- End .title -->
-          <p style="font-size: larger;">Celebrate Every Step </p>
-        </div><!-- End .heading -->
-
-        <div class="tab-content tab-content-carousel">
-            <div class="tab-pane tab-pane-shadow p-0 fade show active" id="new-all-tab" role="tabpanel" aria-labelledby="new-all-link">
-                <div class="owl-carousel owl-simple carousel-equal-height" data-toggle="owl" 
-                    data-owl-options='{
-                        "nav": false, 
-                        "dots": true,
-                        "margin": 0,
-                        "loop": true,
-                        "responsive": {
-                            "0": {
-                                "items":2
-                            },
-                            "480": {
-                                "items":2
-                            },
-                            "768": {
-                                "items":3
-                            },
-                            "992": {
-                                "items":4
-                            },
-                            "1200": {
-                                "items":4,
-                                "nav": true
-                            }
-                        }
-                    }'>
-                    <% if (products.length > 8) { %>
-                    <% for(i=0;i<8;i++) {%>
-                      <div class="product product-11 text-center border">
-                          <figure class="product-media">
-                              <a href="/product?id=<%= products[i]._id %>" >
-                                  <img src="/public/products/croped/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
-                                  <img src="/public/products/croped/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
-                              </a>
-
-                              <div class="product-action-vertical">
-                                  <a  class="btn-product-icon btn-wishlist" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')"><span>add to wishlist</span></a>
-                              </div>
-                          </figure>
-
-                          <div class="product-body">
-                              <div class="product-cat">
-                                  <a ><%= products[i].gender%></a>,
-                                  <a ><%= products[i].category%></a>
-                              </div>
-                              <h3 class="product-title"><a href="/product?id=<%= products[i]._id %>"><%= products[i].product_name %></a></h3>
-                              <div class="product-price">
-                                  ₹<%= products[i].product_price %>
-                              </div>
-                          </div>
-                          <div class="product-action">
-                              <a  class="btn-product btn-cart" onclick="addCart('<%= products[i]._id %>','<%= user %>')"><span>add to cart</span></a>
-                          </div><!-- End .product-action -->
-                      
-                      </div><!-- End .product -->
-                      <%}%>
-                      <% } %>
-
-                     
-            
-               
-              
-                </div><!-- End .owl-carousel -->
-            </div><!-- .End .tab-pane -->
 
            
 
@@ -364,7 +238,7 @@
           <div class="row flex-column flex-lg-row align-items-lg-center">
               <div class="col">
                   <h3 class="cta-title text-primary">New Deals! Start Daily at 12pm e.t.</h3><!-- End .cta-title -->
-                  <p class="cta-desc">Get <em class="font-weight-medium">FREE SHIPPING* & 5% rewards</em> on every order with Molla Theme rewards program</p><!-- End .cta-desc -->
+                  <p class="cta-desc">Get <em class="font-weight-medium">FREE SHIPPING* & 5% rewards</em> </p><!-- End .cta-desc -->
               </div><!-- End .col -->
               
               
@@ -385,10 +259,22 @@
         <% for(i=0;i<8;i++) {%>
           <div class="col-6 col-md-4 col-lg-4 col-xl-3">
               <div class="product product-7 text-center">
-                  <figure class="product-media">
+                  <figure class="product-media" style="position: relative;">
                       <a href="/product?id=<%= products[i]._id %>">
                           <img src="/public/products/croped/<%= products[i].images.image1 %>" alt="Product image" class="product-image">
                           <img src="/public/products/croped/<%= products[i].images.image2 %>" alt="Product image" class="product-image-hover">
+                          <%if (products[i].offer ){%>
+                            <div class="product-lable-badge" style=" position: absolute;
+                            top: 20px; 
+                            left: 20px; 
+                            background-color: red;
+                            color: white;
+                            padding-left: 10px;
+                            padding-right: 10px;
+                            ">
+                              <span class="product-lable" style="font-size: 12px;"><%= products[i].offer.percentage%>% OFF</span>
+                            </div>
+                            <%}%>
                       </a>
 
                       <div class="product-action-vertical">
@@ -402,9 +288,18 @@
                     <a  rel="tag" style="font-size: 14px;"><%= products[i].category %></a>
                     </div>
                       <h3 class="product-title"><a><%= products[i].product_name %></a></h3><!-- End .product-title -->
-                      <div class="product-price">
-                          ₹<%= products[i].product_price %>
-                      </div><!-- End .product-price -->
+                      <%if (products[i].offer ){%>
+                        <div class="product-price">
+                           <del> ₹<%= products[i].product_price%></del> 
+                           <span class="mx-3">₹<%= Math.floor(products[i].discountedPrice) %></span>
+                          
+                        </div><!-- End .product-price -->
+                        <%} else {%>
+                          <div class="product-price">
+                               ₹<%= products[i].product_price %>
+                              
+                           </div><!-- End .product-price -->
+                        <%}%>
                   </div><!-- End .product-body -->
                   <div class="product-action">
                       <a   class="btn-product btn-cart" onclick="addCart('<%= products[i]._id %>','<%= user %>')"><span>add to cart</span></a>

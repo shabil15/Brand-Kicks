@@ -48,11 +48,12 @@
                                           
                                           <%if (products[i].offer ){%>
                                           <div class="product-lable-badge" style=" position: absolute;
-                                          top: 10px; /* Adjust top position as needed */
-                                          left: 10px; /* Adjust left position as needed */
+                                          top: 20px; 
+                                          left: 20px; 
                                           background-color: red;
                                           color: white;
-                                          padding: 3px;
+                                          padding-left: 10px;
+                                          padding-right: 10px;
                                           >">
                                             <span class="product-lable" style="font-size: 12px;"><%= products[i].offer.percentage%>% OFF</span>
                                           </div>
@@ -78,7 +79,7 @@
                                           <h3 class="product-title"><a><%= products[i].product_name %></a></h3><!-- End .product-title -->
                                           <%if (products[i].offer ){%>
                                           <div class="product-price">
-                                             <del> ₹<%= products[i].product_price%>></del> 
+                                             <del> ₹<%= products[i].product_price%></del> 
                                              <span class="mx-3">₹<%= Math.floor(products[i].discountedPrice) %></span>
                                             
                                           </div><!-- End .product-price -->

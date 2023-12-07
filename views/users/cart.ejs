@@ -59,7 +59,11 @@
                                 <td class="price-col product_price" >
                                     ₹ <span
                                         id="singleProductPrice<%= cartItems.products[i].product._id %>" class="product_price">
+                                        <%if(cartItems.products[i].product.discountedPrice>0){%>
+                                            <%= Math.floor(cartItems.products[i].product.discountedPrice) %>
+                                        <%}else{%>   
                                         <%= cartItems.products[i].product.product_price %>
+                                        <%}%>
                                     </span>
                                 </td>
 
@@ -95,8 +99,11 @@
 
                                 <td class="total-col total-price "
                                     id="singleProductTotal <%= cartItems.products[i].product._id %>">
-                                    ₹ <%- (cartItems.products[i].product.product_price)*(cartItems.products[i].quantity)
-                                        %>.00
+                                    <%if(cartItems.products[i].product.discountedPrice){%>
+                                        ₹ <%- Math.floor((cartItems.products[i].product.discountedPrice)*(cartItems.products[i].quantity))%>.00
+                                    <%}else{%>
+                                    ₹ <%=(cartItems.products[i].product.product_price)*(cartItems.products[i].quantity)%>.00
+                                        <%}%>
                                 </td>
                                 <!-- remove item button -->
                                 <td class="remove-col">
