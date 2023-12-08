@@ -263,3 +263,23 @@
     cursor: not-allowed;
   }
 }
+
+
+@media only screen and (max-width: 768px) {
+  .features,
+  .ofer-box{
+    display: none;
+  }
+
+  .wallet-card{
+    width: 350px;
+  }
+.genderfil{
+  width: 500%;
+}
+
+  .invo{
+    margin-right: 100px;
+  }
+  
+}

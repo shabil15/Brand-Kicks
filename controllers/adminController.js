@@ -82,6 +82,8 @@ const dashboardLoad = async (req, res,next) => {
 
     const result = await createSalesReport("year");
 
+    
+
     const report = {
       totalSalesAmount: result.totalSalesAmount,
       sales: result.totalProductsSold,
@@ -236,6 +238,16 @@ const createSalesReport = async (interval) => {
         },
       },
     ]);
+
+     // Check if there are no sales data
+     if (!orderDataData || orderDataData.length === 0) {
+      console.log("No sales data found for the specified interval.");
+      return {
+        profit: 0,
+        totalSalesAmount: 0,
+        totalProductsSold: 0,
+      };
+    }
 
     // Extracting totals directly from the first result, as it's now a single document
     const { totalSalesAmount, totalProductsSold } = orderDataData[0];

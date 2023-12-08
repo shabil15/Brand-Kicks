@@ -154,6 +154,11 @@
       return false;
     }
 
+    if (discountAmount.trim() === "") {
+      document.getElementById('discountAmountError').innerText = 'Please enter discount Amount.';
+      return false;
+    }
+
     if (Number(discountAmount) > Number(criteriaAmount) ) {
       document.getElementById('discountAmountError').innerText = 'discount amount cant be greater than Criteria Amount';
       return false;

@@ -15,7 +15,7 @@
                 <p id="nameError" class="text-danger"></p> <!-- Error message for name -->
                 <div class="form-group mt-2">
                   <label for="exampleTextarea1">Subtext</label>
-                  <textarea name="description" class="form-control text-light" id="exampleTextarea1" rows="4" required></textarea>
+                  <textarea name="description" class="form-control text-light" id="description" rows="4" required></textarea>
                   <p id="descriptionError" class="text-danger"></p> <!-- Error message for description -->
                   <p id="fileError" class="text-danger"></p> <!-- Error message for file -->
 
@@ -35,7 +35,7 @@
                   <label for="exampleInputName1">Banner URL</label>
                   <input type="text" class="form-control text-light mb-3" name="bannerURL" id="exampleInputName1" placeholder="banner URL" required>
                   <p id="urlError" class="text-danger"></p> <!-- Error message for name -->
-                <button type="submit" class="btn btn-lg btn-inverse-primary mr-2 mt-5">Add Banner</button>
+                <button type="submit" onclick="return validateForm()" class="btn btn-lg btn-inverse-primary mr-2 mt-5">Add Banner</button>
               </div>
             </div>
           </form>
@@ -47,30 +47,30 @@
 
 <%- include('../layouts/admin/footer.ejs') %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-
-<script>function validateForm() {
+<script>
+function validateForm() {
   const name = document.getElementById('exampleInputName1').value.trim();
-  const description = document.getElementById('exampleTextarea1').value.trim();
-  const file = document.getElementById('imageInput1').value.trim();
-  const url = document.getElementsByName('bannerURL')[0].value.trim(); // Access the value of the first element
+  const description = document.getElementById('description').value.trim();
+  const file = document.getElementById('imageInput').value.trim();
+  const url = document.getElementsByName('bannerURL')[0].value.trim();
 
   const nameError = document.getElementById('nameError');
   const descriptionError = document.getElementById('descriptionError');
   const fileError = document.getElementById('fileError');
   const urlError = document.getElementById('urlError');
 
-  nameError.textContent = ''; // Reset error messages
+  nameError.textContent = '';
   descriptionError.textContent = '';
   fileError.textContent = '';
   urlError.textContent = '';
 
   if (name === '') {
-    nameError.textContent = 'Name is required.';
+    nameError.textContent = 'Banner Title is required.';
     return false;
   }
 
   if (description === '') {
-    descriptionError.textContent = 'Description is required.';
+    descriptionError.textContent = 'Subtext is required.';
     return false;
   }
 
@@ -80,13 +80,13 @@
   }
 
   if (url === '') {
-    urlError.textContent = 'Url is required.';
+    urlError.textContent = 'Banner URL is required.';
     return false;
   }
 
-  return true; // Allow form submission if all fields are filled
+  return true;
 }
-    
+
 
 document.addEventListener('DOMContentLoaded', function () {
     if (typeof Cropper !== 'undefined') {

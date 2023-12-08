@@ -177,7 +177,7 @@ aria-label="Close">x</button> -->
 
 
 
-                    <div class="card  col-md-6 col-10 my-3 mx-auto p-3" style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;">
+                    <div class="card ordercard col-md-6 col-10 my-3 mx-auto p-3" style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;">
                         <%if(products[i].OrderStatus!="Returned"){ %>
                             <div class="card-header d-flex justify-content-between w-100">
                                 <dir class="d-flex flex-column col-9">
@@ -193,7 +193,7 @@ aria-label="Close">x</button> -->
                                    
                                         
                                         <div class="dropdown">
-                                            <a class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-padding-y: .15rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem; "><i class="fa-solid fa-file"></i> Invoice </a>
+                                            <a class="btn dropdown-toggle " type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-padding-y: .15rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem; "><i class="fa-solid fa-file invo"></i> <p class="invo">Invoice</p> </a>
                                             <ul class="dropdown-menu">
                                               <li><a class="dropdown-item" style="font-size: 14px;" href="/downloadInvoice?id=<%= products[i].orderId %>&productName=<%= products[i].productDetails.product_name%>
                                                 "><i class="fa-solid fa-file"></i> Download Invoice</a></li>
@@ -217,7 +217,7 @@ aria-label="Close">x</button> -->
                                         </b></h6>
                                     <%}%>    
                             </div>
-                            <div class="card-body row col-12 d-flex ">
+                            <div class="card-body  row col-12 d-flex ">
                                 
                                 <div class="col-4 ">
                                     

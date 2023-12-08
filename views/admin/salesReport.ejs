@@ -31,13 +31,14 @@
                       <h4 class="card-title">Most sold products</h4>
                       <canvas id="barChart" style="height:230px"></canvas>
                       <div style="display: none;">
+                    
                           <% if (Mproducts !== 0) { %>
                               <% for (let i = 0; i < Mproducts.length; i++) { %>
                                   <% const product = Mproducts[i].productData[0]; %>
                                   <input id="product<%= i + 1 %>" value="<%= product ? product.product_name : '' %>">
                                   <input id="product<%= i + 1 %>2" value="<%= Mproducts[i].count %>">
                               <% } %>
-                          <% } %>
+                            <% } %>
                       </div>
                       
 
@@ -213,6 +214,7 @@
                               <tbody>
 
                                   <% let k = 1 %>
+                                  <%if(orders){%>
                                   <%for(i=orders.length-1;i>=0;i--){%>          
                                       <tr>
                                           <td><%= k %></td>
@@ -270,6 +272,9 @@
                                           </td>
                                         
                                       <%}%>
+                                  <%}else{%>
+                                    No Orders
+                                  <%}%>
                                       
                                       <!-- list -->
   

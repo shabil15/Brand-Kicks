@@ -546,6 +546,7 @@ const updateUserData = async (req, res, next) => {
     res.json({ success: true }); // Send a JSON response to indicate success
   } catch (error) {
     next(error);
+    console.log(error)
   }
 };
 
@@ -706,6 +707,7 @@ const calculateTotalPrice = async (userId) => {
     const cart = await Cart.findOne({ user: userId }).populate(
       "products.product"
     );
+    
     if (!cart) {
       console.log("User does not have a cart");
     }
@@ -781,6 +783,7 @@ const cartPageLoad = async (req, res, next) => {
       })
       .exec();
 
+      console.log(cartDetails);
     if (cartDetails) {
       let total = await calculateTotalPrice(req.session.user_id);
 

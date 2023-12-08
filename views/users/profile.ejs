@@ -199,7 +199,7 @@
                                     
                                     <h6 class="card-title mb-1 text-center text-light"  style="font-size: 25px;">
                                         <i class="fa-solid fa-gift"></i>
-                                        No Offers
+                                        No Coupons
                                     </h6>
                                     
                                 </div>
@@ -498,7 +498,6 @@
 
             const firstName = editProfileForm.querySelector('input[name="firstName"]').value;
             const lastName = editProfileForm.querySelector('input[name="secondName"]').value;
-            const email = editProfileForm.querySelector('input[name="email"]').value;
             const mobile = editProfileForm.querySelector('input[name="mobile"]').value;
 
             // Clear any previous error messages
@@ -514,10 +513,6 @@
                 hasErrors = true;
             }
 
-            if (!validateEmail(email)) {
-                showError('email', 'Invalid email address.');
-                hasErrors = true;
-            }
 
             if (hasErrors) {
                 return;
@@ -532,7 +527,6 @@
                 body: JSON.stringify({
                     firstName: firstName,
                     secondName: lastName,
-                    email: email,
                     mobile: mobile,
                 }),
             })
@@ -545,6 +539,7 @@
                             title: 'Success!',
                             text: 'User data has been successfully updated',
                         })
+                        window.location.reload();
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -559,12 +554,6 @@
         });
 
         
-
-        function validateEmail(email) {
-            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
-            return emailPattern.test(email);
-        }
-
         function showError(fieldName, message) {
             const errorElement = document.getElementById(`${fieldName}Error`);
             errorElement.textContent = message;

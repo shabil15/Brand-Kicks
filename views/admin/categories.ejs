@@ -35,7 +35,7 @@
               </tr>
             </thead>
             <tbody>
-              
+              <%if(categories){%>
                 <% for (var i=0 ; i < categories.length ;i++){%>
                   <tr>
                     <td><%=categories[i].category_name%></td>
@@ -71,6 +71,9 @@
                     </td>
                   </tr>
                   <% } %>
+                <%}else{%>
+                  <h1>No Categories</h1>
+                <%}%>
               
             </tbody>
           </table>
