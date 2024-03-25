@@ -41,7 +41,7 @@ Secure Data Transmission with HTTPS (SSL/TLS certificates) 🌈
 🌈 Future-Proofed for Innovation:
 
 Get Ready for Real-Time Chat Coming Soon! 🚀
-🎥 Explore BRAND KICKS: https://brandkicks.shop/
+🎥 Explore BRAND KICKS: https://www.brandkicks.shop/
 📂 GitHub Repository: https://github.com/shabil15/Brand-Kicks
 
 Thank you for joining us on this journey. Your support fuels our passion, and together, let's step into a world of style and comfort. 🙌 #NodeJS #Ecommerce #WebDevelopment #MongoDB #Razorpay #AWS #Docker 🚀✨
